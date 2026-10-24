@@ -1,0 +1,45 @@
+<p><strong>{{localize "MWD.Creation.PointsLeft" left=skillPoints.left budget=skillPoints.budget}}</strong>
+  {{#if skillPoints.converted}}<span class="mwd-muted">{{localize "MWD.Creation.SkillsFromHardware" n=skillPoints.converted}}</span>{{/if}}</p>
+<ol class="mwd-list mwd-skills">
+  <li class="mwd-list-head">
+    <span class="mwd-col-name">{{localize "MWD.Skill.Name"}}</span>
+    <span class="mwd-col-num">{{localize "MWD.Skill.Rank"}}</span>
+    <span class="mwd-col-num">{{localize "MWD.Creation.LifeModuleBonus"}}</span>
+    <span class="mwd-col-num">{{localize "MWD.Skill.Bonus"}}</span>
+    <span class="mwd-col-controls"></span>
+  </li>
+  {{#each skillRows}}
+  <li class="mwd-list-row">
+    <span class="mwd-col-name">{{name}} <span class="mwd-muted">+{{attribute}}</span></span>
+    <input class="mwd-col-num" type="number" name="skills.{{index}}.rank" value="{{rank}}" min="1" max="{{max}}">
+    <span class="mwd-col-num">{{#if bonus}}+{{bonus}}{{/if}}</span>
+    <span class="mwd-col-num mwd-bonus">{{mwdSigned total}}</span>
+    <span class="mwd-col-controls"><a data-action="removeSkill" data-index="{{index}}" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a></span>
+  </li>
+  {{else}}
+  <li class="mwd-empty">{{localize "MWD.Skill.None"}}</li>
+  {{/each}}
+  {{#each lifeModuleOnly}}
+  <li class="mwd-list-row mwd-muted">
+    <span class="mwd-col-name">{{name}} <span>({{localize "MWD.Creation.FromLifeModule"}})</span></span>
+    <span class="mwd-col-num">—</span>
+    <span class="mwd-col-num">+1</span>
+    <span class="mwd-col-num mwd-bonus">{{mwdSigned total}}</span>
+    <span class="mwd-col-controls"></span>
+  </li>
+  {{/each}}
+</ol>
+<fieldset class="mwd-creator-add">
+  <legend>{{localize "MWD.Skill.Add"}}</legend>
+  <select name="pending.skill.key">
+    {{#each skillChoices}}<option value="{{value}}" {{#if (eq value @root.pending.skill.key)}}selected{{/if}}>{{label}}</option>{{/each}}
+  </select>
+  {{#if pendingSpecialty}}
+  <select name="pending.skill.specialty">{{selectOptions specialties selected=pending.skill.specialty}}</select>
+  {{/if}}
+  {{#if pendingSubject}}
+  <input type="text" name="pending.skill.subject" value="{{pending.skill.subject}}" placeholder="{{localize 'MWD.Skill.SubjectPlaceholder'}}">
+  {{/if}}
+  <button type="button" class="mwd-button" data-action="addSkill"><i class="fa-solid fa-plus"></i> {{localize "MWD.Skill.Add"}}</button>
+</fieldset>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.SkillsRules"}}</p>

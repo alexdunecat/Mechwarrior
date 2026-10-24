@@ -64,6 +64,17 @@ test("melee weapons add the STR bonus to damage", () => {
   assert.equal(fists.system.damageLabel, "2(+1)F");
 });
 
+test("weapon customizations change damage and ranges (p. 78)", () => {
+  const rifle = makeItem(WeaponData, { type: "weapon", system: {
+    damage: 4, ranges: { close: "0", near: "0", far: "-2" }, mods: { lethality: true, range: "far" }
+  } });
+  makeActor(CharacterData, {}, [rifle]);
+  assert.equal(rifle.system.totalDamage, 5);
+  assert.equal(rifle.system.damageLabel, "5");
+  assert.deepEqual(rifle.system.effectiveRanges, { close: "0", near: "0", far: "-1" });
+  assert.equal(rifle.system.ranges.far, "-2", "the stored range stays as bought");
+});
+
 test("tags and cues split into lists", () => {
   const actor = makeActor(CharacterData, { tags: "Scout, Quick;Alert", cues: "One\n\n Two " });
   assert.deepEqual(actor.system.tagList, ["Scout", "Quick", "Alert"]);

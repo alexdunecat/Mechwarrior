@@ -1,7 +1,8 @@
 import {
-  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS,
+  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, PERSONAL_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS,
   TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
+import { improveRange } from "../rules/advancement.mjs";
 import { meleeStrBonus } from "../rules/tests.mjs";
 import { counter } from "./actor-base.mjs";
 
@@ -59,7 +60,8 @@ export class TraitData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       polarity: new fields.StringField({ required: true, initial: "positive", choices: () => ({ ...TRAIT_POLARITIES }) }),
-      modifier: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -3, max: 3 }),
+      key: new fields.StringField({ required: true, blank: true, initial: "" }),
+      modifier: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -4, max: 4 }),
       appliesTo: new fields.StringField({ required: true, initial: "" }),
       effect: new fields.StringField({ required: true, blank: true, initial: "", choices: () => ({ ...TRAIT_EFFECTS }) }),
       initiative: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -3, max: 3 }),
@@ -88,8 +90,22 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
         far: rangeField("x")
       }),
       special: new fields.StringField({ required: true, initial: "" }),
+      mods: new fields.SchemaField({
+        accuracy: new fields.BooleanField({ initial: false }),
+        lethality: new fields.BooleanField({ initial: false }),
+        range: new fields.StringField({ required: true, blank: true, initial: "",
+          choices: () => ({ "": "MWD.Weapon.Mod.none", ...PERSONAL_RANGES }) })
+      }),
+      unique: new fields.BooleanField({ initial: false }),
       description: description()
     };
+  }
+
+  /** Range codes after the Range customization (p. 78). */
+  get effectiveRanges() {
+    const ranges = { ...this.ranges };
+    if ( this.mods.range ) ranges[this.mods.range] = improveRange(ranges[this.mods.range]);
+    return ranges;
   }
 
   /** Damage bonus from the owner's STR for melee weapons. */
@@ -100,13 +116,14 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
 
   /** Damage including the STR bonus. */
   get totalDamage() {
-    return this.damage + this.strDamageBonus;
+    return this.damage + this.strDamageBonus + (this.mods.lethality ? 1 : 0);
   }
 
   /** Compact damage code as printed in the book, e.g. "2(+1)F" or "4". */
   get damageLabel() {
     const bonus = this.strDamageBonus;
-    return `${this.damage}${bonus ? `(+${bonus})` : ""}${this.fatigue ? "F" : ""}`;
+    const damage = this.damage + (this.mods.lethality ? 1 : 0);
+    return `${damage}${bonus ? `(+${bonus})` : ""}${this.fatigue ? "F" : ""}`;
   }
 }
 

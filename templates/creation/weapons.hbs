@@ -1,0 +1,37 @@
+<label class="mwd-field mwd-field-inline">
+  <span>{{localize "MWD.Creation.FreeWeapon"}}</span>
+  <select name="unarmed">{{selectOptions freeWeapons selected=draft.unarmed}}</select>
+</label>
+<p><strong>{{localize "MWD.Creation.WeaponCount" n=weaponRows.length max=weaponLimit}}</strong>
+  {{#if equipped}}<span class="mwd-muted">{{localize "MWD.Creation.EquippedHint"}}</span>{{/if}}</p>
+<ol class="mwd-list">
+  {{#each weaponRows}}
+  <li class="mwd-list-row mwd-creator-weapon">
+    {{#if unique}}
+    <input type="text" name="weapons.{{index}}.data.name" value="{{data.name}}">
+    <select name="weapons.{{index}}.data.system.skill">{{selectOptions @root.weaponSkills selected=data.system.skill}}</select>
+    <input type="number" name="weapons.{{index}}.data.system.damage" value="{{data.system.damage}}" min="0" data-tooltip="MWD.Weapon.Damage">
+    <select name="weapons.{{index}}.data.system.damageType">{{selectOptions @root.damageTypes selected=data.system.damageType}}</select>
+    <label class="checkbox" data-tooltip="MWD.Weapon.Fatigue"><input type="checkbox" name="weapons.{{index}}.data.system.fatigue" {{checked data.system.fatigue}}> F</label>
+    <label class="checkbox" data-tooltip="MWD.Weapon.StrBonus"><input type="checkbox" name="weapons.{{index}}.data.system.strBonus" {{checked data.system.strBonus}}> STR</label>
+    <select name="weapons.{{index}}.data.system.ranges.close" data-tooltip="MWD.Range.close">{{selectOptions @root.rangeCodes selected=data.system.ranges.close}}</select>
+    <select name="weapons.{{index}}.data.system.ranges.near" data-tooltip="MWD.Range.near">{{selectOptions @root.rangeCodes selected=data.system.ranges.near}}</select>
+    <select name="weapons.{{index}}.data.system.ranges.far" data-tooltip="MWD.Range.far">{{selectOptions @root.rangeCodes selected=data.system.ranges.far}}</select>
+    {{else}}
+    <span class="mwd-col-name">{{data.name}} <span class="mwd-muted">{{data.system.damage}}{{#if data.system.fatigue}}F{{/if}} {{data.system.damageType}}</span></span>
+    {{/if}}
+    <span class="mwd-col-controls"><a data-action="removeWeapon" data-index="{{index}}" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a></span>
+  </li>
+  {{else}}
+  <li class="mwd-empty">{{localize "MWD.Weapon.None"}}</li>
+  {{/each}}
+</ol>
+<fieldset class="mwd-creator-add">
+  <legend>{{localize "MWD.Creation.AddWeapon"}}</legend>
+  {{#if weaponSources.length}}
+  <select data-weapon-source>{{#each weaponSources}}<option value="{{value}}">{{label}}</option>{{/each}}</select>
+  <button type="button" class="mwd-button" data-action="addWeapon"><i class="fa-solid fa-plus"></i></button>
+  {{/if}}
+  <button type="button" class="mwd-button" data-action="newWeapon"><i class="fa-solid fa-hammer"></i> {{localize "MWD.Creation.InventWeapon"}}</button>
+</fieldset>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.WeaponsRules" max=weaponsMax}}</p>

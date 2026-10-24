@@ -40,6 +40,10 @@
       </div>
       {{/if}}
       <button type="button" class="mwd-button mwd-roll-test" data-action="rollTest"><i class="fa-solid fa-dice"></i> {{localize "MWD.Test.Button"}}</button>
+      {{#if editable}}
+      <button type="button" class="mwd-button {{#unless creationComplete}}mwd-highlight{{/unless}}" data-action="openCreator"
+        data-tooltip="MWD.Creation.OpenHint"><i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "MWD.Creation.Open"}}</button>
+      {{/if}}
     </div>
   </div>
 </header>

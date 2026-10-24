@@ -110,7 +110,9 @@ export const RANGE_CODES = {
 export const TRAIT_EFFECTS = {
   "": "MWD.Trait.Effect.none",
   toughness: "MWD.Trait.Effect.toughness",
-  painResistance: "MWD.Trait.Effect.painResistance"
+  painResistance: "MWD.Trait.Effect.painResistance",
+  glassJaw: "MWD.Trait.Effect.glassJaw",
+  unlucky: "MWD.Trait.Effect.unlucky"
 };
 
 /** Base Initiative modifier by Experience Level for the optional rolled Initiative (p. 55). */
@@ -350,3 +352,212 @@ export const MIXED_DAMAGE_MULTIPLIER = 10;
 
 /** Personal-scale damage that adds up to 1 point of 'Mech-Scale damage (p. 66). */
 export const MIXED_DAMAGE_THRESHOLD = 20;
+
+/* -------------------------------------------- */
+/*  Character creation and advancement (p. 68–78) */
+/* -------------------------------------------- */
+
+/** Factions for 3025 player characters (p. 69), grouped as in the book. */
+export const FACTIONS = {
+  capellan: { group: "successor" },
+  draconis: { group: "successor" },
+  fedsuns: { group: "successor" },
+  fwl: { group: "successor" },
+  lyran: { group: "successor" },
+  canopus: { group: "periphery" },
+  outworlds: { group: "periphery" },
+  taurian: { group: "periphery" },
+  banditKingdom: { group: "periphery" },
+  comstar: { group: "other" },
+  mercenary: { group: "other" },
+  pirate: { group: "other" },
+  unaffiliated: { group: "other" }
+};
+
+/** Limits that apply while creating a character (p. 70–75). */
+export const CREATION = {
+  attributeMax: 4,
+  edgeMax: 4,
+  edgeCost: 2,
+  skillMax: 4,
+  traitsMax: 2,
+  traitModifierMax: 1,
+  weaponsMax: 6,
+  inventory: 4,
+  equippedWeapons: 1,
+  equippedInventory: 2,
+  poorWeapons: 1,
+  poorInventory: 2,
+  wealthyHardware: 1
+};
+
+/** What one unspent Hardware Point turns into (p. 76). */
+export const HARDWARE_CONVERSION = {
+  xp: 2,
+  skills: 2,
+  edge: 1
+};
+
+/**
+ * Hardware Point cost by unit type and weight class (p. 76). Aerospace fighters start at 2 for a
+ * light fighter; there are no assault fighters, so that class costs the same as heavy.
+ */
+export const HARDWARE_COSTS = {
+  mech: { light: 1, medium: 2, heavy: 3, assault: 4 },
+  vehicle: { light: 1, medium: 2, heavy: 3, assault: 4 },
+  fighter: { light: 2, medium: 3, heavy: 4, assault: 4 }
+};
+
+/**
+ * Skills needed to start with a unit (p. 76): `all` must all be present, `any` needs one of them,
+ * always for the specialty of that unit type.
+ */
+export const HARDWARE_SKILLS = {
+  mech: { all: ["gunnery", "piloting"] },
+  vehicle: { any: ["gunnery", "piloting"] },
+  fighter: { all: ["gunnery", "piloting"] }
+};
+
+/** The armor choices at character creation (p. 75). */
+export const STARTING_ARMOR = {
+  flak: { pips: 10, reduceB: 2 },
+  ablative: { pips: 10, reduceE: 2 },
+  ballisticPlate: { pips: 12, reduceB: 3, rflPenalty: 1 },
+  concealedFlak: { pips: 8, reduceB: 1, concealed: true },
+  concealedAblative: { pips: 8, reduceE: 1, concealed: true },
+  infiltration: { pips: 8, reduceB: 1, reduceE: 1, concealed: true }
+};
+
+/** The free melee option every character starts with (p. 75, 155). */
+export const FREE_WEAPONS = {
+  unarmed: { skill: "meleeCombat", damage: 2, fatigue: true, strBonus: true, ranges: { close: "0", near: "x", far: "x" } },
+  martialArts: { skill: "meleeCombat", damage: 2, fatigue: true, strBonus: true, ranges: { close: "0", near: "x", far: "x" } }
+};
+
+/**
+ * The book's Traits (p. 72–73). `modifier` and `effect` are copied onto the Trait item. `creation`
+ * Traits change the creation budget, `noXp` ones cannot be bought later, `requires` names a Trait
+ * that must be taken too.
+ */
+export const BOOK_TRAITS = {
+  alternateId: { polarity: "positive" },
+  animalEmpathy: { polarity: "positive", modifier: 1 },
+  attractive: { polarity: "positive", modifier: 1 },
+  citizenship: { polarity: "positive", modifier: 1 },
+  combatSense: { polarity: "positive" },
+  connections: { polarity: "positive", modifier: 1 },
+  equipped: { polarity: "positive", creation: true, noXp: true },
+  gTolerance: { polarity: "positive" },
+  goodHearing: { polarity: "positive", modifier: 1 },
+  goodReputation: { polarity: "positive", modifier: 1 },
+  goodVision: { polarity: "positive", modifier: 1 },
+  painResistance: { polarity: "positive", effect: "painResistance" },
+  poisonResistance: { polarity: "positive" },
+  prosthetic: { polarity: "positive", requires: "lostLimb" },
+  rank: { polarity: "positive" },
+  sixthSense: { polarity: "positive", modifier: 1 },
+  techEmpathy: { polarity: "positive", modifier: 1 },
+  thickSkinned: { polarity: "positive" },
+  toughness: { polarity: "positive", effect: "toughness" },
+  wealthy: { polarity: "positive", creation: true, noXp: true },
+  animalAntipathy: { polarity: "negative", modifier: -1 },
+  badReputation: { polarity: "negative", modifier: -1 },
+  bloodmark: { polarity: "negative" },
+  combatParalysis: { polarity: "negative" },
+  compulsion: { polarity: "negative", modifier: -1 },
+  darkSecret: { polarity: "negative", modifier: -1 },
+  dependents: { polarity: "negative" },
+  enemy: { polarity: "negative" },
+  glassJaw: { polarity: "negative", effect: "glassJaw" },
+  gremlins: { polarity: "negative", modifier: -1 },
+  illiterate: { polarity: "negative", modifier: -2 },
+  inForLife: { polarity: "negative" },
+  introvert: { polarity: "negative", modifier: -1 },
+  lostLimb: { polarity: "negative", modifier: -4 },
+  poor: { polarity: "negative", creation: true },
+  poorHearing: { polarity: "negative", modifier: -1 },
+  poorVision: { polarity: "negative", modifier: -1 },
+  thinSkinned: { polarity: "negative" },
+  tds: { polarity: "negative", modifier: -2 },
+  unattractive: { polarity: "negative", modifier: -1 },
+  unlucky: { polarity: "negative", effect: "unlucky" }
+};
+
+/** Life Module slots after Faction (p. 73). */
+export const LIFE_MODULE_SLOTS = ["childhood", "education", "realLife"];
+
+/**
+ * Life Modules (p. 74–75): each gives +1 to one of `skills` ("knowledge" is a Knowledge Skill of
+ * the player's choice; "any" is any Skill except those in `exclude`). `specialty` fixes the
+ * Gunnery/Piloting specialty; `requires` lists modules one of which must be taken first.
+ * `optional` slots may stay empty.
+ */
+export const LIFE_MODULES = {
+  childhood: {
+    backwoods: { skills: ["tracking", "projectileWeapons"] },
+    blueCollar: { skills: ["art", "technician", "zeroG"] },
+    mercenaryBrat: { skills: ["smallArms"] },
+    farm: { skills: ["animalHandling"] },
+    fugitives: { skills: ["escapeArtist", "disguise"] },
+    nobility: { skills: ["protocol"] },
+    slave: { skills: ["athletics"] },
+    spacerFamily: { skills: ["zeroG"] },
+    street: { skills: ["streetwise"] },
+    warOrphan: { skills: ["survival"] },
+    whiteCollar: { skills: ["protocol"] }
+  },
+  education: {
+    technicalCollege: { skills: ["technician", "communications"] },
+    tradeSchool: { skills: ["knowledge"] },
+    university: { skills: ["science", "medtech"] },
+    solarisInternship: { skills: ["streetwise"] },
+    policeAcademy: { skills: ["investigation", "intimidation"] },
+    intelligenceTraining: { skills: ["intimidation", "tracking"] },
+    militaryAcademy: { skills: ["tactics", "leadership"] },
+    militaryEnlistment: { skills: ["supportWeapons", "artillery"] },
+    familyTraining: { skills: ["leadership", "protocol"], requires: ["nobility"] },
+    officerCandidate: { skills: ["tactics", "leadership"] }
+  },
+  realLife: {
+    agitator: { skills: ["meleeCombat"] },
+    civilianJob: { skills: ["art", "knowledge"] },
+    combatCorrespondent: { skills: ["perception"] },
+    comstarService: { skills: ["communications", "computers"] },
+    covertOperations: { skills: ["stealth", "demolitions"] },
+    explorer: { skills: ["navigation"] },
+    guerrilla: { skills: ["stealth", "acting"] },
+    merchant: { skills: ["negotiation"] },
+    neerDoWell: { skills: ["acting"] },
+    organizedCrime: { skills: ["intimidation"] },
+    postgraduate: { skills: ["science", "technician"] },
+    solarisInsider: { skills: ["negotiation"] },
+    solarisGames: { skills: ["piloting", "gunnery"], specialty: "mech" },
+    thinkTank: { skills: ["science", "knowledge"] },
+    tourOfDuty: {
+      skills: ["artillery", "gunnery", "meleeCombat", "piloting", "projectileWeapons", "smallArms", "supportWeapons"],
+      requires: ["militaryEnlistment", "militaryAcademy", "familyTraining", "officerCandidate"]
+    },
+    toServeAndProtect: { skills: ["smallArms", "intimidation"], requires: ["policeAcademy"] },
+    travel: { skills: "any", exclude: ["artillery", "gunnery", "piloting", "supportWeapons"] }
+  }
+};
+
+/** Life Module slots that may stay empty (p. 73). */
+export const OPTIONAL_LIFE_MODULES = ["education"];
+
+/** XP costs and limits for Character Advancement (p. 77–78). */
+export const ADVANCEMENT = {
+  attributeMax: 6,
+  skillMax: 6,
+  newSkill: 2,
+  trait: 6,
+  weaponMod: 3,
+  repair: 1,
+  rebuild: 2,
+  mechPurchase: 2,
+  salvageDiscount: 1,
+  dispossessedDiscount: 1
+};
+
+/** Weapon customizations bought with XP (p. 78); each once per weapon. */
+export const WEAPON_MODS = ["accuracy", "lethality", "range"];

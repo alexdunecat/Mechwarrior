@@ -13,15 +13,16 @@
  * @param {object|null} [armor]          Worn armor: {value, reduceB, reduceE}.
  * @param {object} [options]
  * @param {number} [options.toughness=0] Subtracted from Condition Monitor damage (Toughness trait).
+ * @param {number} [options.glassJaw=0]  Added to Condition Monitor damage (Glass Jaw trait, p. 73).
  * @returns {{armor: number, physical: number, fatigue: number, reduced: number}}
  *   Pips of armor lost, Physical and Fatigue damage taken, and how much armor type stopped.
  */
-export function resolvePersonalDamage({ damage, type = "", fatigue = false }, armor = null, { toughness = 0 } = {}) {
+export function resolvePersonalDamage({ damage, type = "", fatigue = false }, armor = null, { toughness = 0, glassJaw = 0 } = {}) {
   let remaining = Math.max(0, damage);
   const result = { armor: 0, physical: 0, fatigue: 0, reduced: 0 };
 
   if ( fatigue ) {
-    result.fatigue = Math.max(0, remaining - toughness);
+    result.fatigue = (remaining > 0) ? Math.max(0, remaining - toughness + glassJaw) : 0;
     return result;
   }
 
@@ -33,7 +34,7 @@ export function resolvePersonalDamage({ damage, type = "", fatigue = false }, ar
     result.armor = Math.min(armorLeft, remaining);
     remaining -= result.armor;
   }
-  result.physical = Math.max(0, remaining - (remaining > 0 ? toughness : 0));
+  result.physical = (remaining > 0) ? Math.max(0, remaining - toughness + glassJaw) : 0;
   return result;
 }
 

@@ -1,0 +1,15 @@
+<div class="mwd-dialog-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Advance.Unit"}}</label>
+    <select name="unit">{{#each units}}<option value="{{uuid}}">{{label}}</option>{{/each}}</select>
+  </div>
+  <fieldset>
+    <legend>{{localize "MWD.Advance.How"}}</legend>
+    <label class="checkbox"><input type="radio" name="how" value="buy" checked> {{localize "MWD.Advance.HowBuy" mech=costs.mech}}</label>
+    <label class="checkbox"><input type="radio" name="how" value="salvage"> {{localize "MWD.Advance.HowSalvage" n=costs.salvage}}</label>
+    {{#if banked}}
+    <label class="checkbox"><input type="radio" name="how" value="banked"> {{localize "MWD.Advance.HowBanked" n=banked}}{{#if dispossessed}} {{localize "MWD.Advance.DispossessedDiscount"}}{{/if}}</label>
+    {{/if}}
+  </fieldset>
+  <p class="hint">{{localize "MWD.Advance.AcquireHint"}}</p>
+</div>

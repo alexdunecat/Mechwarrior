@@ -1,0 +1,10 @@
+<ol class="mwd-list mwd-creator-choices">
+  {{#each armors}}
+  <li class="mwd-list-row {{#if selected}}active{{/if}}">
+    <label class="checkbox mwd-col-name">
+      <input type="radio" name="armor" value="{{key}}" {{checked selected}}> <strong>{{label}}</strong>
+    </label>
+    <span class="mwd-muted">{{localize "MWD.Creation.ArmorStats" pips=pips}}{{#if effect}}, {{effect}}{{/if}}</span>
+  </li>
+  {{/each}}
+</ol>

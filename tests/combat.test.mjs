@@ -28,6 +28,12 @@ test("Toughness takes 1 off damage that reaches the Condition Monitor", () => {
   assert.equal(resolvePersonalDamage({ damage: 2, fatigue: true }, null, { toughness: 1 }).fatigue, 1);
 });
 
+test("Glass Jaw adds 1 to damage that reaches the Condition Monitor (p. 73)", () => {
+  assert.equal(resolvePersonalDamage({ damage: 3 }, null, { glassJaw: 1 }).physical, 4);
+  assert.equal(resolvePersonalDamage({ damage: 2, fatigue: true }, null, { glassJaw: 1 }).fatigue, 3);
+  assert.equal(resolvePersonalDamage({ damage: 3, type: "B" }, plate, { glassJaw: 1 }).physical, 0, "nothing gets through");
+});
+
 test("moving between range brackets (p. 35)", () => {
   assert.equal(personalMoveCost("close", "near"), 1);
   assert.equal(personalMoveCost("near", "far"), 3);

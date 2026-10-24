@@ -1,0 +1,11 @@
+<footer class="mwd-creator-footer">
+  <button type="button" class="mwd-button" data-action="prev" {{disabled isFirst}}><i class="fa-solid fa-arrow-left"></i> {{localize "MWD.Creation.Prev"}}</button>
+  <span class="mwd-muted">
+    {{#if totalIssues}}<i class="fa-solid fa-triangle-exclamation"></i> {{localize "MWD.Creation.TotalIssues" n=totalIssues}}
+    {{else}}<i class="fa-solid fa-check"></i> {{localize "MWD.Creation.NoIssues"}}{{/if}}
+  </span>
+  {{#unless isLast}}
+  <button type="button" class="mwd-button" data-action="next">{{localize "MWD.Creation.Next"}} <i class="fa-solid fa-arrow-right"></i></button>
+  {{/unless}}
+  <button type="button" class="mwd-button mwd-highlight" data-action="finish"><i class="fa-solid fa-check"></i> {{localize "MWD.Creation.Finish"}}</button>
+</footer>

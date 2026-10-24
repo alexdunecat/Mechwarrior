@@ -1,0 +1,12 @@
+<label class="mwd-field">
+  <span>{{localize "MWD.Details.faction"}}</span>
+  <select name="faction">
+    <option value="">—</option>
+    {{#each factionGroups}}
+    <optgroup label="{{label}}">
+      {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </optgroup>
+    {{/each}}
+  </select>
+</label>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.FactionModule"}}</p>

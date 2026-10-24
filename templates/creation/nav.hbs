@@ -1,0 +1,12 @@
+<nav class="mwd-creator-nav">
+  <ol>
+    {{#each steps}}
+    <li class="{{#if active}}active{{/if}} {{#if warnings}}warn{{/if}}">
+      <a data-action="goto" data-step="{{key}}" {{#if warnings}}data-tooltip="{{localize 'MWD.Creation.StepWarnings' n=warnings}}"{{/if}}>
+        <span class="mwd-step-number">{{number}}</span> {{label}}
+        {{#if warnings}}<i class="fa-solid fa-triangle-exclamation"></i>{{/if}}
+      </a>
+    </li>
+    {{/each}}
+  </ol>
+</nav>

@@ -1,4 +1,5 @@
 import { UNIT_TYPES, WEIGHT_CLASSES } from "../config.mjs";
+import { hardwareCost } from "../rules/creation.mjs";
 import { locationState } from "../rules/mech.mjs";
 import { counter } from "./actor-base.mjs";
 
@@ -42,7 +43,6 @@ export class UnitData extends foundry.abstract.TypeDataModel {
       weightClass: new fields.StringField({ required: true, initial: "medium",
         choices: () => Object.fromEntries(Object.entries(WEIGHT_CLASSES).map(([k, v]) => [k, v.label])) }),
       tonnage: counter(50, { max: 200 }),
-      hardwarePoints: counter(2),
       movement: counter(3),
       tags: new fields.StringField({ required: true, initial: "" })
     };
@@ -90,6 +90,8 @@ export class UnitData extends foundry.abstract.TypeDataModel {
   }
 
   prepareDerivedData() {
+    // Hardware Points follow from type and weight class (p. 76).
+    this.hardwarePoints = hardwareCost(this.constructor.unitType, this.details.weightClass);
     this.tagList = this.details.tags.split(/[,;\n]/).map(t => t.trim()).filter(Boolean);
   }
 }

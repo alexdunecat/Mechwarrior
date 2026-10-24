@@ -1,0 +1,13 @@
+<p><strong>{{localize "MWD.Creation.InventoryCount" n=inventoryItems.length max=inventoryLimit}}</strong></p>
+<ol class="mwd-list">
+  {{#each inventoryItems}}
+  <li class="mwd-list-row">
+    <input class="mwd-col-name" type="text" name="inventory.{{index}}" value="{{name}}">
+    <span class="mwd-col-controls"><a data-action="removeInventory" data-index="{{index}}" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a></span>
+  </li>
+  {{else}}
+  <li class="mwd-empty">{{localize "MWD.Gear.None"}}</li>
+  {{/each}}
+</ol>
+<button type="button" class="mwd-button" data-action="addInventory"><i class="fa-solid fa-plus"></i> {{localize "MWD.Gear.Add"}}</button>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.InventoryRules"}}</p>

@@ -1,5 +1,7 @@
 import { EXPERIENCE_LEVELS, WEIGHT_CLASSES } from "../config.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
+import { CharacterCreator } from "../apps/character-creator.mjs";
+import * as Advancement from "../documents/advancement.mjs";
 import { PersonSheet, TEMPLATES } from "./person-sheet.mjs";
 
 /**
@@ -15,7 +17,18 @@ export class CharacterSheet extends PersonSheet {
       boardHardware: CharacterSheet.#onBoardHardware,
       leaveHardware: CharacterSheet.#onLeaveHardware,
       openHardware: CharacterSheet.#onOpenHardware,
-      removeHardware: CharacterSheet.#onRemoveHardware
+      removeHardware: CharacterSheet.#onRemoveHardware,
+      openCreator: CharacterSheet.#onOpenCreator,
+      improveAttribute: CharacterSheet.#onImproveAttribute,
+      improveSkill: CharacterSheet.#onImproveSkill,
+      buyNewSkill: CharacterSheet.#onBuyNewSkill,
+      buyTrait: CharacterSheet.#onBuyTrait,
+      removeTrait: CharacterSheet.#onRemoveTrait,
+      customizeWeapon: CharacterSheet.#onCustomizeWeapon,
+      repairHardware: CharacterSheet.#onRepairHardware,
+      acquireHardware: CharacterSheet.#onAcquireHardware,
+      awardXp: CharacterSheet.#onAwardXp,
+      undoAdvance: CharacterSheet.#onUndoAdvance
     }
   };
 
@@ -25,6 +38,7 @@ export class CharacterSheet extends PersonSheet {
     main: { template: `${TEMPLATES}/actor/character-main.hbs`, scrollable: [""] },
     story: { template: `${TEMPLATES}/actor/character-story.hbs`, scrollable: [""] },
     hardware: { template: `${TEMPLATES}/actor/character-hardware.hbs`, scrollable: [""] },
+    advancement: { template: `${TEMPLATES}/actor/character-advancement.hbs`, scrollable: [""] },
     bio: { template: `${TEMPLATES}/actor/character-bio.hbs`, scrollable: [""] }
   };
 
@@ -34,6 +48,7 @@ export class CharacterSheet extends PersonSheet {
         { id: "main", icon: "fa-solid fa-user-shield" },
         { id: "story", icon: "fa-solid fa-comment-dots" },
         { id: "hardware", icon: "fa-solid fa-robot" },
+        { id: "advancement", icon: "fa-solid fa-arrow-trend-up" },
         { id: "bio", icon: "fa-solid fa-book-open" }
       ],
       initial: "main",
@@ -57,6 +72,9 @@ export class CharacterSheet extends PersonSheet {
     context.history = await this._enrich(system.biography.history);
     context.personality = await this._enrich(system.biography.personality);
     Object.assign(context, this.#hardwareContext());
+    context.advance = Advancement.advancementContext(this.document);
+    context.isGM = game.user.isGM;
+    context.creationComplete = system.creation.complete;
     return context;
   }
 
@@ -135,5 +153,57 @@ export class CharacterSheet extends PersonSheet {
   static async #onPlotPoint(_event, target) {
     const delta = Number(target.dataset.delta);
     return this.document.update({ "system.plotPoints.value": this.document.system.plotPoints.value + delta });
+  }
+
+  /* -------------------------------------------- */
+  /*  Creation and advancement                    */
+  /* -------------------------------------------- */
+
+  static async #onOpenCreator() {
+    return CharacterCreator.open(this.document);
+  }
+
+  static async #onImproveAttribute(_event, target) {
+    return Advancement.improveAttribute(this.document, target.dataset.attribute);
+  }
+
+  static async #onImproveSkill(_event, target) {
+    const skill = this.document.items.get(target.closest("[data-item-id]")?.dataset.itemId);
+    if ( skill ) return Advancement.improveSkill(this.document, skill);
+  }
+
+  static async #onBuyNewSkill() {
+    return Advancement.buyNewSkill(this.document);
+  }
+
+  static async #onBuyTrait() {
+    return Advancement.buyTrait(this.document);
+  }
+
+  static async #onRemoveTrait(_event, target) {
+    const trait = this.document.items.get(target.closest("[data-item-id]")?.dataset.itemId);
+    if ( trait ) return Advancement.removeTrait(this.document, trait);
+  }
+
+  static async #onCustomizeWeapon(_event, target) {
+    const weapon = this.document.items.get(target.closest("[data-item-id]")?.dataset.itemId);
+    if ( weapon ) return Advancement.customizeWeapon(this.document, weapon, target.dataset.mod);
+  }
+
+  static async #onRepairHardware(_event, target) {
+    const unit = await fromUuid(target.closest("[data-uuid]")?.dataset.uuid);
+    if ( unit ) return Advancement.repairHardware(this.document, unit);
+  }
+
+  static async #onAcquireHardware() {
+    return Advancement.acquireHardware(this.document);
+  }
+
+  static async #onAwardXp() {
+    return Advancement.awardXp(this.document);
+  }
+
+  static async #onUndoAdvance() {
+    return Advancement.undoLast(this.document);
   }
 }

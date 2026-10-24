@@ -5,10 +5,12 @@
       {{#each skills}}<option value="{{value}}">{{label}}</option>{{/each}}
     </select>
   </div>
+  {{#if withRank}}
   <div class="form-group">
     <label>{{localize "MWD.Skill.Rank"}}</label>
     <input type="number" name="rank" value="1" min="0" max="10">
   </div>
+  {{/if}}
   <div class="form-group">
     <label>{{localize "MWD.Skill.Specialty"}}</label>
     <select name="specialty">

@@ -30,6 +30,7 @@ class StringField extends DataField {}
 class HTMLField extends StringField {}
 class NumberField extends DataField {}
 class BooleanField extends DataField {}
+class ObjectField extends DataField {}
 class ArrayField extends DataField {
   constructor(element, options = {}) {
     super({ initial: () => [], ...options });
@@ -57,7 +58,7 @@ class TypeDataModel {
 }
 
 globalThis.foundry = {
-  data: { fields: { DataField, SchemaField, StringField, HTMLField, NumberField, BooleanField, ArrayField } },
+  data: { fields: { DataField, SchemaField, StringField, HTMLField, NumberField, BooleanField, ArrayField, ObjectField } },
   abstract: { TypeDataModel }
 };
 

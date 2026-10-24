@@ -1046,3 +1046,158 @@
 .mechwarrior-destiny .mwd-fighter-structure {
   margin-top: 6px;
 }
+
+/* ---------- Character creation wizard ---------- */
+
+.mechwarrior-destiny.mwd-creator .window-content {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+}
+
+.mechwarrior-destiny .mwd-creator-nav {
+  grid-row: 1;
+  grid-column: 1;
+  overflow-y: auto;
+  background: var(--mwd-steel);
+  border-right: 3px solid var(--mwd-accent);
+}
+
+.mechwarrior-destiny .mwd-creator-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.mechwarrior-destiny .mwd-creator-nav a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  color: #e6e6e6;
+}
+
+.mechwarrior-destiny .mwd-creator-nav li.active a {
+  background: var(--mwd-accent);
+  color: var(--mwd-accent-ink);
+  font-weight: 700;
+}
+
+.mechwarrior-destiny .mwd-creator-nav li.warn i {
+  color: var(--mwd-fatigue);
+  margin-left: auto;
+}
+
+.mechwarrior-destiny .mwd-step-number {
+  display: inline-block;
+  min-width: 1.6em;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.mechwarrior-destiny .mwd-creator-step {
+  grid-row: 1;
+  grid-column: 2;
+  overflow-y: auto;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mechwarrior-destiny .mwd-creator-step h2 {
+  margin: 0;
+  border: none;
+}
+
+.mechwarrior-destiny .mwd-creator-issues {
+  margin: 0;
+  padding: 6px 10px;
+  list-style: none;
+  border-left: 4px solid var(--mwd-fatigue);
+  background: #fff6dc;
+}
+
+.mechwarrior-destiny .mwd-creator-issues i { color: var(--mwd-fatigue); }
+
+.mechwarrior-destiny .mwd-creator-footer {
+  grid-row: 2;
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--mwd-line);
+  background: var(--mwd-panel);
+}
+
+.mechwarrior-destiny .mwd-creator-footer > span { margin-right: auto; margin-left: 10px; }
+
+.mechwarrior-destiny .mwd-creator-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.mechwarrior-destiny .mwd-creator-add select,
+.mechwarrior-destiny .mwd-creator-add input[type="text"] { flex: 1 1 140px; }
+
+.mechwarrior-destiny .mwd-creator-add input[type="number"] { width: 4em; flex: 0 0 auto; }
+
+.mechwarrior-destiny .mwd-creator-module {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.mechwarrior-destiny .mwd-creator-module > select:first-of-type { flex: 1 1 100%; }
+
+.mechwarrior-destiny .mwd-creator-weapon {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mechwarrior-destiny .mwd-creator-weapon input[type="text"] { flex: 1 1 160px; }
+.mechwarrior-destiny .mwd-creator-weapon input[type="number"] { width: 3.5em; }
+.mechwarrior-destiny .mwd-creator-weapon select { width: auto; }
+
+.mechwarrior-destiny .mwd-creator-choices .mwd-list-row.active,
+.mechwarrior-destiny .mwd-creator-step .mwd-list-row.active {
+  background: #fbe9df;
+}
+
+.mechwarrior-destiny .mwd-icon-button.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.mechwarrior-destiny .mwd-button.mwd-highlight {
+  background: var(--mwd-edge);
+  border-color: var(--mwd-edge);
+}
+
+.mechwarrior-destiny .mwd-button[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mechwarrior-destiny .mwd-badge.warn { background: var(--mwd-fatigue); }
+
+.mechwarrior-destiny .mwd-derived {
+  display: block;
+  padding: 2px 4px;
+}
+
+.mechwarrior-destiny .mwd-mod-buttons {
+  display: flex;
+  gap: 4px;
+  width: auto;
+}
+
+.mechwarrior-destiny .mwd-advance-log .mwd-col-num:first-child { min-width: 6em; text-align: left; }
+
+.mechwarrior-destiny .mwd-tab[data-tab="advancement"] .mwd-col-controls,
+.mechwarrior-destiny .mwd-creator-step .mwd-col-controls { flex: 0 0 auto; }

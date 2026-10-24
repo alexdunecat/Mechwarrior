@@ -1,11 +1,12 @@
 import {
-  ATTRIBUTES, DIFFICULTIES, DISENGAGED_TARGET, MIXED_LARGE_TARGET, PLOT_POINTS, SKILLS, SPECIALTIES, SYSTEM_ID
+  ATTRIBUTES, DIFFICULTIES, DISENGAGED_TARGET, MIXED_LARGE_TARGET, PLOT_POINTS, SKILLS, SYSTEM_ID
 } from "../config.mjs";
 import { kiaDice } from "../rules/condition.mjs";
 import { resolvePersonalDamage } from "../rules/damage.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
 import * as Fighter from "./fighter.mjs";
+import { skillItemData } from "./item-data.mjs";
 import * as Mech from "./mech.mjs";
 import * as Mixed from "./mixed.mjs";
 import * as Unit from "./unit.mjs";
@@ -228,17 +229,9 @@ export class MWDActor extends Actor {
    * @param {string} [options.subject=""]
    */
   async addSkill({ key, rank = 1, specialty = "", subject = "" }) {
-    const cfg = SKILLS[key];
-    if ( !cfg ) return null;
-    let name = game.i18n.localize(`MWD.Skill.${key}`);
-    if ( cfg.specialty && specialty ) name += ` (${game.i18n.localize(SPECIALTIES[specialty])})`;
-    if ( cfg.subject && subject ) name += `: ${subject}`;
-    const [item] = await this.createEmbeddedDocuments("Item", [{
-      name,
-      type: "skill",
-      img: "icons/svg/book.svg",
-      system: { key, rank, attribute: cfg.attribute, specialty: cfg.specialty ? specialty : "" }
-    }]);
+    const data = skillItemData({ key, rank, specialty, subject });
+    if ( !data ) return null;
+    const [item] = await this.createEmbeddedDocuments("Item", [data]);
     return item;
   }
 
@@ -292,7 +285,7 @@ export class MWDActor extends Actor {
     };
     const skillKey = weapon.system.skill;
     const skill = this.findSkill(skillKey);
-    const ranges = Object.fromEntries(["close", "near", "far"].map(r => [r, rangeModifier(weapon.system.ranges[r])]));
+    const ranges = Object.fromEntries(["close", "near", "far"].map(r => [r, rangeModifier(weapon.system.effectiveRanges[r])]));
     const context = {
       weapon,
       targets: [
@@ -334,7 +327,7 @@ export class MWDActor extends Actor {
       ui.notifications.warn("MWD.Attack.OutOfRange", { localize: true });
       return [];
     }
-    const parts = this._attackParts(skill, skillKey, rangeMod, data);
+    const parts = this._attackParts(skill, skillKey, rangeMod, { ...data, accuracy: weapon.system.mods.accuracy });
     const damage = {
       value: weapon.system.totalDamage,
       type: weapon.system.damageType,
@@ -398,6 +391,8 @@ export class MWDActor extends Actor {
     if ( rangeMod ) parts.push({ label: game.i18n.localize("MWD.Attack.Range"), value: rangeMod });
     const modifier = Number(data.modifier) || 0;
     if ( modifier ) parts.push({ label: game.i18n.localize("MWD.Test.Modifier"), value: modifier });
+    // Accuracy cancels one –1 situational modifier (p. 78).
+    if ( (modifier < 0) && data.accuracy ) parts.push({ label: game.i18n.localize("MWD.Weapon.Mod.accuracy"), value: 1 });
     for ( const trait of this.itemTypes.trait ) {
       if ( data[`trait.${trait.id}`] ) parts.push({ label: trait.name, value: trait.system.modifier });
     }
@@ -425,8 +420,9 @@ export class MWDActor extends Actor {
     const system = this.system;
     const wasStaggered = { physical: system.condition.physical.track.staggered, fatigue: system.condition.fatigue.track.staggered };
     const toughness = system.traitEffects.has("toughness") ? 1 : 0;
+    const glassJaw = system.traitEffects.has("glassJaw") ? 1 : 0;
     const split = resolvePersonalDamage({ damage: damage.value, type: damage.type, fatigue: damage.fatigue },
-      ignoreArmor ? null : system.armor, { toughness });
+      ignoreArmor ? null : system.armor, { toughness, glassJaw });
 
     if ( split.armor && system.armor ) {
       const armorItem = this.items.get(system.armor.id);

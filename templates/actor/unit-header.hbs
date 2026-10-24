@@ -23,10 +23,10 @@
         <span>{{localize "MWD.Mech.Tonnage"}}</span>
         <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="200">
       </label>
-      <label class="mwd-field mwd-field-xs">
+      <div class="mwd-field mwd-field-xs">
         <span data-tooltip="MWD.Mech.HardwarePointsHint">{{localize "MWD.Mech.HardwarePoints"}}</span>
-        <input type="number" name="system.details.hardwarePoints" value="{{system.details.hardwarePoints}}" min="0">
-      </label>
+        <strong class="mwd-derived">{{system.hardwarePoints}}</strong>
+      </div>
       <label class="mwd-field mwd-field-xs">
         <span>{{localize "MWD.Mech.Movement"}}</span>
         <input type="number" name="system.details.movement" value="{{system.details.movement}}" min="0">
