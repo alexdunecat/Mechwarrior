@@ -1,4 +1,7 @@
-import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID, TRAIT_EFFECTS, TRAIT_POLARITIES } from "../config.mjs";
+import {
+  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_LOCATIONS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID,
+  TRAIT_EFFECTS, TRAIT_POLARITIES
+} from "../config.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -21,7 +24,9 @@ export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     trait: { template: `${TEMPLATES}/item/trait.hbs` },
     weapon: { template: `${TEMPLATES}/item/weapon.hbs` },
     armor: { template: `${TEMPLATES}/item/armor.hbs` },
-    gear: { template: `${TEMPLATES}/item/gear.hbs` }
+    gear: { template: `${TEMPLATES}/item/gear.hbs` },
+    mechWeapon: { template: `${TEMPLATES}/item/mech-weapon.hbs` },
+    mechEquipment: { template: `${TEMPLATES}/item/mech-equipment.hbs` }
   };
 
   /** @override */
@@ -52,6 +57,14 @@ export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       rangeCodes: { ...RANGE_CODES },
       polarities: localizeAll(TRAIT_POLARITIES),
       traitEffects: localizeAll(TRAIT_EFFECTS),
+      mechLocations: Object.entries(MECH_LOCATIONS).map(([key, cfg]) => ({
+        key, label: game.i18n.localize(cfg.label), checked: !!item.system.mounts?.[key]
+      })),
+      mechLocationChoices: { "": game.i18n.localize("MWD.Mech.Location.none"), ...localizeAll(MECH_LOCATIONS) },
+      mechRanges: Object.entries(MECH_RANGES).map(([key, label]) => ({
+        key, label: game.i18n.localize(label), value: item.system.ranges?.[key]
+      })),
+      equipmentKinds: localizeAll(MECH_EQUIPMENT_KINDS),
       descriptionHTML: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description ?? "", {
         secrets: item.isOwner, relativeTo: item
       })

@@ -1,0 +1,13 @@
+<div class="mwd-item-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Mech.Equipment.Kind"}}</label>
+    <select name="system.kind">{{selectOptions equipmentKinds selected=system.kind}}</select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Mech.Equipment.Location"}}</label>
+    <select name="system.location">{{selectOptions mechLocationChoices selected=system.location}}</select>
+    <p class="hint">{{localize "MWD.Mech.Equipment.LocationHint"}}</p>
+  </div>
+  <label class="checkbox"><input type="checkbox" name="system.destroyed" {{checked system.destroyed}}> {{localize "MWD.Mech.Weapon.Destroyed"}}</label>
+  {{> "systems/mechwarrior-destiny/templates/item/description.hbs"}}
+</div>

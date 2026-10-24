@@ -171,3 +171,86 @@ export const PIPS_PER_ROW = 3;
 
 /** CON Check target once Staggered on the Physical track. */
 export const STAGGERED_CON_CHECK = 11;
+
+/* -------------------------------------------- */
+/*  'Mech-Scale Combat (p. 38–51)               */
+/* -------------------------------------------- */
+
+/** Hardware weight classes and their usual Movement (p. 39, 79). */
+export const WEIGHT_CLASSES = {
+  light: { label: "MWD.Mech.Weight.light", movement: 4 },
+  medium: { label: "MWD.Mech.Weight.medium", movement: 3 },
+  heavy: { label: "MWD.Mech.Weight.heavy", movement: 2 },
+  assault: { label: "MWD.Mech.Weight.assault", movement: 1 }
+};
+
+/** 'Mech locations in Armor Diagram order, with the 2D6 results that hit them (p. 44–45). */
+export const MECH_LOCATIONS = {
+  head: { label: "MWD.Mech.Location.head", abbr: "MWD.Mech.Location.headAbbr", rolls: "12" },
+  rightArm: { label: "MWD.Mech.Location.rightArm", abbr: "MWD.Mech.Location.rightArmAbbr", rolls: "3–4", limb: true },
+  torso: { label: "MWD.Mech.Location.torso", abbr: "MWD.Mech.Location.torsoAbbr", rolls: "2, 6–8" },
+  leftArm: { label: "MWD.Mech.Location.leftArm", abbr: "MWD.Mech.Location.leftArmAbbr", rolls: "10–11", limb: true },
+  rightLeg: { label: "MWD.Mech.Location.rightLeg", abbr: "MWD.Mech.Location.rightLegAbbr", rolls: "5", limb: true, leg: true },
+  leftLeg: { label: "MWD.Mech.Location.leftLeg", abbr: "MWD.Mech.Location.leftLegAbbr", rolls: "9", limb: true, leg: true }
+};
+
+export const MECH_LOCATION_KEYS = Object.keys(MECH_LOCATIONS);
+
+/** 2D6 hit location table for 'Mechs (p. 45 Armor Diagram). */
+export const MECH_HIT_TABLE = {
+  2: "torso", 3: "rightArm", 4: "rightArm", 5: "rightLeg", 6: "torso", 7: "torso",
+  8: "torso", 9: "leftLeg", 10: "leftArm", 11: "leftArm", 12: "head"
+};
+
+/** 'Mech-Scale range brackets (p. 39). */
+export const MECH_RANGES = {
+  pointblank: "MWD.Mech.Range.pointblank",
+  short: "MWD.Mech.Range.short",
+  medium: "MWD.Mech.Range.medium",
+  long: "MWD.Mech.Range.long"
+};
+
+/** Terrain modifiers to attacks against a target in that terrain (p. 42). */
+export const MECH_TERRAIN = {
+  clear: { label: "MWD.Mech.Terrain.clear", modifier: 0 },
+  lightWoods: { label: "MWD.Mech.Terrain.lightWoods", modifier: -1 },
+  heavyWoods: { label: "MWD.Mech.Terrain.heavyWoods", modifier: -2 },
+  shallowWater: { label: "MWD.Mech.Terrain.shallowWater", modifier: -1 },
+  deepWater: { label: "MWD.Mech.Terrain.deepWater", modifier: -2 },
+  partialCover: { label: "MWD.Mech.Terrain.partialCover", modifier: -1, ignoreLegs: true }
+};
+
+/** Heat Effects table (p. 48): effects are cumulative from lower levels. */
+export const HEAT_LEVELS = [
+  { tokens: 0, key: "blue" },
+  { tokens: 1, key: "green" },
+  { tokens: 2, key: "yellow" },
+  { tokens: 3, key: "orange" },
+  { tokens: 4, key: "red" },
+  { tokens: 5, key: "critical" }
+];
+
+/** Physical attack types (p. 43). */
+export const PHYSICAL_ATTACKS = {
+  punch: { label: "MWD.Mech.Physical.punch", table: "punch" },
+  kick: { label: "MWD.Mech.Physical.kick", table: "kick" },
+  push: { label: "MWD.Mech.Physical.push", table: null },
+  charge: { label: "MWD.Mech.Physical.charge", table: "standard", movement: true },
+  dfa: { label: "MWD.Mech.Physical.dfa", table: "punch", movement: true }
+};
+
+/** Kinds of 'Mech equipment the rules look at. */
+export const MECH_EQUIPMENT_KINDS = {
+  ammo: "MWD.Mech.Equipment.ammo",
+  jumpJets: "MWD.Mech.Equipment.jumpJets",
+  other: "MWD.Mech.Equipment.other"
+};
+
+/** Physical damage to a MechWarrior from a head hit or an ammo explosion (p. 47). */
+export const PILOT_HIT_DAMAGE = 3;
+
+/** 2D6 result needed to avoid shutdown, ammo explosion, a critical hit, or to restart (p. 45, 48). */
+export const MECH_TARGET_NUMBER = 8;
+
+/** Natural 2D6 needed to hit a Disengaged unit (p. 41). */
+export const DISENGAGED_TARGET = 11;

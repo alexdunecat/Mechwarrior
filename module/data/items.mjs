@@ -1,4 +1,7 @@
-import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS, TRAIT_POLARITIES } from "../config.mjs";
+import {
+  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_LOCATIONS, MECH_LOCATION_KEYS, MECH_RANGES, RANGE_CODES, SKILLS,
+  SPECIALTIES, TRAIT_EFFECTS, TRAIT_POLARITIES
+} from "../config.mjs";
 import { meleeStrBonus } from "../rules/tests.mjs";
 import { counter } from "./actor-base.mjs";
 
@@ -144,6 +147,80 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
 export class GearData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      description: description()
+    };
+  }
+}
+
+/* -------------------------------------------- */
+/*  'Mech items                                 */
+/* -------------------------------------------- */
+
+/**
+ * A Primary Weapon or Weapon Group on a 'Mech (p. 41–44): weapons in a group fire together and
+ * hit or miss together. Damage code "4+M (Max 6)" is base 4, one Missile die, Max 6.
+ */
+export class MechWeaponData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      primary: new fields.BooleanField({ initial: false }),
+      damage: counter(1),
+      missiles: counter(0, { max: 4 }),
+      maxDamage: counter(0),
+      heatAlternative: new fields.BooleanField({ initial: false }),
+      types: new fields.StringField({ required: true, initial: "E" }),
+      heat: counter(0, { max: 6 }),
+      mounts: new fields.SchemaField(Object.fromEntries(MECH_LOCATION_KEYS.map(k => [k,
+        new fields.BooleanField({ initial: k === "torso" })]))),
+      ranges: new fields.SchemaField(Object.fromEntries(Object.keys(MECH_RANGES).map(k => [k,
+        rangeField(["pointblank", "short"].includes(k) ? "0" : "x")]))),
+      destroyed: new fields.BooleanField({ initial: false }),
+      description: description()
+    };
+  }
+
+  /** Locations the group's weapons are mounted in. */
+  get locations() {
+    return MECH_LOCATION_KEYS.filter(k => this.mounts[k]);
+  }
+
+  /** Whether the group contains Ballistic or Missile weapons (ammo explosions, p. 48). */
+  get usesAmmo() {
+    return /[BM]/.test(this.types);
+  }
+
+  /** Damage code as printed, e.g. "4+M (Max 6)" or "1 (or H)". */
+  get damageLabel() {
+    let label = String(this.damage);
+    if ( this.missiles ) label += `+${"M".repeat(this.missiles)}`;
+    if ( this.missiles && this.maxDamage ) label += ` (Max ${this.maxDamage})`;
+    if ( this.heatAlternative ) label += " (or H)";
+    return label;
+  }
+
+  /** Heat column as printed, e.g. "HH" or "—". */
+  get heatLabel() {
+    return this.heat ? "H".repeat(this.heat) : "—";
+  }
+
+  /** Location abbreviation keys, e.g. ["MWD.Mech.Location.rightArmAbbr"]. */
+  get locationAbbrs() {
+    return this.locations.map(k => MECH_LOCATIONS[k].abbr);
+  }
+}
+
+/* -------------------------------------------- */
+
+/**
+ * 'Mech equipment (p. 158): ammo bins matter for ammo explosion critical hits; jump jets allow jumping.
+ */
+export class MechEquipmentData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      kind: new fields.StringField({ required: true, initial: "ammo", choices: () => ({ ...MECH_EQUIPMENT_KINDS }) }),
+      location: new fields.StringField({ required: true, blank: true, initial: "torso",
+        choices: () => ({ "": "MWD.Mech.Location.none", ...labels(MECH_LOCATIONS) }) }),
+      destroyed: new fields.BooleanField({ initial: false }),
       description: description()
     };
   }

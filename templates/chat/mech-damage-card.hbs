@@ -1,0 +1,26 @@
+<div class="mwd-card mwd-damage-card mwd-mech-card">
+  <header class="mwd-card-header">
+    <h3>{{#if title}}{{title}}{{else}}{{localize "MWD.Damage.Title" name=name}}{{/if}}</h3>
+  </header>
+  {{#if source}}<p class="mwd-card-caption">{{source}}</p>{{/if}}
+  <ul class="mwd-damage-split">
+    {{#each lines}}<li>{{this}}</li>{{/each}}
+  </ul>
+  {{#each notes}}<p class="mwd-wounds">{{this}}</p>{{/each}}
+  {{#if note}}<p class="mwd-muted">{{note}}</p>{{/if}}
+  {{#if pendingHead}}
+  <div class="mwd-head-controls">
+    <button type="button"><i class="fa-solid fa-star"></i> {{localize "MWD.Mech.Damage.BuyHead" n=pendingHead}}</button>
+  </div>
+  {{/if}}
+  {{#if fall}}
+  <div class="mwd-fall-controls">
+    <button type="button"><i class="fa-solid fa-person-falling"></i> {{localize "MWD.Mech.Fall.Resolve"}}</button>
+  </div>
+  {{/if}}
+  {{#if pilotingTest}}
+  <div class="mwd-piloting-controls">
+    <button type="button"><i class="fa-solid fa-person-falling"></i> {{localize "MWD.Mech.Piloting.Title"}}</button>
+  </div>
+  {{/if}}
+</div>

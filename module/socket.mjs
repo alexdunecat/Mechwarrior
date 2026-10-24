@@ -7,15 +7,21 @@ const CHANNEL = `system.${SYSTEM_ID}`;
  * Each handler re-checks what it is allowed to touch.
  */
 const HANDLERS = {
-  /** Update a test card that the requesting user does not own (e.g. a defender spending Edge). */
+  /**
+   * Update a system card that the requesting user does not own (a defender spending Edge, a
+   * player buying full head damage). Only the card's content and its own system flag change.
+   */
   async updateMessage({ messageId, update }) {
     const message = game.messages.get(messageId);
-    if ( !message?.getFlag(SYSTEM_ID, "test") ) return;
+    const flags = message?.flags[SYSTEM_ID];
+    if ( !flags ) return;
     const allowed = {};
-    if ( "content" in update ) allowed.content = update.content;
-    const key = `flags.${SYSTEM_ID}.test`;
-    if ( key in update ) allowed[key] = update[key];
-    await message.update(allowed);
+    if ( ("content" in update) && flags.test ) allowed.content = update.content;
+    for ( const [key, value] of Object.entries(update) ) {
+      const [, flag] = key.match(new RegExp(`^flags\\.${SYSTEM_ID}\\.(test|mechDamage)\\b`)) ?? [];
+      if ( flag && (flag in flags) ) allowed[key] = value;
+    }
+    if ( !foundry.utils.isEmpty(allowed) ) await message.update(allowed);
   },
 
   /** Add to (or take from) the GM's Plot Point pool. */

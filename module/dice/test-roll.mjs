@@ -12,8 +12,14 @@ const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
  * @property {number} [dice]                  Opposing dice count when no difficulty applies.
  * @property {string} [opposingLabel]         Caption for the opposing roll.
  * @property {{label: string, value: number}[]} [opposingParts]  Defender's bonus breakdown.
- * @property {Actor|null} [target]            Defending actor in opposed rolls.
- * @property {object|null} [damage]           Damage dealt on success: {value, type, fatigue, source}.
+ * @property {Actor|null} [target]            Defending actor in opposed rolls (who may spend Edge).
+ * @property {Actor|null} [applyTo]           Actor that takes the damage, if not the target (a 'Mech).
+ * @property {string} [targetName]            Name shown for the target, if not the target's own.
+ * @property {Actor} [speaker]                Actor the card speaks as, e.g. the 'Mech rather than its pilot.
+ * @property {number} [minNatural=0]          Lowest natural roll that can succeed (Disengaged targets).
+ * @property {object|null} [damage]           Damage dealt: personal {value, type, fatigue, source},
+ *   'Mech-scale {kind: "mech", ...} or a fall {kind: "fall", mechUuid}. `applyOn: "failure"` offers it
+ *   when the Test fails instead of when it succeeds.
  * @property {boolean} [untrained=false]
  * @property {string} [kind="test"]           "test", "attack", "kia" or "con".
  */
@@ -42,7 +48,9 @@ export async function rollTest(actor, config) {
     opposingParts,
     opposingBonus: sumParts(opposingParts),
     targetUuid: config.target?.uuid ?? null,
-    targetName: config.target?.name ?? null,
+    targetName: config.targetName ?? config.target?.name ?? null,
+    applyToUuid: config.applyTo?.uuid ?? null,
+    minNatural: config.minNatural ?? 0,
     untrained: !!config.untrained,
     damage: config.damage ?? null,
     dice: diceResults(actorRoll),
@@ -54,7 +62,7 @@ export async function rollTest(actor, config) {
   };
 
   const messageData = {
-    speaker: ChatMessage.getSpeaker({ actor }),
+    speaker: ChatMessage.getSpeaker({ actor: config.speaker ?? actor }),
     content: await renderCard(state),
     rolls: [actorRoll, opposingRoll].filter(Boolean),
     flags: { [SYSTEM_ID]: { test: state } }
@@ -95,7 +103,8 @@ export function resolveState(state) {
     opposingDice: state.opposingDice,
     opposingBonus: state.opposingBonus ?? 0,
     untrained: state.untrained,
-    difficulty: state.difficulty
+    difficulty: state.difficulty,
+    minNatural: state.minNatural ?? 0
   });
 }
 
@@ -132,9 +141,31 @@ export function cardContext(state) {
     fightThroughLabel: state.fightThrough ? game.i18n.localize("MWD.Con.FoughtThrough") : null,
     canFightThrough: (state.kind === "con") && !result.success && !state.fightThrough,
     isAttack: state.kind === "attack",
-    damageLabel: damage ? `${damage.value}${damage.type ? ` ${damage.type}` : ""}${damage.fatigue ? " F" : ""}` : null,
-    canApply: !!damage && result.success && !state.applied
+    damageLabel: damageLabel(damage),
+    applyLabel: applyLabel(state),
+    canApply: !!damage && ((damage.applyOn === "failure") ? !result.success : result.success) && !state.applied
   };
+}
+
+/** Damage line on a card: "3 B F" for personal weapons, "4+M (Max 6)" for 'Mech weapons. */
+function damageLabel(damage) {
+  if ( !damage || (damage.kind === "fall") ) return null;
+  if ( damage.kind === "mech" ) {
+    if ( damage.heatInstead ) return `${damage.base} H`;
+    let label = String(damage.base);
+    if ( damage.missiles ) label += `+${"M".repeat(damage.missiles)}${damage.max ? ` (Max ${damage.max})` : ""}`;
+    if ( damage.self ) label += ` · ${game.i18n.format("MWD.Mech.Damage.Self", { n: damage.self.base })}`;
+    return label;
+  }
+  return `${damage.value}${damage.type ? ` ${damage.type}` : ""}${damage.fatigue ? " F" : ""}`;
+}
+
+/** Caption of the apply button. */
+function applyLabel(state) {
+  const damage = state.damage;
+  if ( damage?.kind === "fall" ) return game.i18n.localize("MWD.Mech.Fall.Resolve");
+  if ( damage?.applyOn === "failure" ) return game.i18n.localize("MWD.Mech.Fall.PilotDamage");
+  return game.i18n.format("MWD.Damage.Apply", { name: state.targetName ?? "" });
 }
 
 export async function renderCard(state) {
@@ -173,7 +204,7 @@ export function onRenderChatMessage(message, html) {
   bind(".mwd-edge-controls", edgeAllowed(actor, state.edge), b => spendEdge(message, b.dataset.edge, "actor"));
   const target = state.targetUuid ? fromUuidSync(state.targetUuid) : null;
   bind(".mwd-target-edge-controls", edgeAllowed(target, state.targetEdge), b => spendEdge(message, b.dataset.edge, "target"));
-  bind(".mwd-apply-controls", !!target?.isOwner, () => applyCardDamage(message));
+  bind(".mwd-apply-controls", !!damageRecipient(state)?.isOwner, () => applyCardDamage(message));
   bind(".mwd-fight-controls", !!actor?.isOwner && (actor.system.plotPoints?.value > 0), () => fightThrough(message));
 }
 
@@ -284,15 +315,39 @@ export async function updateCard(message, state) {
 /* -------------------------------------------- */
 
 /**
- * Apply the damage of a successful attack card to its target.
+ * Who takes a card's damage: the 'Mech for 'Mech-scale hits and falls, the actor for damage on a
+ * failed Test, otherwise the target.
+ * @param {object} state
+ * @returns {Actor|null}
+ */
+function damageRecipient(state) {
+  const damage = state.damage;
+  if ( !damage ) return null;
+  if ( damage.kind === "fall" ) return fromUuidSync(damage.mechUuid);
+  if ( damage.applyOn === "failure" ) return fromUuidSync(state.actorUuid);
+  return fromUuidSync(state.applyToUuid ?? state.targetUuid);
+}
+
+/**
+ * Apply a card's damage: a hit to its target, or the consequence of a failed Test.
  * @param {ChatMessage} message
  */
 export async function applyCardDamage(message) {
   const state = foundry.utils.deepClone(message.getFlag(SYSTEM_ID, "test"));
   if ( state.applied || !state.damage ) return;
-  const target = await fromUuid(state.targetUuid);
-  if ( !target ) return;
-  await target.applyPersonalDamage(state.damage, { source: state.label });
+  const recipient = damageRecipient(state);
+  if ( !recipient ) return;
   state.applied = true;
   await updateCard(message, state);
+  const damage = state.damage;
+  if ( damage.kind === "fall" ) return recipient.resolveFall();
+  if ( damage.kind === "mech" ) {
+    await recipient.applyMechHit(damage);
+    const attacker = damage.self && damage.attackerUuid ? await fromUuid(damage.attackerUuid) : null;
+    if ( attacker ) await attacker.applyMechHit({ ...damage.self, source: damage.source, attackerUuid: damage.attackerUuid });
+    return;
+  }
+  return recipient.applyPersonalDamage(damage, {
+    source: damage.source ?? state.label, mechScale: !!damage.mechScale, ignoreArmor: !!damage.ignoreArmor
+  });
 }

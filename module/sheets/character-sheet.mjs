@@ -1,4 +1,4 @@
-import { EXPERIENCE_LEVELS } from "../config.mjs";
+import { EXPERIENCE_LEVELS, WEIGHT_CLASSES } from "../config.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { PersonSheet, TEMPLATES } from "./person-sheet.mjs";
 
@@ -11,7 +11,11 @@ export class CharacterSheet extends PersonSheet {
     position: { width: 820, height: 860 },
     actions: {
       edgePip: CharacterSheet.#onEdgePip,
-      plotPoint: CharacterSheet.#onPlotPoint
+      plotPoint: CharacterSheet.#onPlotPoint,
+      boardHardware: CharacterSheet.#onBoardHardware,
+      leaveHardware: CharacterSheet.#onLeaveHardware,
+      openHardware: CharacterSheet.#onOpenHardware,
+      removeHardware: CharacterSheet.#onRemoveHardware
     }
   };
 
@@ -20,6 +24,7 @@ export class CharacterSheet extends PersonSheet {
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     main: { template: `${TEMPLATES}/actor/character-main.hbs`, scrollable: [""] },
     story: { template: `${TEMPLATES}/actor/character-story.hbs`, scrollable: [""] },
+    hardware: { template: `${TEMPLATES}/actor/character-hardware.hbs`, scrollable: [""] },
     bio: { template: `${TEMPLATES}/actor/character-bio.hbs`, scrollable: [""] }
   };
 
@@ -28,6 +33,7 @@ export class CharacterSheet extends PersonSheet {
       tabs: [
         { id: "main", icon: "fa-solid fa-user-shield" },
         { id: "story", icon: "fa-solid fa-comment-dots" },
+        { id: "hardware", icon: "fa-solid fa-robot" },
         { id: "bio", icon: "fa-solid fa-book-open" }
       ],
       initial: "main",
@@ -50,7 +56,52 @@ export class CharacterSheet extends PersonSheet {
     context.lifeModuleKeys = ["faction", "childhood", "education", "realLife"];
     context.history = await this._enrich(system.biography.history);
     context.personality = await this._enrich(system.biography.personality);
+    Object.assign(context, this.#hardwareContext());
     return context;
+  }
+
+  /** The pilot's Hardware: owned machines and the one in use (p. 76–78). */
+  #hardwareContext() {
+    const actor = this.document;
+    const hardware = actor.system.hardware.map(uuid => {
+      const mech = fromUuidSync(uuid);
+      if ( !mech ) return { uuid, missing: true, name: uuid };
+      return {
+        uuid,
+        name: mech.name,
+        img: mech.img,
+        model: mech.system.details?.model ?? "",
+        weight: game.i18n.localize(WEIGHT_CLASSES[mech.system.details?.weightClass]?.label ?? ""),
+        piloting: mech.system.pilot === actor.uuid,
+        pilotName: (mech.system.pilot && (mech.system.pilot !== actor.uuid)) ? fromUuidSync(mech.system.pilot)?.name : null,
+        destroyed: mech.system.status?.destroyed
+      };
+    });
+    const owned = new Set(actor.system.hardware);
+    const available = game.actors.filter(a => (a.type === "mech") && a.isOwner && !owned.has(a.uuid))
+      .sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang));
+    return {
+      hardware,
+      availableHardware: Object.fromEntries([["", "—"], ...available.map(a => [a.uuid, a.name])])
+    };
+  }
+
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    this.element.querySelector("select[data-add-hardware]")?.addEventListener("change", async event => {
+      event.stopPropagation();
+      const uuid = event.currentTarget.value;
+      if ( uuid ) await this.document.update({ "system.hardware": [...this.document.system.hardware, uuid] });
+    });
+  }
+
+  /** Dropping a 'Mech on the sheet adds it to the pilot's Hardware. @override */
+  async _onDropActor(event, actor) {
+    if ( !this.isEditable || (actor?.type !== "mech") ) return null;
+    if ( this.document.system.hardware.includes(actor.uuid) ) return null;
+    await this.document.update({ "system.hardware": [...this.document.system.hardware, actor.uuid] });
+    return actor;
   }
 
   /* -------------------------------------------- */
@@ -58,6 +109,26 @@ export class CharacterSheet extends PersonSheet {
   static async #onEdgePip(_event, target) {
     const spent = toggleDamagePip(this.document.system.edge.spent, Number(target.dataset.index));
     return this.document.update({ "system.edge.spent": spent });
+  }
+
+  static async #onBoardHardware(_event, target) {
+    const mech = await fromUuid(target.closest("[data-uuid]")?.dataset.uuid);
+    if ( mech ) return this.document.boardHardware(mech);
+  }
+
+  static async #onLeaveHardware() {
+    return this.document.leaveHardware();
+  }
+
+  static async #onOpenHardware(_event, target) {
+    (await fromUuid(target.closest("[data-uuid]")?.dataset.uuid))?.sheet.render(true);
+  }
+
+  static async #onRemoveHardware(_event, target) {
+    const uuid = target.closest("[data-uuid]")?.dataset.uuid;
+    const mech = fromUuidSync(uuid);
+    if ( mech?.system.pilot === this.document.uuid ) await mech.update({ "system.pilot": "" });
+    return this.document.update({ "system.hardware": this.document.system.hardware.filter(u => u !== uuid) });
   }
 
   static async #onPlotPoint(_event, target) {

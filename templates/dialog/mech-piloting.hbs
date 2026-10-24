@@ -1,0 +1,13 @@
+<div class="mwd-dialog-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Difficulty"}}</label>
+    <select name="difficulty">
+      {{#each difficulties}}<option value="{{value}}" {{#if (eq value "average")}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Modifier"}}</label>
+    <input type="number" name="modifier" value="0" min="-3" max="3" step="1">
+  </div>
+  {{#if gyro}}<p class="mwd-wounds">{{localize "MWD.Mech.Crit.GyroShort"}} {{mwdSigned gyro}}</p>{{/if}}
+</div>

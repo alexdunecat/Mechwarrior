@@ -2,26 +2,31 @@
   "TYPES": {
     "Actor": {
       "character": "Персонаж",
-      "npc": "NPC"
+      "npc": "NPC",
+      "mech": "Мех"
     },
     "Item": {
       "skill": "Навык",
       "trait": "Черта",
       "weapon": "Оружие",
       "armor": "Броня",
-      "gear": "Предмет инвентаря"
+      "gear": "Предмет инвентаря",
+      "mechWeapon": "Оружие меха",
+      "mechEquipment": "Снаряжение меха"
     }
   },
   "MWD": {
     "Sheet": {
       "Character": "Лист персонажа MechWarrior: Destiny",
       "Npc": "Лист NPC MechWarrior: Destiny",
-      "Item": "Лист предмета MechWarrior: Destiny"
+      "Item": "Лист предмета MechWarrior: Destiny",
+      "Mech": "Лист меха MechWarrior: Destiny"
     },
     "Tab": {
       "main": "Основное",
       "story": "Черты и Cues",
-      "bio": "Биография"
+      "bio": "Биография",
+      "hardware": "Техника"
     },
     "Edit": "Изменить",
     "Delete": "Удалить",
@@ -383,6 +388,228 @@
       "FightThrough": "WIL (Plot Point)",
       "FightThroughButton": "Fight through it: Plot Point, +WIL",
       "FoughtThrough": "Fight through it: потрачен Plot Point, добавлен WIL"
+    },
+    "Hardware": {
+      "label": "Техника",
+      "Add": "Добавить",
+      "Hint": "Машины персонажа. «Сесть» — пилотировать эту машину, из прежней персонаж выйдет. Можно также перетащить меха на этот лист или персонажа на лист меха.",
+      "Missing": "Не найдено (актёр удалён)",
+      "None": "Техники пока нет.",
+      "PilotedBy": "пилотирует {name}",
+      "Piloting": "За рычагами",
+      "Board": "Сесть",
+      "Remove": "Убрать из списка"
+    },
+    "Mech": {
+      "Model": "Модель",
+      "Weight": {
+        "label": "Весовой класс",
+        "light": "Лёгкий",
+        "medium": "Средний",
+        "heavy": "Тяжёлый",
+        "assault": "Штурмовой"
+      },
+      "Tonnage": "Тонн",
+      "HardwarePoints": "HP",
+      "HardwarePointsHint": "Hardware Points (с. 76)",
+      "Movement": "Движение",
+      "MaxMovement": "Макс. движение сейчас",
+      "HeatDissipation": "Отвод тепла",
+      "HeatDissipationHint": "Сколько жетонов тепла сбрасывается в конце каждой Narration (с. 47)",
+      "JumpJets": "Прыжковые двигатели (J)",
+      "CanPunch": "Есть руки (может бить)",
+      "Jump": "Прыжок (+1 тепло)",
+      "Armor": "Пипсы брони",
+      "Structure": "Пипсы структуры",
+      "ArmorDiagram": "Схема брони",
+      "DiagramHint": "Верхний ряд — броня, нижний — структура. В скобках результаты 2D6 для попадания. Щелчок по пипсу отмечает урон, поля задают максимум.",
+      "Location": {
+        "head": "Голова",
+        "torso": "Торс",
+        "rightArm": "Правая рука",
+        "leftArm": "Левая рука",
+        "rightLeg": "Правая нога",
+        "leftLeg": "Левая нога",
+        "headAbbr": "Г",
+        "torsoAbbr": "Т",
+        "rightArmAbbr": "ПР",
+        "leftArmAbbr": "ЛР",
+        "rightLegAbbr": "ПН",
+        "leftLegAbbr": "ЛН",
+        "none": "—"
+      },
+      "Range": {
+        "pointblank": "Pointblank",
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long"
+      },
+      "Terrain": {
+        "label": "Местность цели",
+        "clear": "Открытая",
+        "lightWoods": "Редкий лес",
+        "heavyWoods": "Густой лес",
+        "shallowWater": "Мелководье",
+        "deepWater": "Глубокая вода",
+        "partialCover": "Частичное укрытие (попадания в ноги не проходят)"
+      },
+      "Status": {
+        "prone": "Лежит",
+        "jumped": "Прыгнул",
+        "shutdown": "Отключён",
+        "disengaged": "Вышел из боя",
+        "destroyed": "Уничтожен"
+      },
+      "Pilot": {
+        "label": "Пилот",
+        "None": "Пилота нет. Выберите его выше или перетащите персонажа на лист.",
+        "Leave": "Выйти из кабины",
+        "Piloting": "Piloting",
+        "Unconscious": "Без сознания"
+      },
+      "Weapon": {
+        "plural": "Вооружение",
+        "Add": "Добавить группу оружия",
+        "None": "Оружия нет.",
+        "Fire": "Огонь",
+        "Primary": "Основное оружие (Primary)",
+        "PrimaryShort": "Primary",
+        "PrimaryHint": "Основное оружие персонажа игрока наносит полный урон в голову без траты Plot Point (с. 45).",
+        "Base": "Базовый урон",
+        "Missiles": "Ракетные кубы (M)",
+        "Max": "Максимальный урон",
+        "DamageHint": "Как в книге:",
+        "HeatAlternative": "Может давать тепло вместо урона (огнемёт, «or H»)",
+        "Types": "Типы (B, E, M)",
+        "TypeShort": "Тип",
+        "Heat": "Тепло",
+        "Loc": "Где",
+        "Locations": "Установлено в",
+        "Destroyed": "Уничтожено"
+      },
+      "Equipment": {
+        "label": "Снаряжение",
+        "Add": "Добавить снаряжение",
+        "None": "Снаряжения нет.",
+        "Kind": "Вид",
+        "ammo": "Боеприпасы",
+        "jumpJets": "Прыжковые двигатели",
+        "other": "Другое",
+        "Location": "Расположение",
+        "LocationHint": "Боеприпасы могут взорваться при критическом попадании в эту часть (с. 45)."
+      },
+      "Attack": {
+        "Gunnery": "Gunnery",
+        "DefenseOf": "{name}: 2D6 + Piloting + RFL",
+        "ManualDefense": "Бонус защиты (Piloting + RFL)",
+        "NoTarget": "Мех-цель не выбрана: введите бонус защиты вручную или выделите токен как цель (T) и откройте снова.",
+        "Speed": "Скорость",
+        "TargetJumped": "Цель прыгала",
+        "Helpless": "Отключён / пилот без сознания",
+        "JumpPosition": "Позиция после прыжка",
+        "JumpTarget": "Цель прыжка",
+        "JumpTargetHint": "Вы прыгали: +1 против выбранной цели, –1 против остальных (с. 40).",
+        "HeatInstead": "Тепло вместо урона",
+        "AutoHint": "Учитывается автоматически: дистанция, скорость (ваше макс. движение минус у цели), цель прыгала (–1), цель отключена или пилот без сознания (+2), ранения, цель вышла из боя (нужно 11+).",
+        "HeatPenalty": "Тепло: {n} к стрельбе."
+      },
+      "Physical": {
+        "Button": "Физическая атака",
+        "Title": "Физическая атака: {name}",
+        "Type": "Атака",
+        "punch": "Удар рукой",
+        "kick": "Пинок",
+        "push": "Толчок",
+        "charge": "Таран",
+        "dfa": "Смерть сверху",
+        "Hint": "Только Pointblank. Удар рукой: в эту Narration не стреляли из рук. Смерть сверху: нужен прыжок.",
+        "Movement": "Потрачено движения",
+        "MovementHint": "Таран и смерть сверху наносят (тоннаж / 30) × движение.",
+        "Note": {
+          "punch": "",
+          "kick": "Цель проходит Piloting Test, чтобы устоять.",
+          "push": "Цель проходит Piloting Test, чтобы устоять.",
+          "charge": "Оба меха проходят Piloting Test, чтобы устоять.",
+          "dfa": "Оба меха проходят Piloting Test, чтобы устоять."
+        }
+      },
+      "Damage": {
+        "Self": "{n} атакующему",
+        "Missiles": "Ракетные кубы: {dice} → доп. урон {extra}",
+        "Location": "Попадание {roll}: {location}, урон {n}",
+        "CoverIgnored": "Попадание {roll}: {location}, остановлено укрытием",
+        "Glancing": "Скользящее попадание: 1 урона в голову. Остальное можно купить за Plot Point.",
+        "Step": "{location}: броня –{armor}, структура –{structure}",
+        "LocationDestroyed": "Уничтожено!",
+        "HeatTokens": "+{n} жетонов тепла",
+        "MechDestroyed": "Мех выведен из строя.",
+        "Falls": "Мех падает.",
+        "PilotingTest": "Нужен Piloting Test, чтобы устоять.",
+        "BuyHead": "Plot Point: полный урон в голову (+{n})",
+        "FullHead": "{source}: полный урон в голову"
+      },
+      "Crit": {
+        "label": "Критические попадания",
+        "NoCrit": "Проверка крита ({location}): {roll}, нет",
+        "None": "Крит ({location}, {roll}), но поражать нечего",
+        "Hit": "Крит ({location}, {roll}):",
+        "Weapon": "{weapon} уничтожено",
+        "AmmoTorso": "взрыв боеприпасов, мех уничтожен",
+        "AmmoLimb": "взрыв боеприпасов, {location} уничтожена",
+        "Gyro": "гироскоп повреждён (–2 к Piloting)",
+        "GyroDestroyed": "гироскоп уничтожен: движения нет, мех падает",
+        "GyroShort": "Гироскоп",
+        "Engine": "экранирование двигателя повреждено (+1 тепло каждую Narration)",
+        "EngineDestroyed": "двигатель уничтожен, мех уничтожен",
+        "EngineShort": "Двигатель",
+        "Leg": "повреждён привод ноги (–1 к макс. движению)",
+        "LegShort": "Повреждения ног (–1 движения каждое)"
+      },
+      "Heat": {
+        "label": "Тепло",
+        "CarriedHint": "Штрафы в эту Narration идут от {n} жетонов, оставшихся после прошлого охлаждения.",
+        "Engine": "Повреждённый двигатель: +1 жетон тепла",
+        "Cooled": "Охлаждение: {from} → {to} (отвод {dissipation})",
+        "Level": {
+          "blue": "Синий: без эффектов",
+          "green": "Зелёный: –1 к макс. движению",
+          "yellow": "Жёлтый: –1 движение, –1 к стрельбе",
+          "orange": "Оранжевый: риск отключения (8+ чтобы избежать)",
+          "red": "Красный: риск взрыва боеприпасов (8+ чтобы избежать)",
+          "critical": "Критический: автоматическое отключение"
+        },
+        "AutoShutdown": "Автоматическое отключение",
+        "ShutdownAvoided": "Отключения удалось избежать ({roll})",
+        "ShutdownFailed": "Реактор отключился ({roll})",
+        "AmmoAvoided": "Взрыва боеприпасов удалось избежать ({roll})",
+        "AmmoExploded": "Боеприпасы взорвались ({roll}): пилот получает 3 урона",
+        "Restarted": "Двигатель перезапущен",
+        "RestartFailed": "Перезапуск не удался ({roll})",
+        "TooHotToRestart": "Слишком горячо для перезапуска (больше 3 жетонов)"
+      },
+      "EndNarration": {
+        "Button": "Конец Narration",
+        "Title": "{name}: конец Narration",
+        "Hint": "Проверка CON, если пилот без сознания, охлаждение, проверки отключения и боеприпасов, перезапуск двигателя (с. 38, 47–48)."
+      },
+      "Piloting": {
+        "Title": "Piloting Test",
+        "AutoFail": "Автоматический провал: {reason}"
+      },
+      "Fall": {
+        "Title": "Падение",
+        "Resolve": "Провести падение",
+        "PilotTest": "Piloting Test, чтобы пилот не пострадал",
+        "PilotDamage": "Пилот получает 3 урона"
+      },
+      "Warn": {
+        "Destroyed": "Этот мех уничтожен.",
+        "NoPilot": "У этого меха нет пилота.",
+        "Shutdown": "Мех отключён.",
+        "Unconscious": "Пилот без сознания.",
+        "WeaponDestroyed": "Это оружие уничтожено.",
+        "NoJumpJets": "У этого меха нет прыжковых двигателей."
+      }
     }
   }
 }
