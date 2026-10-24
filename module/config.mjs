@@ -106,6 +106,28 @@ export const RANGE_CODES = {
   x: "—"
 };
 
+/** Traits with rules the system automates. Anything else is applied from the Test dialog. */
+export const TRAIT_EFFECTS = {
+  "": "MWD.Trait.Effect.none",
+  toughness: "MWD.Trait.Effect.toughness",
+  painResistance: "MWD.Trait.Effect.painResistance"
+};
+
+/** Base Initiative modifier by Experience Level for the optional rolled Initiative (p. 55). */
+export const INITIATIVE_BY_EXPERIENCE = {
+  green: -1,
+  regular: 0,
+  veteran: 1,
+  elite: 2
+};
+
+/** Turn-order modes for the combat tracker (p. 30, 55). */
+export const INITIATIVE_MODES = {
+  narrative: "MWD.Initiative.Mode.narrative",
+  rolled: "MWD.Initiative.Mode.rolled",
+  cinematic: "MWD.Initiative.Mode.cinematic"
+};
+
 export const TRAIT_POLARITIES = {
   positive: "MWD.Trait.positive",
   negative: "MWD.Trait.negative"
@@ -116,6 +138,25 @@ export const PLOT_POINTS = {
   playerStart: 3,
   playerMax: 5,
   gmStart: 1
+};
+
+/**
+ * Ways to spend a Plot Point (p. 31–32). Each costs one point; ejection costs all of them.
+ * `mech` uses are only available in 'Mech-Scale Combat.
+ */
+export const PLOT_POINT_USES = {
+  turnOrder: { label: "MWD.PlotPoints.Use.turnOrder" },
+  doubleTime: { label: "MWD.PlotPoints.Use.doubleTime" },
+  firstAid: { label: "MWD.PlotPoints.Use.firstAid" },
+  takeTheHit: { label: "MWD.PlotPoints.Use.takeTheHit" },
+  coldDish: { label: "MWD.PlotPoints.Use.coldDish" },
+  twist: { label: "MWD.PlotPoints.Use.twist" },
+  headHit: { label: "MWD.PlotPoints.Use.headHit", mech: true },
+  pushIt: { label: "MWD.PlotPoints.Use.pushIt", mech: true },
+  fightThrough: { label: "MWD.PlotPoints.Use.fightThrough", mech: true },
+  downgrade: { label: "MWD.PlotPoints.Use.downgrade", mech: true },
+  support: { label: "MWD.PlotPoints.Use.support", mech: true },
+  other: { label: "MWD.PlotPoints.Use.other" }
 };
 
 /** Condition Monitor rows and the CON Check target number for each (character sheet, p. 47). */

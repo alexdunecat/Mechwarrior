@@ -721,12 +721,6 @@
   color: var(--mwd-edge);
 }
 
-.mwd-edge-controls {
-  margin-top: 6px;
-  padding-top: 4px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.25);
-}
-
 .mwd-edge-buttons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -740,4 +734,108 @@
   padding: 2px;
   height: auto;
   min-height: 22px;
+}
+
+.mwd-edge-controls,
+.mwd-target-edge-controls,
+.mwd-apply-controls,
+.mwd-kia-controls {
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.25);
+}
+
+.mwd-apply-controls button,
+.mwd-kia-controls button {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+.mwd-card-damage {
+  margin-top: 4px;
+  font-size: 0.9em;
+}
+
+/* Neutral cards: damage summaries and Plot Point notes. */
+.mwd-card.mwd-damage-card,
+.mwd-card.mwd-pp-card {
+  border-left-color: #6b6f76;
+}
+
+.mwd-damage-split {
+  margin: 4px 0;
+  padding-left: 16px;
+  font-size: 0.9em;
+}
+
+.mwd-pp-card .fa-star {
+  color: #c8561e;
+}
+
+/* Plot Points panel */
+
+.mechwarrior-destiny.mwd-panel .window-content {
+  padding: 6px 8px;
+  background: var(--mwd-bg);
+  color: var(--mwd-ink);
+}
+
+.mechwarrior-destiny .mwd-pp-row {
+  display: block;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--mwd-line);
+}
+
+.mechwarrior-destiny .mwd-pp-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mechwarrior-destiny .mwd-pp-line + .mwd-pp-line {
+  margin-top: 3px;
+}
+
+.mechwarrior-destiny .mwd-pp-name {
+  flex: 1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mechwarrior-destiny .mwd-pp-line select {
+  flex: 1;
+  min-width: 0;
+}
+
+.mechwarrior-destiny .mwd-pp-gm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mechwarrior-destiny .mwd-pp-gm .mwd-resource-label {
+  flex: 1;
+}
+
+.mechwarrior-destiny .mwd-pp-session {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.mwd-fight-controls {
+  margin-top: 6px;
+}
+
+.mwd-fight-controls button {
+  width: 100%;
+  font-size: 0.85em;
+}
+
+.mechwarrior-destiny .mwd-con-check {
+  margin-left: 6px;
+  font-size: 0.8em;
+  font-weight: normal;
 }

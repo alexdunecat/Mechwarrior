@@ -6,16 +6,35 @@ import { MWDActor } from "./documents/actor.mjs";
 import { CharacterSheet } from "./sheets/character-sheet.mjs";
 import { NpcSheet } from "./sheets/npc-sheet.mjs";
 import { MWDItemSheet } from "./sheets/item-sheet.mjs";
+import { MWDCombat, INITIATIVE_FORMULA } from "./documents/combat.mjs";
 import { onRenderChatMessage } from "./dice/test-roll.mjs";
+import { registerSettings } from "./settings.mjs";
+import { registerSocket } from "./socket.mjs";
+import { PlotPointsPanel, spendPlotPoint, startNewSession } from "./apps/plot-points.mjs";
 
 const { SYSTEM_ID } = MWD;
 
 Hooks.once("init", () => {
   console.log(`${SYSTEM_ID} | Initializing MechWarrior: Destiny`);
   CONFIG.MWD = MWD;
-  game.mwd = { config: MWD };
+  game.mwd = {
+    config: MWD,
+    plotPoints: null,
+    api: { spendPlotPoint, startNewSession }
+  };
+  registerSettings();
+  game.keybindings.register(SYSTEM_ID, "plotPoints", {
+    name: "MWD.PlotPoints.Open",
+    editable: [{ key: "KeyP", modifiers: ["Shift"] }],
+    onDown: () => {
+      openPlotPoints();
+      return true;
+    }
+  });
 
   CONFIG.Actor.documentClass = MWDActor;
+  CONFIG.Combat.documentClass = MWDCombat;
+  CONFIG.Combat.initiative = { formula: INITIATIVE_FORMULA, decimals: 0 };
   Object.assign(CONFIG.Actor.dataModels, { character: CharacterData, npc: NpcData });
   Object.assign(CONFIG.Item.dataModels, {
     skill: SkillData, trait: TraitData, weapon: WeaponData, armor: ArmorData, gear: GearData
@@ -46,9 +65,40 @@ Hooks.once("init", () => {
   ]);
 });
 
+Hooks.once("ready", () => {
+  registerSocket();
+  game.mwd.plotPoints = new PlotPointsPanel();
+  if ( game.settings.get(SYSTEM_ID, "showPlotPoints") ) game.mwd.plotPoints.render({ force: true });
+});
+
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 
+// A button next to the token tools opens the Plot Points panel.
+Hooks.on("getSceneControlButtons", controls => {
+  const tokens = controls.tokens;
+  if ( !tokens?.tools ) return;
+  tokens.tools.mwdPlotPoints = {
+    name: "mwdPlotPoints",
+    title: "MWD.PlotPoints.Open",
+    icon: "fa-solid fa-star",
+    order: Object.keys(tokens.tools).length,
+    button: true,
+    visible: true,
+    onChange: () => openPlotPoints()
+  };
+});
+
+// Keep the Plot Points panel in step with characters' sheets.
+Hooks.on("updateActor", actor => {
+  if ( actor.type === "character" ) game.mwd.plotPoints?.render();
+});
+
 /* -------------------------------------------- */
+
+function openPlotPoints() {
+  game.mwd.plotPoints ??= new PlotPointsPanel();
+  game.mwd.plotPoints.render({ force: true });
+}
 
 function registerHandlebarsHelpers() {
   /** Format a modifier with an explicit sign: +3, –2, 0. */

@@ -1,4 +1,4 @@
-import { ATTRIBUTES, SKILLS, SPECIALTIES, SYSTEM_ID } from "../config.mjs";
+import { ATTRIBUTES, SKILLS, SPECIALTIES, STAGGERED_CON_CHECK, SYSTEM_ID } from "../config.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 
@@ -18,6 +18,7 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     actions: {
       rollAttribute: PersonSheet.#onRollAttribute,
       rollSkill: PersonSheet.#onRollSkill,
+      rollWeapon: PersonSheet.#onRollWeapon,
       rollTest: PersonSheet.#onRollTest,
       addSkill: PersonSheet.#onAddSkill,
       createItem: PersonSheet.#onCreateItem,
@@ -27,6 +28,7 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       damagePip: PersonSheet.#onDamagePip,
       armorPip: PersonSheet.#onArmorPip,
       kiaCheck: PersonSheet.#onKiaCheck,
+      conCheck: PersonSheet.#onConCheck,
       resetKia: PersonSheet.#onResetKia
     }
   };
@@ -85,6 +87,7 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         fatigue: system.condition.fatigue.track
       },
       woundModifier: system.woundModifier,
+      staggeredCon: STAGGERED_CON_CHECK,
       needsKiaCheck: system.condition.physical.track.beyond,
       knockedOut: system.condition.fatigue.track.beyond,
       notesHTML: await this.#enrich(system.notes)
@@ -165,6 +168,11 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     if ( item ) return this.document.rollSkill(item);
   }
 
+  static async #onRollWeapon(_event, target) {
+    const item = PersonSheet.#itemFrom.call(this, target);
+    if ( item ) return this.document.rollAttack(item);
+  }
+
   static async #onRollTest() {
     return this.document.rollTest();
   }
@@ -237,6 +245,10 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static async #onKiaCheck() {
     return this.document.rollKiaCheck();
+  }
+
+  static async #onConCheck() {
+    return this.document.rollConCheck();
   }
 
   static async #onResetKia() {

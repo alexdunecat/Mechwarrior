@@ -1,0 +1,39 @@
+<div class="mwd-pp-panel">
+  <ol class="mwd-list">
+    {{#each characters}}
+    <li class="mwd-pp-row" data-actor-id="{{id}}">
+      <div class="mwd-pp-line">
+        <a class="mwd-pp-name" data-action="openSheet">{{name}}</a>
+        <span class="mwd-tokens">{{#each pips}}<span class="mwd-token {{#if this}}filled{{/if}}"></span>{{/each}}</span>
+        <span class="mwd-muted" data-tooltip="MWD.Edge.label">E {{edge}}</span>
+        {{#if @root.isGM}}
+        <a class="mwd-icon-button" data-action="take" data-tooltip="MWD.PlotPoints.Take"><i class="fa-solid fa-minus"></i></a>
+        <a class="mwd-icon-button" data-action="award" data-tooltip="MWD.PlotPoints.Award"><i class="fa-solid fa-plus"></i></a>
+        {{/if}}
+      </div>
+      {{#if owner}}
+      <div class="mwd-pp-line">
+        <select name="use">
+          {{#each @root.uses}}<option value="{{key}}">{{localize label}}{{#if mech}} ('Mech){{/if}}</option>{{/each}}
+        </select>
+        <button type="button" class="mwd-button" data-action="spend" {{#unless value}}disabled{{/unless}}>{{localize "MWD.PlotPoints.SpendButton"}}</button>
+      </div>
+      {{/if}}
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize "MWD.PlotPoints.NoCharacters"}}</li>
+    {{/each}}
+  </ol>
+  <div class="mwd-pp-gm">
+    <span class="mwd-resource-label">{{localize "MWD.PlotPoints.GmPool"}}</span>
+    <strong>{{gmPool}}</strong>
+    {{#if isGM}}
+    <a class="mwd-icon-button" data-action="gmAdjust" data-delta="-1"><i class="fa-solid fa-minus"></i></a>
+    <a class="mwd-icon-button" data-action="gmAdjust" data-delta="1"><i class="fa-solid fa-plus"></i></a>
+    <button type="button" class="mwd-button" data-action="gmSpend" {{#unless gmPool}}disabled{{/unless}}>{{localize "MWD.PlotPoints.SpendButton"}}</button>
+    {{/if}}
+  </div>
+  {{#if isGM}}
+  <button type="button" class="mwd-button mwd-pp-session" data-action="newSession"><i class="fa-solid fa-rotate"></i> {{localize "MWD.Session.New"}}</button>
+  {{/if}}
+</div>

@@ -23,6 +23,7 @@ export function blockedPipsForRating(rating) {
  * @param {number} options.rating   STR for the Physical track, WIL for the Fatigue track.
  * @param {number} [options.damage] Pips of damage taken.
  * @param {number} [options.lost]   Pips permanently lost ("I'll never be the same").
+ * @param {boolean} [options.ignoreFirst] Pain Resistance: the first row's –1 does not apply.
  * @returns {{
  *   rows: {index: number, modifier: number, conCheck: number, filled: boolean,
  *          pips: {index: number|null, blocked: boolean, filled: boolean}[]}[],
@@ -31,7 +32,7 @@ export function blockedPipsForRating(rating) {
  *   modifier: number, staggered: boolean, beyond: boolean, conCheck: number|null
  * }}
  */
-export function buildTrack({ rating, damage = 0, lost = 0 }) {
+export function buildTrack({ rating, damage = 0, lost = 0, ignoreFirst = false }) {
   const blockedRows = blockedPipsForRating(rating);
   let toLose = Math.max(0, lost);
   let remainingDamage = Math.max(0, damage);
@@ -69,7 +70,7 @@ export function buildTrack({ rating, damage = 0, lost = 0 }) {
     capacity,
     damage: clampedDamage,
     overflow,
-    modifier: deepest ? deepest.modifier : 0,
+    modifier: (deepest && !(ignoreFirst && (deepest.index === 0))) ? deepest.modifier : 0,
     staggered,
     beyond: overflow > 0,
     conCheck: staggered ? STAGGERED_CON_CHECK : (deepest ? deepest.conCheck : null)

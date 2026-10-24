@@ -1,4 +1,4 @@
-import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_POLARITIES } from "../config.mjs";
+import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS, TRAIT_POLARITIES } from "../config.mjs";
 import { meleeStrBonus } from "../rules/tests.mjs";
 import { counter } from "./actor-base.mjs";
 
@@ -58,6 +58,8 @@ export class TraitData extends foundry.abstract.TypeDataModel {
       polarity: new fields.StringField({ required: true, initial: "positive", choices: () => ({ ...TRAIT_POLARITIES }) }),
       modifier: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -3, max: 3 }),
       appliesTo: new fields.StringField({ required: true, initial: "" }),
+      effect: new fields.StringField({ required: true, blank: true, initial: "", choices: () => ({ ...TRAIT_EFFECTS }) }),
+      initiative: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -3, max: 3 }),
       description: description()
     };
   }

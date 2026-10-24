@@ -55,11 +55,15 @@ export class PersonData extends foundry.abstract.TypeDataModel {
       attr.total = attr.value - ((key === "rfl") ? (this.armor?.rflPenalty ?? 0) : 0);
     }
 
+    const traits = items.filter(i => i.type === "trait");
+    this.traitEffects = new Set(traits.map(t => t.system.effect).filter(Boolean));
+    const ignoreFirst = this.traitEffects.has("painResistance");
     const { physical, fatigue } = this.condition;
-    physical.track = buildTrack({ rating: this.attributes.str.value, damage: physical.value, lost: physical.lost });
-    fatigue.track = buildTrack({ rating: this.attributes.wil.value, damage: fatigue.value, lost: fatigue.lost });
+    physical.track = buildTrack({ rating: this.attributes.str.value, damage: physical.value, lost: physical.lost, ignoreFirst });
+    fatigue.track = buildTrack({ rating: this.attributes.wil.value, damage: fatigue.value, lost: fatigue.lost, ignoreFirst });
     this.woundModifier = woundModifier(physical.track, fatigue.track);
 
+    this.initiativeBonus = traits.reduce((total, t) => total + t.system.initiative, 0);
     this.tagList = this.tags.split(/[,;\n]/).map(t => t.trim()).filter(Boolean);
   }
 

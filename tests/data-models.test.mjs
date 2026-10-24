@@ -76,3 +76,17 @@ test("NPCs prepare without Edge", () => {
   assert.equal(actor.system.condition.physical.track.capacity, 11);
   assert.equal(actor.system.edge, undefined);
 });
+
+test("traits feed Initiative and rules effects", async () => {
+  const { TraitData } = await import("../module/data/items.mjs");
+  const sense = makeItem(TraitData, { type: "trait", name: "Combat Sense", system: { initiative: 1 } });
+  const pain = makeItem(TraitData, { type: "trait", name: "Pain Resistance", system: { effect: "painResistance" } });
+  const actor = makeActor(CharacterData, {
+    details: { experience: "veteran" },
+    attributes: { str: { value: 5 } },
+    condition: { physical: { value: 3 } }
+  }, [sense, pain]);
+  assert.equal(actor.system.initiativeBonus, 2);
+  assert.equal(actor.system.traitEffects.has("painResistance"), true);
+  assert.equal(actor.system.woundModifier, 0);
+});

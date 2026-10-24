@@ -1,0 +1,20 @@
+<div class="mwd-card mwd-damage-card">
+  <header class="mwd-card-header">
+    <h3>{{localize "MWD.Damage.Title" name=name}}</h3>
+  </header>
+  <p>{{#if source}}{{source}}: {{/if}}{{damage.value}}{{#if damage.type}} {{damage.type}}{{/if}}{{#if damage.fatigue}} F{{/if}}</p>
+  <ul class="mwd-damage-split">
+    {{#if split.reduced}}<li>{{localize "MWD.Damage.Reduced" n=split.reduced}}</li>{{/if}}
+    {{#if split.armor}}<li>{{localize "MWD.Damage.Armor" n=split.armor}}</li>{{/if}}
+    {{#if split.physical}}<li>{{localize "MWD.Damage.Physical" n=split.physical}}</li>{{/if}}
+    {{#if split.fatigue}}<li>{{localize "MWD.Damage.Fatigue" n=split.fatigue}}</li>{{/if}}
+    {{#unless (or split.armor split.physical split.fatigue)}}<li>{{localize "MWD.Damage.None"}}</li>{{/unless}}
+  </ul>
+  {{#if wounds}}<p class="mwd-wounds">{{localize "MWD.Condition.Wounds"}} {{mwdSigned wounds}}</p>{{/if}}
+  {{#if staggered}}<p class="mwd-wounds">{{localize "MWD.Damage.Staggered"}}</p>{{/if}}
+  {{#if knockedOut}}<p class="mwd-wounds">{{localize "MWD.Damage.KnockedOut"}}</p>{{/if}}
+  {{#if kia}}
+  <p class="mwd-wounds">{{localize "MWD.Damage.KiaNeeded"}}</p>
+  <div class="mwd-kia-controls"><button type="button" data-kia>{{localize "MWD.Condition.KiaTest"}}</button></div>
+  {{/if}}
+</div>

@@ -1,4 +1,4 @@
-import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID, TRAIT_POLARITIES } from "../config.mjs";
+import { ATTRIBUTES, DAMAGE_TYPES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID, TRAIT_EFFECTS, TRAIT_POLARITIES } from "../config.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -51,6 +51,7 @@ export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       damageTypes: localizeAll(DAMAGE_TYPES),
       rangeCodes: { ...RANGE_CODES },
       polarities: localizeAll(TRAIT_POLARITIES),
+      traitEffects: localizeAll(TRAIT_EFFECTS),
       descriptionHTML: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description ?? "", {
         secrets: item.isOwner, relativeTo: item
       })

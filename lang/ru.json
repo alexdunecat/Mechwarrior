@@ -98,7 +98,32 @@
     "PlotPoints": {
       "label": "Plot Points",
       "spend": "Потратить Plot Point",
-      "gain": "Получить Plot Point (максимум 5)"
+      "gain": "Получить Plot Point (максимум 5)",
+      "Open": "Панель Plot Points",
+      "Use": {
+        "turnOrder": "Изменить порядок хода",
+        "doubleTime": "Двойной темп (два перемещения)",
+        "firstAid": "Подлатать (снять 1 пипс)",
+        "takeTheHit": "Принять удар за союзника",
+        "coldDish": "Бесплатная контратака",
+        "twist": "Добавить поворот сюжета",
+        "headHit": "Полный урон при попадании в голову",
+        "pushIt": "Бесплатная смена дистанции",
+        "fightThrough": "+WIL к проверке сознания",
+        "downgrade": "Ослабить попадание оружия меха по человеку",
+        "support": "Battlefield Support",
+        "other": "Другое"
+      },
+      "NoneLeft": "Plot Points закончились.",
+      "Spent": "{name} тратит Plot Point: {use}",
+      "AtMax": "Уже 5 Plot Points.",
+      "Awarded": "{name} получает Plot Point",
+      "GmSpent": "ГМ тратит Plot Point",
+      "Take": "Забрать Plot Point",
+      "Award": "Выдать Plot Point",
+      "SpendButton": "Потратить",
+      "NoCharacters": "Нет персонажей игроков. Назначьте персонажей игрокам в настройках пользователей.",
+      "GmPool": "Пул ГМа"
     },
     "Edge": {
       "label": "Edge",
@@ -119,7 +144,9 @@
         "both": "Edge: переброшены оба куба",
         "highest": "Edge: противник перебросил старший куб",
         "all": "Edge: противник перебросил все кубы"
-      }
+      },
+      "TargetUsed": "{name}: {how}",
+      "SpendDefender": "{name} тратит Edge"
     },
     "Skill": {
       "plural": "Навыки",
@@ -186,7 +213,16 @@
       "Polarity": "Тип",
       "Modifier": "Модификатор",
       "ModifierHint": "Предлагается галочкой в диалоге теста. Оставьте 0 для чисто сюжетных черт.",
-      "AppliesTo": "Когда действует"
+      "AppliesTo": "Когда действует",
+      "Effect": {
+        "label": "Эффект по правилам",
+        "hint": "Применяется автоматически: Toughness снижает каждое попадание в Condition Monitor на 1, Pain Resistance игнорирует штраф ранений –1.",
+        "none": "Нет",
+        "toughness": "Toughness",
+        "painResistance": "Pain Resistance"
+      },
+      "Initiative": "Модификатор инициативы",
+      "InitiativeHint": "Только для броска инициативы, например Combat Sense +1."
     },
     "Weapon": {
       "plural": "Личное оружие",
@@ -281,7 +317,72 @@
       "AutoFail": {
         "natural2": "Выпало 2 — всегда провал",
         "untrainedHard": "Без навыка на сложности Hard"
+      },
+      "Hit": "Попадание",
+      "Miss": "Промах"
+    },
+    "Attack": {
+      "Title": "Атака: {weapon}",
+      "Roll": "Атаковать",
+      "OutOfRange": "Оружие не достаёт на эту дистанцию.",
+      "Defense": "Защита",
+      "DefenseOf": "{name}: 2D6 + RFL + RFL",
+      "ManualDefense": "Бонус защиты (RFL + RFL)",
+      "Range": "Дистанция",
+      "Targets": "Цели",
+      "NoTarget": "Цель не выбрана: введите бонус защиты вручную или выделите токен как цель (T) и откройте снова.",
+      "DefenseModifier": "Модификатор защиты",
+      "DefenseModifierHint": "Укрытие, темнота, защитные черты: добавляется к броску цели."
+    },
+    "Damage": {
+      "Title": "{name}: попадание",
+      "Reduced": "Тип брони гасит {n}",
+      "Armor": "Броня теряет {n}",
+      "Physical": "Физический урон {n}",
+      "Fatigue": "Урон усталостью {n}",
+      "None": "Урон не прошёл",
+      "Staggered": "Оглушён (Staggered)",
+      "KnockedOut": "Без сознания",
+      "KiaNeeded": "Урон после Staggered: нужен тест KIA.",
+      "Apply": "Применить урон к {name}",
+      "Applied": "применён"
+    },
+    "Session": {
+      "New": "Новая сессия",
+      "Confirm": "Начать новую сессию? У всех персонажей станет 3 Plot Points и восстановится Edge, пул ГМа сбросится до 1.",
+      "Started": "Новая сессия: Plot Points и Edge восстановлены."
+    },
+    "Settings": {
+      "gmPlotPoints": {
+        "name": "Пул Plot Points ГМа"
+      },
+      "initiativeMode": {
+        "name": "Порядок ходов",
+        "hint": "Повествовательный: сначала сторона ГМа, затем игроки в порядке списка пользователей. Бросок: 2D6 + бонус инициативы (уровень опыта и черты), ничьи по EDG, затем RFL. Кинематографичный: ГМ задаёт порядок вручную в трекере."
+      },
+      "showPlotPoints": {
+        "name": "Показывать панель Plot Points при входе",
+        "hint": "Её всегда можно открыть по Shift+P или кнопкой со звездой в инструментах токенов."
       }
+    },
+    "Initiative": {
+      "Mode": {
+        "narrative": "Повествовательный (по книге)",
+        "rolled": "Бросок инициативы (опционально, с. 55)",
+        "cinematic": "Кинематографичный (опционально, с. 55)"
+      }
+    },
+    "NoActiveGM": "Нет подключённого ГМа, чтобы это выполнить.",
+    "Con": {
+      "Title": "Проверка сознания (CON)",
+      "Label": "CON {n}",
+      "Hint": "Проверка сознания: чистые 2D6 против CON самого нижнего заполненного ряда Physical, без модификаторов. По книге её бросают после урона в бою мехов (с. 47).",
+      "NotNeeded": "Ни один ряд Physical не заполнен: проверка CON не нужна.",
+      "Conscious": "В сознании",
+      "Unconscious": "Без сознания: пропускает следующую Narration, затем проверяет снова",
+      "FightThrough": "WIL (Plot Point)",
+      "FightThroughButton": "Fight through it: Plot Point, +WIL",
+      "FoughtThrough": "Fight through it: потрачен Plot Point, добавлен WIL"
     }
   }
 }

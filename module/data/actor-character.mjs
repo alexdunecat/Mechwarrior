@@ -1,4 +1,4 @@
-import { EXPERIENCE_LEVELS, PLOT_POINTS } from "../config.mjs";
+import { EXPERIENCE_LEVELS, INITIATIVE_BY_EXPERIENCE, PLOT_POINTS } from "../config.mjs";
 import { PersonData, counter } from "./actor-base.mjs";
 
 const { fields } = foundry.data;
@@ -54,6 +54,7 @@ export class CharacterData extends PersonData {
     const edg = this.attributes.edg.value;
     this.edge.max = edg;
     this.edge.remaining = Math.max(0, edg - this.edge.spent);
+    this.initiativeBonus += INITIATIVE_BY_EXPERIENCE[this.details.experience] ?? 0;
     this.cueList = this.cues.split("\n").map(c => c.trim()).filter(Boolean);
   }
 

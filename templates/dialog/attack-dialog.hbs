@@ -1,0 +1,38 @@
+<div class="mwd-dialog-body">
+  <p><strong>{{weapon.name}}</strong> — {{skillLabel}} · {{localize "MWD.Weapon.Damage"}} {{weapon.system.damageLabel}}{{#if weapon.system.damageType}} {{weapon.system.damageType}}{{/if}}</p>
+  {{#if targets.length}}
+  <p>{{localize "MWD.Attack.Targets"}}: {{#each targets}}<span class="mwd-tag">{{name}} ({{mwdSigned defense}})</span> {{/each}}</p>
+  {{else}}
+  <p class="hint">{{localize "MWD.Attack.NoTarget"}}</p>
+  <div class="form-group">
+    <label>{{localize "MWD.Attack.ManualDefense"}}</label>
+    <input type="number" name="manualDefense" value="4" step="1">
+  </div>
+  {{/if}}
+  <div class="form-group">
+    <label>{{localize "MWD.Attack.Range"}}</label>
+    <select name="range">
+      {{#each ranges}}<option value="{{value}}" {{#if (eq value @root.range)}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+    </select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Modifier"}}</label>
+    <input type="number" name="modifier" value="0" min="-3" max="3" step="1">
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Attack.DefenseModifier"}}</label>
+    <input type="number" name="defenseModifier" value="0" min="-3" max="3" step="1">
+    <p class="hint">{{localize "MWD.Attack.DefenseModifierHint"}}</p>
+  </div>
+  {{#if traits.length}}
+  <fieldset>
+    <legend>{{localize "MWD.Trait.plural"}}</legend>
+    {{#each traits}}
+    <label class="checkbox"><input type="checkbox" name="trait.{{id}}"> {{name}} ({{mwdSigned modifier}}){{#if appliesTo}} — <span class="mwd-muted">{{appliesTo}}</span>{{/if}}</label>
+    {{/each}}
+  </fieldset>
+  {{/if}}
+  {{#if woundModifier}}
+  <p class="mwd-wounds">{{localize "MWD.Test.WoundsApplied" mod=(mwdSigned woundModifier)}}</p>
+  {{/if}}
+</div>

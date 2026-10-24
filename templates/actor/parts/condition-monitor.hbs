@@ -6,7 +6,14 @@
   <div class="mwd-tracks">
     {{#each tracks as |track key|}}
     <div class="mwd-track mwd-track-{{key}}">
-      <h4>{{localize (concat "MWD.Condition." key)}}</h4>
+      <h4>
+        {{localize (concat "MWD.Condition." key)}}
+        {{#if (and (eq key "physical") track.conCheck)}}
+        <a class="mwd-rollable mwd-con-check" data-action="conCheck" data-tooltip="MWD.Con.Hint">
+          <i class="fa-solid fa-dice"></i> {{localize "MWD.Con.Label" n=track.conCheck}}
+        </a>
+        {{/if}}
+      </h4>
       {{#each track.rows as |row|}}
       <div class="mwd-track-row {{#if row.filled}}filled{{/if}}">
         <span class="mwd-pips">
@@ -23,7 +30,7 @@
           {{#if track.staggeredPip.blocked}}<span class="mwd-pip blocked"></span>
           {{else}}<a class="mwd-pip {{key}} {{#if track.staggeredPip.filled}}filled{{/if}}" data-action="damagePip" data-track="{{key}}" data-index="{{track.staggeredPip.index}}"></a>{{/if}}
         </span>
-        <span class="mwd-track-label">{{localize "MWD.Condition.Staggered"}}</span>
+        <span class="mwd-track-label">{{localize "MWD.Condition.Staggered"}}{{#if (eq key "physical")}} <span class="mwd-muted">({{localize "MWD.Condition.Con"}} {{@root.staggeredCon}})</span>{{/if}}</span>
       </div>
       <div class="mwd-track-row mwd-track-end {{#if track.beyond}}filled{{/if}}">
         <span class="mwd-pips">

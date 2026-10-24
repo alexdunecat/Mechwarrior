@@ -17,7 +17,7 @@
     {{#each weapons}}
     <li class="mwd-list-row draggable" data-item-id="{{id}}">
       <span class="mwd-col-name">
-        {{name}}{{#if damageType}} ({{damageType}}){{/if}}
+        <a class="mwd-rollable" data-action="rollWeapon" data-tooltip="MWD.Attack.Roll"><i class="fa-solid fa-crosshairs"></i> {{name}}</a>{{#if damageType}} ({{damageType}}){{/if}}
         {{#if special}}<i class="fa-solid fa-circle-info mwd-muted" data-tooltip="{{special}}"></i>{{/if}}
       </span>
       <span class="mwd-col-num">{{damage}}</span>
