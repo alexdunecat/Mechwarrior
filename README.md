@@ -16,7 +16,13 @@ https://github.com/alexdunecat/Mechwarrior/releases/latest/download/system.json
 
 ### Проверка ветки до слияния
 
-Скачать ветку zip-архивом с GitHub (Code → Download ZIP) и распаковать содержимое в `Data/systems/mechwarrior-destiny` (так, чтобы `system.json` лежал прямо в этой папке). Перезапустить Foundry.
+Каждый push в рабочую ветку собирает тестовый релиз `dev`. Его можно поставить по отдельной ссылке:
+
+```
+https://github.com/alexdunecat/Mechwarrior/releases/download/dev/system.json
+```
+
+Тестовая и основная установки используют одну папку `mechwarrior-destiny`, поэтому одновременно стоит только одна из них. После слияния достаточно переустановить систему по основной ссылке.
 
 ## Что уже работает
 
