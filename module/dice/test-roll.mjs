@@ -1,6 +1,7 @@
 import { DIFFICULTIES, SYSTEM_ID } from "../config.mjs";
 import { executeAsGM } from "../socket.mjs";
 import { canSpendEdge, edgeRerollIndices, opposingDice, replaceDice, resolveTest } from "../rules/tests.mjs";
+import { applyHitType, hitTypeContext, rollHitType, spendOnHit } from "../documents/mixed.mjs";
 
 const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
 
@@ -18,8 +19,10 @@ const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
  * @property {Actor} [speaker]                Actor the card speaks as, e.g. the 'Mech rather than its pilot.
  * @property {number} [minNatural=0]          Lowest natural roll that can succeed (Disengaged targets).
  * @property {object|null} [damage]           Damage dealt: personal {value, type, fatigue, source},
- *   'Mech-scale {kind: "mech", ...} or a fall {kind: "fall", mechUuid}. `applyOn: "failure"` offers it
- *   when the Test fails instead of when it succeeds.
+ *   'Mech-scale {kind: "mech", ...}, a 'Mech-Scale weapon against a person {kind: "mixed"} and its
+ *   hit type roll {kind: "hitType"}, or a Piloting consequence {kind: "fall"|"crash"|"control"|
+ *   "regainControl", mechUuid}. `applyOn: "failure"` offers it when the Test fails instead of when
+ *   it succeeds, `applyOn: "always"` either way.
  * @property {boolean} [untrained=false]
  * @property {string} [kind="test"]           "test", "attack", "kia" or "con".
  */
@@ -147,10 +150,16 @@ export function cardContext(state) {
   };
 }
 
+/** Whether a card's damage or consequence is offered for this result. */
+function appliesOn(damage, success) {
+  if ( damage.applyOn === "always" ) return true;
+  return (damage.applyOn === "failure") ? !success : success;
+}
+
 /** Damage line on a card: "3 B F" for personal weapons, "4+M (Max 6)" for 'Mech weapons. */
 function damageLabel(damage) {
-  if ( !damage || (damage.kind === "fall") ) return null;
-  if ( damage.kind === "mech" ) {
+  if ( !damage || ["fall", "crash", "control", "regainControl", "hitType"].includes(damage.kind) ) return null;
+  if ( ["mech", "mixed"].includes(damage.kind) ) {
     if ( damage.heatInstead ) return `${damage.base} H`;
     let label = String(damage.base);
     if ( damage.missiles ) label += `+${"M".repeat(damage.missiles)}${damage.max ? ` (Max ${damage.max})` : ""}`;
@@ -161,10 +170,21 @@ function damageLabel(damage) {
 }
 
 /** Caption of the apply button. */
-function applyLabel(state) {
+function applyLabel(state, success) {
   const damage = state.damage;
-  if ( damage?.kind === "fall" ) return game.i18n.localize("MWD.Mech.Fall.Resolve");
-  if ( damage?.applyOn === "failure" ) return game.i18n.localize("MWD.Mech.Fall.PilotDamage");
+  const localize = key => game.i18n.localize(key);
+  switch ( damage?.kind ) {
+    case "fall": return localize("MWD.Mech.Fall.Resolve");
+    case "crash": return localize("MWD.Vehicle.Crash.Resolve");
+    case "control": return localize("MWD.Fighter.LoseControl");
+    case "regainControl": return localize("MWD.Fighter.RegainControl");
+    case "mixed": return localize("MWD.Mixed.RollHitType");
+    case "hitType": {
+      const ctx = hitTypeContext(state, success);
+      return game.i18n.format(`MWD.Mixed.Apply.${ctx.hitType}`, { n: ctx.indirectDamage, name: state.targetName ?? "" });
+    }
+  }
+  if ( damage?.applyOn === "failure" ) return localize("MWD.Mech.Fall.PilotDamage");
   return game.i18n.format("MWD.Damage.Apply", { name: state.targetName ?? "" });
 }
 
@@ -206,6 +226,8 @@ export function onRenderChatMessage(message, html) {
   bind(".mwd-target-edge-controls", edgeAllowed(target, state.targetEdge), b => spendEdge(message, b.dataset.edge, "target"));
   bind(".mwd-apply-controls", !!damageRecipient(state)?.isOwner, () => applyCardDamage(message));
   bind(".mwd-fight-controls", !!actor?.isOwner && (actor.system.plotPoints?.value > 0), () => fightThrough(message));
+  bind(".mwd-hittype-controls", state.damage?.playerCharacter ? !!target?.isOwner : game.user.isGM,
+    b => spendOnHit(message, b.dataset.option));
 }
 
 /**
@@ -323,7 +345,8 @@ export async function updateCard(message, state) {
 function damageRecipient(state) {
   const damage = state.damage;
   if ( !damage ) return null;
-  if ( damage.kind === "fall" ) return fromUuidSync(damage.mechUuid);
+  if ( ["fall", "crash", "control", "regainControl"].includes(damage.kind) ) return fromUuidSync(damage.mechUuid);
+  if ( damage.kind === "mixed" ) return fromUuidSync(state.actorUuid);
   if ( damage.applyOn === "failure" ) return fromUuidSync(state.actorUuid);
   return fromUuidSync(state.applyToUuid ?? state.targetUuid);
 }
@@ -340,12 +363,25 @@ export async function applyCardDamage(message) {
   state.applied = true;
   await updateCard(message, state);
   const damage = state.damage;
-  if ( damage.kind === "fall" ) return recipient.resolveFall();
-  if ( damage.kind === "mech" ) {
-    await recipient.applyMechHit(damage);
-    const attacker = damage.self && damage.attackerUuid ? await fromUuid(damage.attackerUuid) : null;
-    if ( attacker ) await attacker.applyMechHit({ ...damage.self, source: damage.source, attackerUuid: damage.attackerUuid });
-    return;
+  switch ( damage.kind ) {
+    case "fall":
+    case "crash":
+    case "control":
+      return recipient.pilotingFailure(damage.kind);
+    case "regainControl":
+      return recipient.update({ "system.status.outOfControl": false });
+    case "mixed":
+      return rollHitType(state);
+    case "hitType":
+      return applyHitType(state, recipient, resolveState(state).success);
+    case "mech": {
+      await recipient.applyUnitHit(damage);
+      const attacker = damage.self && damage.attackerUuid ? await fromUuid(damage.attackerUuid) : null;
+      if ( attacker ) await attacker.applyUnitHit({ ...damage.self, source: damage.source, attackerUuid: damage.attackerUuid });
+      return;
+    }
+    case "smallArms":
+      return recipient.applySmallArms(damage);
   }
   return recipient.applyPersonalDamage(damage, {
     source: damage.source ?? state.label, mechScale: !!damage.mechScale, ignoreArmor: !!damage.ignoreArmor

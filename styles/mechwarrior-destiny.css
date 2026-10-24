@@ -739,6 +739,7 @@
 .mwd-edge-controls,
 .mwd-target-edge-controls,
 .mwd-apply-controls,
+.mwd-hittype-controls,
 .mwd-kia-controls {
   margin-top: 6px;
   padding-top: 4px;
@@ -746,6 +747,7 @@
 }
 
 .mwd-apply-controls button,
+.mwd-hittype-controls button,
 .mwd-kia-controls button {
   width: 100%;
   font-size: 0.85em;
@@ -1019,4 +1021,28 @@
 .mwd-piloting-controls button {
   width: 100%;
   font-size: 0.85em;
+}
+
+/* Vehicle and fighter Armor Diagrams (p. 46) */
+.mechwarrior-destiny .mwd-diagram-vehicle {
+  grid-template-areas: ". front ." "rightSide turret leftSide" ". rear .";
+}
+
+.mechwarrior-destiny .mwd-diagram-fighter {
+  grid-template-areas: ". nose ." "rightWing . leftWing" ". aft .";
+}
+
+.mechwarrior-destiny .mwd-location-front { grid-area: front; }
+.mechwarrior-destiny .mwd-location-rightSide { grid-area: rightSide; }
+.mechwarrior-destiny .mwd-location-leftSide { grid-area: leftSide; }
+.mechwarrior-destiny .mwd-location-rear { grid-area: rear; }
+.mechwarrior-destiny .mwd-location-turret,
+.mechwarrior-destiny .mwd-location-rotor { grid-area: turret; }
+.mechwarrior-destiny .mwd-location-nose { grid-area: nose; }
+.mechwarrior-destiny .mwd-location-rightWing { grid-area: rightWing; }
+.mechwarrior-destiny .mwd-location-leftWing { grid-area: leftWing; }
+.mechwarrior-destiny .mwd-location-aft { grid-area: aft; }
+
+.mechwarrior-destiny .mwd-fighter-structure {
+  margin-top: 6px;
 }

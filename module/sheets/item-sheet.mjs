@@ -1,6 +1,6 @@
 import {
-  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_LOCATIONS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID,
-  TRAIT_EFFECTS, TRAIT_POLARITIES
+  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID,
+  TRAIT_EFFECTS, TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
 
@@ -40,6 +40,8 @@ export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     const context = await super._prepareContext(options);
     const item = this.document;
     const localizeAll = obj => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, game.i18n.localize(v.label ?? v)]));
+    const unitType = item.parent?.type;
+    const unitLocations = UNIT_TYPES[unitType]?.locations ?? Object.keys(UNIT_LOCATIONS);
     Object.assign(context, {
       item,
       system: item.system,
@@ -57,10 +59,14 @@ export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
       rangeCodes: { ...RANGE_CODES },
       polarities: localizeAll(TRAIT_POLARITIES),
       traitEffects: localizeAll(TRAIT_EFFECTS),
-      mechLocations: Object.entries(MECH_LOCATIONS).map(([key, cfg]) => ({
-        key, label: game.i18n.localize(cfg.label), checked: !!item.system.mounts?.[key]
+      mechLocations: unitLocations.map(key => ({
+        key, label: game.i18n.localize(UNIT_LOCATIONS[key].label), checked: !!item.system.mounts?.[key]
       })),
-      mechLocationChoices: { "": game.i18n.localize("MWD.Mech.Location.none"), ...localizeAll(MECH_LOCATIONS) },
+      mechLocationChoices: {
+        "": game.i18n.localize("MWD.Mech.Location.none"),
+        ...Object.fromEntries(unitLocations.map(k => [k, game.i18n.localize(UNIT_LOCATIONS[k].label)]))
+      },
+      isFighterWeapon: unitType === "fighter",
       mechRanges: Object.entries(MECH_RANGES).map(([key, label]) => ({
         key, label: game.i18n.localize(label), value: item.system.ranges?.[key]
       })),

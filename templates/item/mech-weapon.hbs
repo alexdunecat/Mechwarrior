@@ -18,6 +18,14 @@
     <input type="text" name="system.types" value="{{system.types}}" placeholder="E, M">
   </div>
   <div class="form-group">
+    <label>{{localize "MWD.Mech.Weapon.Count"}}</label>
+    <input type="number" name="system.count" value="{{system.count}}" min="1">
+    <p class="hint">{{localize "MWD.Mech.Weapon.CountHint"}}</p>
+  </div>
+  {{#if isFighterWeapon}}
+  <label class="checkbox"><input type="checkbox" name="system.bomb" {{checked system.bomb}}> {{localize "MWD.Mech.Weapon.Bomb"}}</label>
+  {{/if}}
+  <div class="form-group">
     <label>{{localize "MWD.Mech.Weapon.Heat"}}</label>
     <input type="number" name="system.heat" value="{{system.heat}}" min="0" max="6">
   </div>

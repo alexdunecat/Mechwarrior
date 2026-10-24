@@ -1,7 +1,7 @@
 <div class="mwd-dialog-body">
   <p><strong>{{weapon.name}}</strong> — {{localize "MWD.Weapon.Damage"}} {{weapon.system.damageLabel}} · {{localize "MWD.Mech.Weapon.Heat"}} {{weapon.system.heatLabel}} · {{localize "MWD.Mech.Attack.Gunnery"}} {{mwdSigned gunnery}}</p>
   {{#if targets.length}}
-  <p>{{localize "MWD.Attack.Targets"}}: {{#each targets}}<span class="mwd-tag">{{name}} ({{mwdSigned defense}}){{#if disengaged}} · {{localize "MWD.Mech.Status.disengaged"}}{{/if}}</span> {{/each}}</p>
+  <p>{{localize "MWD.Attack.Targets"}}: {{#each targets}}<span class="mwd-tag">{{name}} ({{mwdSigned defense}}){{#if disengaged}} · {{localize "MWD.Unit.Status.disengaged"}}{{/if}}{{#if person}} · {{localize "MWD.Mixed.SmallTargetShort"}}{{/if}}</span> {{/each}}</p>
   {{else}}
   <p class="hint">{{localize "MWD.Mech.Attack.NoTarget"}}</p>
   <div class="form-group">

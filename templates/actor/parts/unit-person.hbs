@@ -1,0 +1,24 @@
+<div class="mwd-pilot-row" data-uuid="{{person.uuid}}">
+  <img class="mwd-portrait small" src="{{person.img}}" alt="{{person.name}}">
+  <div class="mwd-pilot-stats">
+    <a class="mwd-pp-name" data-action="openPilot">{{person.name}}</a>
+    {{#if person.unconscious}}<span class="mwd-badge negative">{{localize "MWD.Mech.Pilot.Unconscious"}}</span>{{/if}}
+    <div class="mwd-muted">
+      {{localize "MWD.Mech.Attack.Gunnery"}} {{mwdSigned person.gunnery}} ·
+      {{localize "MWD.Mech.Pilot.Piloting"}} {{mwdSigned person.piloting}} ·
+      {{localize "MWD.Condition.physical"}} {{person.physical}}{{#if person.wounds}} ({{mwdSigned person.wounds}}){{/if}}
+      {{#if person.edge}} · {{localize "MWD.Edge.label"}} {{person.edge}}{{/if}}
+      {{#if (ne person.plotPoints null)}} · {{localize "MWD.PlotPoints.label"}} {{person.plotPoints}}{{/if}}
+    </div>
+  </div>
+  {{#if person.conCheck}}
+  <button type="button" class="mwd-button" data-action="conCheck" data-tooltip="MWD.Con.Hint"><i class="fa-solid fa-dice"></i> {{localize "MWD.Con.Label" n=person.conCheck}}</button>
+  {{/if}}
+  {{#if editable}}
+  {{#if isPilot}}
+  <button type="button" class="mwd-button" data-action="leavePilot"><i class="fa-solid fa-person-walking-arrow-right"></i> {{localize "MWD.Mech.Pilot.Leave"}}</button>
+  {{else}}
+  <button type="button" class="mwd-button" data-action="removeCrew"><i class="fa-solid fa-person-walking-arrow-right"></i> {{localize "MWD.Unit.Crew.Remove"}}</button>
+  {{/if}}
+  {{/if}}
+</div>

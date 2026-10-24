@@ -17,7 +17,7 @@
         <span class="mwd-col-name mwd-muted">{{localize "MWD.Hardware.Missing"}}</span>
         {{else}}
         <img class="mwd-portrait tiny" src="{{img}}" alt="{{name}}">
-        <a class="mwd-col-name" data-action="openHardware">{{name}} <span class="mwd-muted">{{model}} · {{weight}}</span></a>
+        <a class="mwd-col-name" data-action="openHardware">{{name}} <span class="mwd-muted">{{type}} · {{model}} · {{weight}}</span></a>
         {{#if piloting}}<span class="mwd-badge">{{localize "MWD.Hardware.Piloting"}}</span>{{/if}}
         {{#if pilotName}}<span class="mwd-muted">{{localize "MWD.Hardware.PilotedBy" name=pilotName}}</span>{{/if}}
         {{/if}}

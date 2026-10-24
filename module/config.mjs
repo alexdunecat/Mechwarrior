@@ -236,7 +236,8 @@ export const PHYSICAL_ATTACKS = {
   kick: { label: "MWD.Mech.Physical.kick", table: "kick" },
   push: { label: "MWD.Mech.Physical.push", table: null },
   charge: { label: "MWD.Mech.Physical.charge", table: "standard", movement: true },
-  dfa: { label: "MWD.Mech.Physical.dfa", table: "punch", movement: true }
+  dfa: { label: "MWD.Mech.Physical.dfa", table: "punch", movement: true },
+  ram: { label: "MWD.Mech.Physical.ram", table: "kick", movement: true }
 };
 
 /** Kinds of 'Mech equipment the rules look at. */
@@ -254,3 +255,98 @@ export const MECH_TARGET_NUMBER = 8;
 
 /** Natural 2D6 needed to hit a Disengaged unit (p. 41). */
 export const DISENGAGED_TARGET = 11;
+
+/* -------------------------------------------- */
+/*  Combat vehicles and aerospace fighters      */
+/* -------------------------------------------- */
+
+/** Combat vehicle locations with the 2D6 results that hit them (p. 46 Armor Diagram). */
+export const VEHICLE_LOCATIONS = {
+  front: { label: "MWD.Vehicle.Location.front", abbr: "MWD.Vehicle.Location.frontAbbr", rolls: "2, 4, 7" },
+  rightSide: { label: "MWD.Vehicle.Location.rightSide", abbr: "MWD.Vehicle.Location.rightSideAbbr", rolls: "5–6", side: true },
+  leftSide: { label: "MWD.Vehicle.Location.leftSide", abbr: "MWD.Vehicle.Location.leftSideAbbr", rolls: "8–9", side: true },
+  rear: { label: "MWD.Vehicle.Location.rear", abbr: "MWD.Vehicle.Location.rearAbbr", rolls: "3" },
+  turret: { label: "MWD.Vehicle.Location.turret", abbr: "MWD.Vehicle.Location.turretAbbr", rolls: "10–12" },
+  rotor: { label: "MWD.Vehicle.Location.rotor", abbr: "MWD.Vehicle.Location.rotorAbbr", rolls: "10–12" }
+};
+
+/** 2D6 hit location table for combat vehicles; 10–12 hit the turret, or the rotor of a VTOL. */
+export const VEHICLE_HIT_TABLE = {
+  2: "front", 3: "rear", 4: "front", 5: "rightSide", 6: "rightSide", 7: "front",
+  8: "leftSide", 9: "leftSide", 10: "turret", 11: "turret", 12: "turret"
+};
+
+/** Motive types (vehicle Tags, p. 44). Every type but VTOL risks motive damage when hit. */
+export const VEHICLE_MOTIVE = {
+  tracked: "MWD.Vehicle.Motive.tracked",
+  wheeled: "MWD.Vehicle.Motive.wheeled",
+  hover: "MWD.Vehicle.Motive.hover",
+  vtol: "MWD.Vehicle.Motive.vtol"
+};
+
+/** Aerospace fighter locations with the 2D6 results that hit them (fighter Armor Diagram). */
+export const FIGHTER_LOCATIONS = {
+  nose: { label: "MWD.Fighter.Location.nose", abbr: "MWD.Fighter.Location.noseAbbr", rolls: "2, 7, 12" },
+  rightWing: { label: "MWD.Fighter.Location.rightWing", abbr: "MWD.Fighter.Location.rightWingAbbr", rolls: "4–6" },
+  leftWing: { label: "MWD.Fighter.Location.leftWing", abbr: "MWD.Fighter.Location.leftWingAbbr", rolls: "8–10" },
+  aft: { label: "MWD.Fighter.Location.aft", abbr: "MWD.Fighter.Location.aftAbbr", rolls: "3, 11" }
+};
+
+/** 2D6 hit location table for aerospace fighters. */
+export const FIGHTER_HIT_TABLE = {
+  2: "nose", 3: "aft", 4: "rightWing", 5: "rightWing", 6: "rightWing", 7: "nose",
+  8: "leftWing", 9: "leftWing", 10: "leftWing", 11: "aft", 12: "nose"
+};
+
+/** Every 'Mech-Scale location, keyed for weapon mounts and equipment of any unit type. */
+export const UNIT_LOCATIONS = { ...MECH_LOCATIONS, ...VEHICLE_LOCATIONS, ...FIGHTER_LOCATIONS };
+
+/**
+ * 'Mech-Scale unit types: the locations on their Armor Diagram, their sheet statuses, the Gunnery
+ * and Piloting specialty their crew uses and whether they track Heat.
+ */
+export const UNIT_TYPES = {
+  mech: {
+    locations: MECH_LOCATION_KEYS,
+    statuses: ["prone", "jumped", "shutdown", "disengaged", "destroyed"],
+    specialty: "mech",
+    heat: true,
+    defaultMount: "torso"
+  },
+  vehicle: {
+    locations: Object.keys(VEHICLE_LOCATIONS),
+    statuses: ["stunned", "disengaged", "destroyed"],
+    specialty: "vehicle",
+    heat: false,
+    defaultMount: "front"
+  },
+  fighter: {
+    locations: Object.keys(FIGHTER_LOCATIONS),
+    statuses: ["shutdown", "outOfControl", "atmosphere", "disengaged", "destroyed"],
+    specialty: "aero",
+    heat: true,
+    defaultMount: "nose"
+  }
+};
+
+/** Physical damage to everyone aboard from a vehicle crew compartment hit or fighter cockpit hit (p. 45). */
+export const CREW_HIT_DAMAGE = 3;
+
+/** Physical damage per point of Movement spent when a vehicle crashes or a fighter goes down (p. 49). */
+export const CRASH_DAMAGE_PER_MOVEMENT = 3;
+
+/* -------------------------------------------- */
+/*  Mixed-scale combat                          */
+/* -------------------------------------------- */
+
+/** Attack modifier for a 'Mech-Scale weapon against a single person (p. 65). */
+export const MIXED_SMALL_TARGET = -2;
+
+/** Attack modifier for a person attacking a 'Mech-Scale unit from Close range (p. 66). */
+export const MIXED_LARGE_TARGET = 2;
+
+/** 'Mech-Scale damage is multiplied by this for an indirect hit on a person (p. 66). */
+export const MIXED_DAMAGE_MULTIPLIER = 10;
+
+/** Personal-scale damage that adds up to 1 point of 'Mech-Scale damage (p. 66). */
+export const MIXED_DAMAGE_THRESHOLD = 20;
