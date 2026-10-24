@@ -1,0 +1,28 @@
+{{!-- Generic list of simple items. Expects: items, type, title, addLabel, emptyLabel --}}
+<section class="mwd-block">
+  <header class="mwd-block-header">
+    <h3>{{localize title}}</h3>
+    {{#if @root.editable}}
+    <a class="mwd-icon-button" data-action="createItem" data-type="{{type}}" data-tooltip="{{addLabel}}"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </header>
+  <ol class="mwd-list">
+    {{#each items as |item|}}
+    <li class="mwd-list-row draggable" data-item-id="{{item.id}}">
+      <span class="mwd-col-name">
+        {{item.name}}
+        {{#if (eq item.type "trait")}}
+        <span class="mwd-badge {{item.system.polarity}}">{{#if item.system.modifier}}{{mwdSigned item.system.modifier}}{{else}}{{localize (concat "MWD.Trait." item.system.polarity)}}{{/if}}</span>
+        {{#if item.system.appliesTo}}<span class="mwd-muted">{{item.system.appliesTo}}</span>{{/if}}
+        {{/if}}
+      </span>
+      <span class="mwd-col-controls">
+        <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
+        {{#if @root.editable}}<a data-action="deleteItem" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+      </span>
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize emptyLabel}}</li>
+    {{/each}}
+  </ol>
+</section>

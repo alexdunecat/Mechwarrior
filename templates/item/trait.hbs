@@ -1,0 +1,16 @@
+<div class="mwd-item-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Trait.Polarity"}}</label>
+    <select name="system.polarity">{{selectOptions polarities selected=system.polarity}}</select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Trait.Modifier"}}</label>
+    <input type="number" name="system.modifier" value="{{system.modifier}}" min="-3" max="3">
+    <p class="hint">{{localize "MWD.Trait.ModifierHint"}}</p>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Trait.AppliesTo"}}</label>
+    <input type="text" name="system.appliesTo" value="{{system.appliesTo}}">
+  </div>
+  {{> "systems/mechwarrior-destiny/templates/item/description.hbs"}}
+</div>

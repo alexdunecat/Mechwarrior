@@ -1,0 +1,743 @@
+/* MechWarrior: Destiny — sheet and chat styles */
+
+.mechwarrior-destiny {
+  --mwd-bg: #f3f1ec;
+  --mwd-panel: #ffffff;
+  --mwd-ink: #1f2328;
+  --mwd-muted: #6b6f76;
+  --mwd-line: #c9c5bb;
+  --mwd-accent: #c8561e;
+  --mwd-accent-ink: #ffffff;
+  --mwd-steel: #2e3440;
+  --mwd-physical: #b3261e;
+  --mwd-fatigue: #d29b00;
+  --mwd-armor: #3b6ea8;
+  --mwd-edge: #2f8a4c;
+  --mwd-success: #2f8a4c;
+  --mwd-failure: #b3261e;
+}
+
+/* ---------- Sheets ---------- */
+
+.mechwarrior-destiny.mwd-sheet .window-content {
+  background: var(--mwd-bg);
+  color: var(--mwd-ink);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mechwarrior-destiny.mwd-sheet input,
+.mechwarrior-destiny.mwd-sheet select,
+.mechwarrior-destiny.mwd-sheet textarea {
+  color: var(--mwd-ink);
+  background: var(--mwd-panel);
+  border: 1px solid var(--mwd-line);
+}
+
+.mechwarrior-destiny .mwd-header {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--mwd-steel);
+  color: #f0f0f0;
+  border-bottom: 3px solid var(--mwd-accent);
+}
+
+.mechwarrior-destiny .mwd-portrait {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border: 2px solid var(--mwd-accent);
+  border-radius: 4px;
+  background: #11151a;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.mechwarrior-destiny .mwd-portrait.small {
+  width: 56px;
+  height: 56px;
+}
+
+.mechwarrior-destiny .mwd-header-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mechwarrior-destiny .mwd-header .mwd-name {
+  font-size: 1.5em;
+  font-weight: 700;
+  height: auto;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #5b6372;
+  color: #ffffff;
+}
+
+.mechwarrior-destiny .mwd-header input,
+.mechwarrior-destiny .mwd-header select {
+  background: #3b4252;
+  color: #f0f0f0;
+  border-color: #4c566a;
+}
+
+.mechwarrior-destiny .mwd-header .mwd-muted {
+  color: #b8bec9;
+}
+
+.mechwarrior-destiny .mwd-header-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.mechwarrior-destiny .mwd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mechwarrior-destiny .mwd-field > span {
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mwd-muted);
+}
+
+.mechwarrior-destiny .mwd-header .mwd-field > span {
+  color: #b8bec9;
+}
+
+.mechwarrior-destiny .mwd-field-narrow { flex: 0 0 170px; }
+.mechwarrior-destiny .mwd-field-xs { flex: 0 0 70px; }
+
+.mechwarrior-destiny .mwd-field-inline {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.mechwarrior-destiny .mwd-field-inline > span {
+  flex: 0 0 130px;
+}
+
+.mechwarrior-destiny .mwd-resources {
+  align-items: center;
+}
+
+.mechwarrior-destiny .mwd-resource {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+.mechwarrior-destiny .mwd-resource-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+}
+
+.mechwarrior-destiny .mwd-tokens {
+  display: flex;
+  gap: 3px;
+}
+
+.mechwarrior-destiny .mwd-token {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--mwd-accent);
+}
+
+.mechwarrior-destiny .mwd-token.filled {
+  background: var(--mwd-accent);
+}
+
+.mechwarrior-destiny .mwd-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  line-height: 1;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.mechwarrior-destiny .mwd-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: auto;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--mwd-accent);
+  background: var(--mwd-accent);
+  color: var(--mwd-accent-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mechwarrior-destiny .mwd-button.mwd-danger {
+  background: var(--mwd-physical);
+  border-color: var(--mwd-physical);
+}
+
+.mechwarrior-destiny .mwd-roll-test {
+  margin-left: auto;
+}
+
+.mechwarrior-destiny .mwd-wounds {
+  color: var(--mwd-physical);
+  font-weight: 700;
+}
+
+.mechwarrior-destiny .mwd-header .mwd-wounds {
+  color: #ff8a80;
+}
+
+.mechwarrior-destiny .mwd-muted { color: var(--mwd-muted); }
+.mechwarrior-destiny .mwd-small { font-size: 0.85em; }
+
+/* Tabs */
+.mechwarrior-destiny.mwd-sheet nav.tabs {
+  background: #e4e0d6;
+  border-bottom: 1px solid var(--mwd-line);
+  margin: 0;
+  padding: 0 8px;
+}
+
+.mechwarrior-destiny.mwd-sheet nav.tabs a {
+  color: var(--mwd-ink);
+  padding: 6px 10px;
+}
+
+.mechwarrior-destiny.mwd-sheet nav.tabs a.active {
+  border-bottom: 3px solid var(--mwd-accent);
+  text-shadow: none;
+}
+
+.mechwarrior-destiny .mwd-tab,
+.mechwarrior-destiny .mwd-npc,
+.mechwarrior-destiny .mwd-item-body {
+  padding: 10px 12px;
+  overflow-y: auto;
+}
+
+.mechwarrior-destiny .mwd-npc {
+  padding: 0;
+}
+
+.mechwarrior-destiny .mwd-npc > .mwd-attributes,
+.mechwarrior-destiny .mwd-npc > .mwd-columns,
+.mechwarrior-destiny .mwd-npc > .mwd-block {
+  margin: 10px 12px;
+}
+
+.mechwarrior-destiny .tab:not(.active) {
+  display: none;
+}
+
+/* Attributes */
+.mechwarrior-destiny .mwd-attributes {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mechwarrior-destiny .mwd-attribute {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  background: var(--mwd-panel);
+  border: 1px solid var(--mwd-line);
+  border-top: 3px solid var(--mwd-steel);
+  border-radius: 4px;
+  position: relative;
+}
+
+.mechwarrior-destiny .mwd-attribute-label {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  color: var(--mwd-steel);
+}
+
+.mechwarrior-destiny .mwd-attribute-label:hover,
+.mechwarrior-destiny .mwd-rollable:hover {
+  color: var(--mwd-accent);
+  text-shadow: none;
+}
+
+.mechwarrior-destiny input.mwd-attribute-value {
+  width: 3em;
+  text-align: center;
+  font-size: 1.6em;
+  font-weight: 700;
+  height: auto;
+  border: none;
+  background: transparent;
+}
+
+.mechwarrior-destiny .mwd-attribute-total {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.85em;
+  color: var(--mwd-physical);
+  font-weight: 700;
+}
+
+/* Layout */
+.mechwarrior-destiny .mwd-columns {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.mechwarrior-destiny .mwd-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mechwarrior-destiny .mwd-column-narrow {
+  flex: 0 0 270px;
+}
+
+.mechwarrior-destiny .mwd-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mechwarrior-destiny .mwd-block {
+  background: var(--mwd-panel);
+  border: 1px solid var(--mwd-line);
+  border-radius: 4px;
+  padding: 6px 8px 8px;
+}
+
+.mechwarrior-destiny .mwd-block + .mwd-block {
+  margin-top: 0;
+}
+
+.mechwarrior-destiny .mwd-tab > .mwd-block {
+  margin-bottom: 10px;
+}
+
+.mechwarrior-destiny .mwd-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--mwd-accent);
+  margin-bottom: 6px;
+}
+
+.mechwarrior-destiny .mwd-block-header h3 {
+  margin: 0;
+  border: none;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mwd-steel);
+}
+
+.mechwarrior-destiny .mwd-block textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.mechwarrior-destiny prose-mirror {
+  min-height: 80px;
+}
+
+/* Lists */
+.mechwarrior-destiny .mwd-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mechwarrior-destiny .mwd-list-head,
+.mechwarrior-destiny .mwd-list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 2px;
+}
+
+.mechwarrior-destiny .mwd-list-head {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  color: var(--mwd-muted);
+  letter-spacing: 0.04em;
+}
+
+.mechwarrior-destiny .mwd-list-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.mechwarrior-destiny .mwd-col-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mechwarrior-destiny .mwd-col-num {
+  flex: 0 0 48px;
+  text-align: center;
+}
+
+.mechwarrior-destiny input.mwd-col-num {
+  height: 22px;
+  padding: 0;
+}
+
+.mechwarrior-destiny .mwd-col-controls {
+  flex: 0 0 40px;
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.mechwarrior-destiny .mwd-col-toggle {
+  flex: 0 0 18px;
+  color: var(--mwd-armor);
+}
+
+.mechwarrior-destiny .mwd-bonus {
+  font-weight: 700;
+}
+
+.mechwarrior-destiny .mwd-empty {
+  color: var(--mwd-muted);
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+.mechwarrior-destiny .mwd-badge {
+  display: inline-block;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: #ffffff;
+  background: var(--mwd-muted);
+}
+
+.mechwarrior-destiny .mwd-badge.positive { background: var(--mwd-success); }
+.mechwarrior-destiny .mwd-badge.negative { background: var(--mwd-failure); }
+
+.mechwarrior-destiny .mwd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.mechwarrior-destiny .mwd-tag {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--mwd-steel);
+  color: #ffffff;
+  font-size: 0.85em;
+}
+
+/* Pips */
+.mechwarrior-destiny .mwd-pips {
+  display: inline-flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.mechwarrior-destiny .mwd-pip {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--mwd-steel);
+  background: var(--mwd-panel);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  cursor: pointer;
+}
+
+.mechwarrior-destiny .mwd-pip.blocked {
+  background: repeating-linear-gradient(45deg, #9a9a9a 0 3px, #d6d6d6 3px 6px);
+  cursor: default;
+}
+
+.mechwarrior-destiny .mwd-pip.physical.filled { background: var(--mwd-physical); }
+.mechwarrior-destiny .mwd-pip.fatigue.filled { background: var(--mwd-fatigue); }
+.mechwarrior-destiny .mwd-pip.armor.filled { background: #9aa7b8; }
+.mechwarrior-destiny .mwd-pip.armor:not(.filled) { background: var(--mwd-armor); }
+.mechwarrior-destiny .mwd-pip.edge { border-radius: 50%; clip-path: none; border-color: var(--mwd-edge); }
+.mechwarrior-destiny .mwd-header .mwd-pip.edge { background: var(--mwd-edge); }
+.mechwarrior-destiny .mwd-header .mwd-pip.edge.filled { background: transparent; }
+.mechwarrior-destiny .mwd-pip.final { width: 18px; height: 18px; }
+
+/* Condition monitor */
+.mechwarrior-destiny .mwd-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mechwarrior-destiny .mwd-track h4 {
+  margin: 0 0 2px;
+  border: none;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mechwarrior-destiny .mwd-track-physical h4 { color: var(--mwd-physical); }
+.mechwarrior-destiny .mwd-track-fatigue h4 { color: #9a7200; }
+
+.mechwarrior-destiny .mwd-track-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+}
+
+.mechwarrior-destiny .mwd-track-row .mwd-pips {
+  flex: 0 0 62px;
+}
+
+.mechwarrior-destiny .mwd-track-row.filled .mwd-track-label {
+  font-weight: 700;
+}
+
+.mechwarrior-destiny .mwd-track-end .mwd-button {
+  padding: 1px 6px;
+  font-size: 0.85em;
+}
+
+/* Armor */
+.mechwarrior-destiny .mwd-armor-worn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+/* Item sheet */
+.mechwarrior-destiny.item .window-content {
+  overflow-y: auto;
+}
+
+.mechwarrior-destiny .mwd-item-body .form-group {
+  margin-bottom: 6px;
+}
+
+.mechwarrior-destiny .mwd-ranges label,
+.mechwarrior-destiny .mwd-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mechwarrior-destiny .mwd-skill-bonus {
+  margin: 6px 0;
+}
+
+/* Dialogs */
+.mechwarrior-destiny.mwd-dialog .mwd-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mechwarrior-destiny.mwd-dialog fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ---------- Chat card ---------- */
+
+.mwd-card {
+  --mwd-success: #2f8a4c;
+  --mwd-failure: #b3261e;
+  --mwd-edge: #2f8a4c;
+  border-left: 4px solid var(--mwd-failure);
+  padding-left: 6px;
+}
+
+.mwd-card.success {
+  border-left-color: var(--mwd-success);
+}
+
+.mwd-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mwd-card-header h3 {
+  margin: 0;
+  border: none;
+  font-size: 1.1em;
+}
+
+.mwd-card .mwd-badge {
+  padding: 0 5px;
+  border-radius: 8px;
+  font-size: 0.75em;
+  color: #ffffff;
+  background: var(--mwd-failure);
+}
+
+.mwd-card-roll {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.mwd-card-side {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "caption caption" "dice total" "bonus total";
+  align-items: center;
+  padding: 4px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.mwd-card-caption {
+  grid-area: caption;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.mwd-card-side .mwd-dice { grid-area: dice; }
+.mwd-card-bonus { grid-area: bonus; font-size: 0.85em; opacity: 0.8; }
+
+.mwd-card-total {
+  grid-area: total;
+  font-size: 1.6em;
+  font-weight: 700;
+  padding-left: 6px;
+}
+
+.mwd-card-vs {
+  align-self: center;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+.mwd-dice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.mwd-die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.6);
+  color: #1f2328;
+}
+
+.mwd-card-parts summary {
+  cursor: pointer;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.mwd-card-parts ul {
+  list-style: none;
+  margin: 2px 0;
+  padding: 0;
+}
+
+.mwd-card-parts li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85em;
+}
+
+.mwd-card-result {
+  margin-top: 4px;
+  font-size: 1.15em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--mwd-failure);
+}
+
+.mwd-card.success .mwd-card-result {
+  color: var(--mwd-success);
+}
+
+.mwd-card-note {
+  display: block;
+  font-size: 0.75em;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.mwd-card-edge-used {
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: var(--mwd-edge);
+}
+
+.mwd-edge-controls {
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.25);
+}
+
+.mwd-edge-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 3px;
+}
+
+.mwd-edge-buttons button {
+  font-size: 0.75em;
+  line-height: 1.2;
+  padding: 2px;
+  height: auto;
+  min-height: 22px;
+}

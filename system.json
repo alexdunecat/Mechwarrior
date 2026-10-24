@@ -1,0 +1,47 @@
+{
+  "id": "mechwarrior-destiny",
+  "title": "MechWarrior: Destiny",
+  "description": "Unofficial game system for MechWarrior: Destiny (Cue System) by Catalyst Game Labs.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.351"
+  },
+  "authors": [
+    { "name": "alexdunecat" }
+  ],
+  "esmodules": ["module/mechwarrior-destiny.mjs"],
+  "styles": ["styles/mechwarrior-destiny.css"],
+  "languages": [
+    { "lang": "en", "name": "English", "path": "lang/en.json" },
+    { "lang": "ru", "name": "Русский", "path": "lang/ru.json" }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": { "htmlFields": ["notes", "biography.history", "biography.personality"] },
+      "npc": { "htmlFields": ["notes"] }
+    },
+    "Item": {
+      "skill": { "htmlFields": ["description"] },
+      "trait": { "htmlFields": ["description"] },
+      "weapon": { "htmlFields": ["description"] },
+      "armor": { "htmlFields": ["description"] },
+      "gear": { "htmlFields": ["description"] }
+    }
+  },
+  "grid": {
+    "type": 1,
+    "distance": 1,
+    "units": ""
+  },
+  "primaryTokenAttribute": "plotPoints",
+  "url": "https://github.com/alexdunecat/Mechwarrior",
+  "manifest": "https://github.com/alexdunecat/Mechwarrior/releases/latest/download/system.json",
+  "download": "https://github.com/alexdunecat/Mechwarrior/releases/download/v0.1.0/system.zip",
+  "flags": {
+    "hotReload": {
+      "extensions": ["css", "hbs", "json"],
+      "paths": ["styles", "templates", "lang"]
+    }
+  }
+}

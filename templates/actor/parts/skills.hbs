@@ -1,0 +1,31 @@
+<section class="mwd-block">
+  <header class="mwd-block-header">
+    <h3>{{localize "MWD.Skill.plural"}}</h3>
+    {{#if editable}}
+    <a class="mwd-icon-button" data-action="addSkill" data-tooltip="MWD.Skill.Add"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </header>
+  <ol class="mwd-list mwd-skills">
+    <li class="mwd-list-head">
+      <span class="mwd-col-name">{{localize "MWD.Skill.Name"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Skill.Rank"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Skill.Attribute"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Skill.Bonus"}}</span>
+      <span class="mwd-col-controls"></span>
+    </li>
+    {{#each skills}}
+    <li class="mwd-list-row draggable" data-item-id="{{id}}">
+      <a class="mwd-col-name mwd-rollable" data-action="rollSkill"><i class="fa-solid fa-dice-d6"></i> {{name}}</a>
+      <input class="mwd-col-num" type="number" min="0" max="10" value="{{rank}}" data-item-field="system.rank" {{disabled (not @root.editable)}}>
+      <span class="mwd-col-num">+{{localize attributeAbbr}}</span>
+      <span class="mwd-col-num mwd-bonus">{{mwdSigned bonus}}</span>
+      <span class="mwd-col-controls">
+        <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
+        {{#if @root.editable}}<a data-action="deleteItem" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+      </span>
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize "MWD.Skill.None"}}</li>
+    {{/each}}
+  </ol>
+</section>

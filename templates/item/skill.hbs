@@ -1,0 +1,23 @@
+<div class="mwd-item-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Rank"}}</label>
+    <input type="number" name="system.rank" value="{{system.rank}}" min="0" max="10">
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Attribute"}}</label>
+    <select name="system.attribute">{{selectOptions attributes selected=system.attribute}}</select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Key"}}</label>
+    <select name="system.key">{{selectOptions skillKeys selected=system.key}}</select>
+    <p class="hint">{{localize "MWD.Skill.KeyHint"}}</p>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Specialty"}}</label>
+    <select name="system.specialty">{{selectOptions specialties selected=system.specialty}}</select>
+  </div>
+  {{#if item.actor}}
+  <p class="mwd-skill-bonus">{{localize "MWD.Skill.Bonus"}}: <strong>{{mwdSigned system.bonus}}</strong></p>
+  {{/if}}
+  {{> "systems/mechwarrior-destiny/templates/item/description.hbs"}}
+</div>

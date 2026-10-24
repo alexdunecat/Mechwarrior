@@ -1,0 +1,59 @@
+<div class="mwd-dialog-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Source"}}</label>
+    <select name="source">
+      {{#if skills.length}}
+      <optgroup label="{{localize 'MWD.Test.OwnSkills'}}">
+        {{#each skills}}<option value="{{value}}" {{#if (eq value @root.source)}}selected{{/if}}>{{label}}</option>{{/each}}
+      </optgroup>
+      {{/if}}
+      <optgroup label="{{localize 'MWD.Test.AttributeOnly'}}">
+        <option value="{{attributeSource}}" {{#if (eq attributeSource source)}}selected{{/if}}>{{localize "MWD.Test.AttributePair"}}</option>
+      </optgroup>
+      <optgroup label="{{localize 'MWD.Test.Untrained'}}">
+        {{#each untrained}}<option value="{{value}}" {{#if (eq value @root.source)}}selected{{/if}}>{{label}}</option>{{/each}}
+      </optgroup>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Attributes"}}</label>
+    <div class="form-fields">
+      <select name="attribute">
+        {{#each attributes}}<option value="{{value}}" {{#if (eq value @root.attribute)}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+      <span>+</span>
+      <select name="attribute2">
+        {{#each attributes}}<option value="{{value}}" {{#if (eq value @root.attribute2)}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </div>
+    <p class="hint">{{localize "MWD.Test.AttributesHint"}}</p>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Difficulty"}}</label>
+    <select name="difficulty">
+      {{#each difficulties}}<option value="{{value}}" {{#if (eq value @root.difficulty)}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Modifier"}}</label>
+    <input type="number" name="modifier" value="0" min="-3" max="3" step="1">
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Test.Helpers"}}</label>
+    <input type="number" name="helpers" value="0" min="0" step="1">
+  </div>
+  {{#if traits.length}}
+  <fieldset>
+    <legend>{{localize "MWD.Trait.plural"}}</legend>
+    {{#each traits}}
+    <label class="checkbox">
+      <input type="checkbox" name="trait.{{id}}">
+      {{name}} ({{mwdSigned modifier}}){{#if appliesTo}} — <span class="mwd-muted">{{appliesTo}}</span>{{/if}}
+    </label>
+    {{/each}}
+  </fieldset>
+  {{/if}}
+  {{#if woundModifier}}
+  <p class="mwd-wounds">{{localize "MWD.Test.WoundsApplied" mod=(mwdSigned woundModifier)}}</p>
+  {{/if}}
+</div>

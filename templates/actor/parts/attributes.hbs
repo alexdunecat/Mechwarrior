@@ -1,0 +1,13 @@
+<section class="mwd-attributes">
+  {{#each attributes}}
+  {{#unless (and (eq key "edg") (eq @root.actor.type "npc"))}}
+  <div class="mwd-attribute">
+    <a class="mwd-attribute-label" data-action="rollAttribute" data-attribute="{{key}}" data-tooltip="{{label}}">
+      {{localize abbr}}
+    </a>
+    <input class="mwd-attribute-value" type="number" name="system.attributes.{{key}}.value" value="{{value}}" min="0" max="10">
+    {{#if modified}}<span class="mwd-attribute-total" data-tooltip="MWD.Attribute.Modified">{{total}}</span>{{/if}}
+  </div>
+  {{/unless}}
+  {{/each}}
+</section>
