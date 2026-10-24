@@ -1,0 +1,388 @@
+{
+  "TYPES": {
+    "Actor": {
+      "character": "Character",
+      "npc": "NPC"
+    },
+    "Item": {
+      "skill": "Skill",
+      "trait": "Trait",
+      "weapon": "Weapon",
+      "armor": "Armor",
+      "gear": "Inventory Item"
+    }
+  },
+  "MWD": {
+    "Sheet": {
+      "Character": "MechWarrior: Destiny character sheet",
+      "Npc": "MechWarrior: Destiny NPC sheet",
+      "Item": "MechWarrior: Destiny item sheet"
+    },
+    "Tab": {
+      "main": "Main",
+      "story": "Traits & Cues",
+      "bio": "Biography"
+    },
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Description": "Description",
+    "Notes": "Notes",
+    "NewItem": "New {type}",
+    "Attribute": {
+      "str": {
+        "long": "Strength",
+        "abbr": "STR"
+      },
+      "rfl": {
+        "long": "Reflexes",
+        "abbr": "RFL"
+      },
+      "int": {
+        "long": "Intelligence",
+        "abbr": "INT"
+      },
+      "wil": {
+        "long": "Willpower",
+        "abbr": "WIL"
+      },
+      "cha": {
+        "long": "Charisma",
+        "abbr": "CHA"
+      },
+      "edg": {
+        "long": "Edge",
+        "abbr": "EDG"
+      },
+      "Modified": "Value after armor penalties"
+    },
+    "Details": {
+      "label": "Vital Factors",
+      "faction": "Faction",
+      "experience": "Experience Level",
+      "rank": "Rank",
+      "age": "Age",
+      "height": "Height",
+      "weight": "Weight"
+    },
+    "Experience": {
+      "green": "Green",
+      "regular": "Regular",
+      "veteran": "Veteran",
+      "elite": "Elite"
+    },
+    "XP": {
+      "label": "XP",
+      "total": "Total XP earned"
+    },
+    "Tags": {
+      "label": "Tags",
+      "placeholder": "Comma-separated, e.g. Scout, Quick, Observant"
+    },
+    "Cues": {
+      "label": "Cues",
+      "placeholder": "One Cue per line"
+    },
+    "LifeModule": {
+      "plural": "Life Modules",
+      "faction": "Faction",
+      "childhood": "Childhood",
+      "education": "Higher Education",
+      "realLife": "Real Life"
+    },
+    "Bio": {
+      "history": "History",
+      "personality": "Personality",
+      "disposition": "Disposition",
+      "dispositionPlaceholder": "Short sentences, one per line"
+    },
+    "PlotPoints": {
+      "label": "Plot Points",
+      "spend": "Spend a Plot Point",
+      "gain": "Gain a Plot Point (max 5)",
+      "Open": "Plot Points panel",
+      "Use": {
+        "turnOrder": "Change turn order",
+        "doubleTime": "Double time it (two moves)",
+        "firstAid": "Patch up (heal 1 pip)",
+        "takeTheHit": "Take the hit for an ally",
+        "coldDish": "Free counterattack",
+        "twist": "Interject a twist",
+        "headHit": "Full head-hit damage",
+        "pushIt": "Free range shift",
+        "fightThrough": "+WIL to a Consciousness check",
+        "downgrade": "Downgrade a 'Mech hit on a person",
+        "support": "Battlefield Support",
+        "other": "Other"
+      },
+      "NoneLeft": "No Plot Points left.",
+      "Spent": "{name} spends a Plot Point: {use}",
+      "AtMax": "Already at 5 Plot Points.",
+      "Awarded": "{name} gains a Plot Point",
+      "GmSpent": "The GM spends a Plot Point",
+      "Take": "Take a Plot Point",
+      "Award": "Award a Plot Point",
+      "SpendButton": "Spend",
+      "NoCharacters": "No player characters. Assign characters to players in User Configuration.",
+      "GmPool": "GM pool"
+    },
+    "Edge": {
+      "label": "Edge",
+      "hint": "Edge spent this session. Click a pip to mark it; you may spend up to EDG points per session.",
+      "remaining": "{n} left",
+      "Spend": "Spend Edge",
+      "NoneLeft": "No Edge left this session, or Edge was already spent on this roll.",
+      "Reroll": {
+        "first": "My die 1",
+        "second": "My die 2",
+        "both": "Both my dice",
+        "highest": "Opponent's highest die",
+        "all": "All opponent's dice"
+      },
+      "Used": {
+        "first": "Edge: rerolled die 1",
+        "second": "Edge: rerolled die 2",
+        "both": "Edge: rerolled both dice",
+        "highest": "Edge: opponent rerolled the highest die",
+        "all": "Edge: opponent rerolled all dice"
+      },
+      "TargetUsed": "{name}: {how}",
+      "SpendDefender": "{name} spends Edge"
+    },
+    "Skill": {
+      "plural": "Skills",
+      "Add": "Add Skill",
+      "None": "No skills yet. Use + to add one from the Skills List.",
+      "Name": "Skill",
+      "Rank": "Rating",
+      "Attribute": "Attribute",
+      "Bonus": "Bonus",
+      "Key": "Skills List entry",
+      "KeyHint": "Links the skill to the book's Skills List so weapons and Tests can find it.",
+      "Specialty": "Hardware",
+      "SpecialtyHint": "Only for Gunnery and Piloting.",
+      "Subject": "Subject",
+      "SubjectHint": "Only for Knowledge skills.",
+      "SubjectPlaceholder": "e.g. Star League History",
+      "custom": "Custom",
+      "athletics": "Athletics",
+      "supportWeapons": "Support Weapons",
+      "escapeArtist": "Escape Artist",
+      "gunnery": "Gunnery",
+      "meleeCombat": "Melee Combat",
+      "piloting": "Piloting",
+      "projectileWeapons": "Projectile Weapons",
+      "smallArms": "Small Arms",
+      "stealth": "Stealth",
+      "zeroG": "Zero-G Operations",
+      "art": "Art",
+      "artillery": "Artillery",
+      "communications": "Communications",
+      "computers": "Computers",
+      "demolitions": "Demolitions",
+      "investigation": "Investigation",
+      "knowledge": "Knowledge",
+      "medtech": "MedTech",
+      "navigation": "Navigation",
+      "perception": "Perception",
+      "science": "Science",
+      "tactics": "Tactics",
+      "technician": "Technician",
+      "tracking": "Tracking",
+      "animalHandling": "Animal Handling",
+      "survival": "Survival",
+      "acting": "Acting",
+      "disguise": "Disguise",
+      "leadership": "Leadership",
+      "negotiation": "Negotiation",
+      "protocol": "Protocol",
+      "streetwise": "Streetwise",
+      "intimidation": "Intimidation"
+    },
+    "Specialty": {
+      "none": "—",
+      "mech": "BattleMech",
+      "vehicle": "Combat Vehicle",
+      "aero": "Aerospace Fighter"
+    },
+    "Trait": {
+      "plural": "Traits",
+      "Add": "Add Trait",
+      "None": "No traits yet.",
+      "positive": "Positive",
+      "negative": "Negative",
+      "Polarity": "Kind",
+      "Modifier": "Modifier",
+      "ModifierHint": "Offered as a checkbox in the Test dialog. Leave 0 for story-only traits.",
+      "AppliesTo": "Applies to",
+      "Effect": {
+        "label": "Rules effect",
+        "hint": "Applied automatically: Toughness takes 1 off each hit to the Condition Monitor, Pain Resistance ignores the –1 wound modifier.",
+        "none": "None",
+        "toughness": "Toughness",
+        "painResistance": "Pain Resistance"
+      },
+      "Initiative": "Initiative modifier",
+      "InitiativeHint": "Used only with rolled Initiative, e.g. Combat Sense +1."
+    },
+    "Weapon": {
+      "plural": "Personal Weaponry",
+      "Add": "Add Weapon",
+      "None": "No weapons.",
+      "Name": "Weapon",
+      "Damage": "Damage",
+      "Skill": "Attack Skill",
+      "Flags": "Properties",
+      "Fatigue": "Fatigue damage (F)",
+      "StrBonus": "Adds STR bonus",
+      "Support": "Support weapon",
+      "Ranges": "Ranges",
+      "Special": "Special"
+    },
+    "DamageType": {
+      "none": "—",
+      "B": "Ballistic (B)",
+      "E": "Energy (E)"
+    },
+    "Range": {
+      "close": "Close",
+      "near": "Near",
+      "far": "Far"
+    },
+    "Armor": {
+      "label": "Armor",
+      "Add": "Add Armor",
+      "None": "No armor.",
+      "Pips": "Armor pips",
+      "Damage": "lost",
+      "Reduce": "Damage reduction",
+      "RflPenalty": "RFL penalty",
+      "Options": "Options",
+      "Equipped": "Worn",
+      "Concealed": "Concealed"
+    },
+    "Gear": {
+      "plural": "Inventory",
+      "Add": "Add Item",
+      "None": "Nothing carried.",
+      "Hint": "Inventory items have no stats; use them as Cues for your Narrations."
+    },
+    "Condition": {
+      "label": "Condition Monitor",
+      "physical": "Physical",
+      "fatigue": "Fatigue",
+      "Blocked": "Crossed off by a low STR/WIL",
+      "Con": "CON",
+      "Staggered": "Staggered",
+      "Kia": "Killed in Action",
+      "Ko": "Knocked Out",
+      "KiaTest": "KIA Test",
+      "KiaHint": "EDG + EDG with no modifiers; starts Easy and gets harder each time.",
+      "KiaChecks": "KIA Tests made: {n}",
+      "KiaReset": "Reset KIA Tests (after healing)",
+      "Wounds": "Wounds",
+      "WoundsHint": "Worst row on each track, added together, applies to all rolls."
+    },
+    "Difficulty": {
+      "easy": "Easy",
+      "average": "Average",
+      "hard": "Hard"
+    },
+    "Test": {
+      "Button": "Test",
+      "Title": "Test: {name}",
+      "Roll": "Roll",
+      "Source": "Skill",
+      "OwnSkills": "Trained skills",
+      "AttributeOnly": "Attribute-only",
+      "AttributePair": "Attribute + Attribute (below)",
+      "Untrained": "Untrained (attribute only, Hard fails)",
+      "UntrainedBadge": "Untrained",
+      "UntrainedLabel": "{skill} (untrained)",
+      "Attributes": "Attributes",
+      "AttributesHint": "Used only for attribute-only Tests, e.g. RFL + RFL to catch an object.",
+      "Difficulty": "Difficulty",
+      "Modifier": "Situational modifier",
+      "Helpers": "Helpers (+1 each)",
+      "WoundsApplied": "Wound modifier {mod} is applied automatically."
+    },
+    "Chat": {
+      "Actor": "Roll",
+      "Opposing": "{difficulty}: {dice}D6",
+      "OpposingDice": "Opposing {dice}D6",
+      "Breakdown": "Bonus breakdown",
+      "Success": "Success",
+      "Failure": "Failure",
+      "KiaSurvived": "Survived",
+      "KiaDead": "Killed in Action",
+      "AutoFail": {
+        "natural2": "Natural 2 always fails",
+        "untrainedHard": "Untrained on a Hard Test"
+      },
+      "Hit": "Hit",
+      "Miss": "Miss"
+    },
+    "Attack": {
+      "Title": "Attack: {weapon}",
+      "Roll": "Attack",
+      "OutOfRange": "The weapon can't reach that range bracket.",
+      "Defense": "Defense",
+      "DefenseOf": "{name}: 2D6 + RFL + RFL",
+      "ManualDefense": "Defender's bonus (RFL + RFL)",
+      "Range": "Range",
+      "Targets": "Targets",
+      "NoTarget": "No token targeted: enter the defender's bonus by hand, or target a token (T) and reopen.",
+      "DefenseModifier": "Defender's modifier",
+      "DefenseModifierHint": "Cover, darkness, defensive traits: added to the target's roll."
+    },
+    "Damage": {
+      "Title": "{name} is hit",
+      "Reduced": "Armor type stops {n}",
+      "Armor": "Armor loses {n}",
+      "Physical": "Physical damage {n}",
+      "Fatigue": "Fatigue damage {n}",
+      "None": "No damage gets through",
+      "Staggered": "Staggered",
+      "KnockedOut": "Knocked out",
+      "KiaNeeded": "Damage past Staggered: make a KIA Test.",
+      "Apply": "Apply damage to {name}",
+      "Applied": "applied"
+    },
+    "Session": {
+      "New": "New session",
+      "Confirm": "Start a new session? Every character goes back to 3 Plot Points and regains all Edge; the GM pool resets to 1.",
+      "Started": "New session: Plot Points and Edge refreshed."
+    },
+    "Settings": {
+      "gmPlotPoints": {
+        "name": "GM Plot Point pool"
+      },
+      "initiativeMode": {
+        "name": "Turn order",
+        "hint": "Narrative: the GM's side first, then players in the order users are listed. Rolled: 2D6 + Initiative bonus (Experience Level and traits), ties by EDG then RFL. Cinematic: the GM sets the order by hand in the tracker."
+      },
+      "showPlotPoints": {
+        "name": "Show Plot Points panel on start",
+        "hint": "You can always open it with Shift+P or the star button in the token controls."
+      }
+    },
+    "Initiative": {
+      "Mode": {
+        "narrative": "Narrative (book default)",
+        "rolled": "Rolled Initiative (optional, p. 55)",
+        "cinematic": "Cinematic (optional, p. 55)"
+      }
+    },
+    "NoActiveGM": "No GM is connected to carry this out.",
+    "Con": {
+      "Title": "Consciousness Check",
+      "Label": "CON {n}",
+      "Hint": "Consciousness Check: raw 2D6 against the CON of the deepest filled Physical row, no modifiers. The book calls for it after damage in 'Mech-Scale Combat (p. 47).",
+      "NotNeeded": "No full Physical row yet: no CON Check needed.",
+      "Conscious": "Stays conscious",
+      "Unconscious": "Unconscious: skips the next Narration, then checks again",
+      "FightThrough": "WIL (Plot Point)",
+      "FightThroughButton": "Fight through it: Plot Point, +WIL",
+      "FoughtThrough": "Fought through it: Plot Point spent, WIL added"
+    }
+  }
+}

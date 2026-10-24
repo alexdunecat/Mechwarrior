@@ -1,0 +1,91 @@
+<div class="mwd-card {{#if result.success}}success{{else}}failure{{/if}}">
+  <header class="mwd-card-header">
+    <h3>{{label}}</h3>
+    {{#if untrained}}<span class="mwd-badge negative">{{localize "MWD.Test.UntrainedBadge"}}</span>{{/if}}
+  </header>
+  <div class="mwd-card-roll">
+    <div class="mwd-card-side">
+      <span class="mwd-card-caption">{{localize "MWD.Chat.Actor"}}</span>
+      <span class="mwd-dice">{{#each dice}}<span class="mwd-die">{{this}}</span>{{/each}}</span>
+      <span class="mwd-card-bonus">{{mwdSigned bonus}}</span>
+      <span class="mwd-card-total">{{result.total}}</span>
+    </div>
+    <div class="mwd-card-vs">vs</div>
+    <div class="mwd-card-side opposing">
+      <span class="mwd-card-caption">{{opposingCaption}}</span>
+      {{#if opposingDice.length}}<span class="mwd-dice">{{#each opposingDice}}<span class="mwd-die">{{this}}</span>{{/each}}</span>{{/if}}
+      {{#if hasOpposingBonus}}<span class="mwd-card-bonus">{{mwdSigned opposingBonus}}</span>{{/if}}
+      <span class="mwd-card-total">{{result.opposingTotal}}</span>
+    </div>
+  </div>
+  <details class="mwd-card-parts">
+    <summary>{{localize "MWD.Chat.Breakdown"}}</summary>
+    <ul>{{#each parts}}<li><span>{{label}}</span><span>{{mwdSigned value}}</span></li>{{/each}}</ul>
+    {{#if hasOpposingBonus}}
+    <p class="mwd-card-caption">{{opposingCaption}}</p>
+    <ul>{{#each opposingParts}}<li><span>{{label}}</span><span>{{mwdSigned value}}</span></li>{{/each}}</ul>
+    {{/if}}
+  </details>
+  <div class="mwd-card-result">
+    {{#if isKia}}
+      {{#if result.success}}{{localize "MWD.Chat.KiaSurvived"}}{{else}}{{localize "MWD.Chat.KiaDead"}}{{/if}}
+    {{else if isCon}}
+      {{#if result.success}}{{localize "MWD.Con.Conscious"}}{{else}}{{localize "MWD.Con.Unconscious"}}{{/if}}
+    {{else}}
+      {{#if isAttack}}
+        {{#if result.success}}{{localize "MWD.Chat.Hit"}}{{else}}{{localize "MWD.Chat.Miss"}}{{/if}}
+      {{else}}
+        {{#if result.success}}{{localize "MWD.Chat.Success"}}{{else}}{{localize "MWD.Chat.Failure"}}{{/if}}
+      {{/if}}
+    {{/if}}
+    {{#if autoFailLabel}}<span class="mwd-card-note">{{autoFailLabel}}</span>{{/if}}
+  </div>
+  {{#if damageLabel}}
+  <div class="mwd-card-damage">{{localize "MWD.Weapon.Damage"}}: <strong>{{damageLabel}}</strong>{{#if applied}} · {{localize "MWD.Damage.Applied"}}{{/if}}</div>
+  {{/if}}
+  {{#if canApply}}
+  <div class="mwd-apply-controls">
+    <button type="button" data-apply><i class="fa-solid fa-heart-crack"></i> {{localize "MWD.Damage.Apply" name=targetName}}</button>
+  </div>
+  {{/if}}
+  {{#if edgeLabel}}
+  <div class="mwd-card-edge-used"><i class="fa-solid fa-clover"></i> {{edgeLabel}}</div>
+  {{/if}}
+  {{#if fightThroughLabel}}
+  <div class="mwd-card-edge-used"><i class="fa-solid fa-star"></i> {{fightThroughLabel}}</div>
+  {{/if}}
+  {{#if canFightThrough}}
+  <div class="mwd-fight-controls">
+    <button type="button" data-fight><i class="fa-solid fa-star"></i> {{localize "MWD.Con.FightThroughButton"}}</button>
+  </div>
+  {{/if}}
+  {{#if targetEdgeLabel}}
+  <div class="mwd-card-edge-used"><i class="fa-solid fa-clover"></i> {{targetEdgeLabel}}</div>
+  {{/if}}
+  {{#if canEdge}}
+  <div class="mwd-edge-controls">
+    <span class="mwd-card-caption"><i class="fa-solid fa-clover"></i> {{localize "MWD.Edge.Spend"}}</span>
+    <div class="mwd-edge-buttons">
+      <button type="button" data-edge="first">{{localize "MWD.Edge.Reroll.first"}}</button>
+      <button type="button" data-edge="second">{{localize "MWD.Edge.Reroll.second"}}</button>
+      <button type="button" data-edge="both">{{localize "MWD.Edge.Reroll.both"}}</button>
+      {{#if canEdgeOpponent}}
+      <button type="button" data-edge="highest">{{localize "MWD.Edge.Reroll.highest"}}</button>
+      <button type="button" data-edge="all">{{localize "MWD.Edge.Reroll.all"}}</button>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+  {{#if canTargetEdge}}
+  <div class="mwd-target-edge-controls">
+    <span class="mwd-card-caption"><i class="fa-solid fa-clover"></i> {{localize "MWD.Edge.SpendDefender" name=targetName}}</span>
+    <div class="mwd-edge-buttons">
+      <button type="button" data-edge="first">{{localize "MWD.Edge.Reroll.first"}}</button>
+      <button type="button" data-edge="second">{{localize "MWD.Edge.Reroll.second"}}</button>
+      <button type="button" data-edge="both">{{localize "MWD.Edge.Reroll.both"}}</button>
+      <button type="button" data-edge="highest">{{localize "MWD.Edge.Reroll.highest"}}</button>
+      <button type="button" data-edge="all">{{localize "MWD.Edge.Reroll.all"}}</button>
+    </div>
+  </div>
+  {{/if}}
+</div>

@@ -1,0 +1,34 @@
+<section class="mwd-block">
+  <header class="mwd-block-header">
+    <h3>{{localize "MWD.Weapon.plural"}}</h3>
+    {{#if editable}}
+    <a class="mwd-icon-button" data-action="createItem" data-type="weapon" data-tooltip="MWD.Weapon.Add"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </header>
+  <ol class="mwd-list mwd-weapons">
+    <li class="mwd-list-head">
+      <span class="mwd-col-name">{{localize "MWD.Weapon.Name"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Weapon.Damage"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Range.close"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Range.near"}}</span>
+      <span class="mwd-col-num">{{localize "MWD.Range.far"}}</span>
+      <span class="mwd-col-controls"></span>
+    </li>
+    {{#each weapons}}
+    <li class="mwd-list-row draggable" data-item-id="{{id}}">
+      <span class="mwd-col-name">
+        <a class="mwd-rollable" data-action="rollWeapon" data-tooltip="MWD.Attack.Roll"><i class="fa-solid fa-crosshairs"></i> {{name}}</a>{{#if damageType}} ({{damageType}}){{/if}}
+        {{#if special}}<i class="fa-solid fa-circle-info mwd-muted" data-tooltip="{{special}}"></i>{{/if}}
+      </span>
+      <span class="mwd-col-num">{{damage}}</span>
+      {{#each ranges}}<span class="mwd-col-num">{{this}}</span>{{/each}}
+      <span class="mwd-col-controls">
+        <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
+        {{#if @root.editable}}<a data-action="deleteItem" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+      </span>
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize "MWD.Weapon.None"}}</li>
+    {{/each}}
+  </ol>
+</section>

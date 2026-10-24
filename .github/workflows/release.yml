@@ -1,0 +1,63 @@
+name: Release
+
+# Every push to main whose system.json version has no release yet publishes one.
+# Foundry checks the manifest URL (releases/latest/download/system.json) for updates.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Read version
+        id: version
+        run: echo "version=$(jq -r .version system.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Check for an existing release tag
+        id: check
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/v${{ steps.version.outputs.version }}" > /dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build package
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          REPO="https://github.com/${{ github.repository }}"
+          mkdir -p dist/package
+          jq --arg url "$REPO" \
+             --arg manifest "$REPO/releases/latest/download/system.json" \
+             --arg download "$REPO/releases/download/v$VERSION/system.zip" \
+             '.url = $url | .manifest = $manifest | .download = $download' system.json > dist/system.json
+          cp -r module templates styles lang dist/package/
+          cp dist/system.json dist/package/system.json
+          (cd dist/package && zip -r ../system.zip .)
+
+      - name: Publish release
+        if: steps.check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            dist/system.json
+            dist/system.zip

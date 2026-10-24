@@ -1,0 +1,40 @@
+<section class="tab mwd-tab {{tab.cssClass}}" data-group="primary" data-tab="bio">
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Details.label"}}</h3></header>
+    <div class="mwd-grid-3">
+      <label class="mwd-field"><span>{{localize "MWD.Details.rank"}}</span>
+        <input type="text" name="system.details.rank" value="{{system.details.rank}}"></label>
+      <label class="mwd-field"><span>{{localize "MWD.Details.age"}}</span>
+        <input type="text" name="system.details.age" value="{{system.details.age}}"></label>
+      <label class="mwd-field"><span>{{localize "MWD.Details.height"}}</span>
+        <input type="text" name="system.details.height" value="{{system.details.height}}"></label>
+      <label class="mwd-field"><span>{{localize "MWD.Details.weight"}}</span>
+        <input type="text" name="system.details.weight" value="{{system.details.weight}}"></label>
+      <label class="mwd-field"><span>{{localize "MWD.XP.total"}}</span>
+        <input type="number" name="system.xp.total" value="{{system.xp.total}}" min="0"></label>
+    </div>
+    <label class="mwd-field">
+      <span>{{localize "MWD.Tags.label"}}</span>
+      <input type="text" name="system.tags" value="{{system.tags}}" placeholder="{{localize 'MWD.Tags.placeholder'}}">
+    </label>
+    {{#if system.tagList.length}}
+    <div class="mwd-tags">{{#each system.tagList}}<span class="mwd-tag">{{this}}</span>{{/each}}</div>
+    {{/if}}
+  </section>
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Bio.history"}}</h3></header>
+    <prose-mirror name="system.biography.history" value="{{system.biography.history}}" toggled {{#unless editable}}disabled{{/unless}}>{{{history}}}</prose-mirror>
+  </section>
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Bio.personality"}}</h3></header>
+    <prose-mirror name="system.biography.personality" value="{{system.biography.personality}}" toggled {{#unless editable}}disabled{{/unless}}>{{{personality}}}</prose-mirror>
+  </section>
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Bio.disposition"}}</h3></header>
+    <textarea name="system.biography.disposition" rows="4" placeholder="{{localize 'MWD.Bio.dispositionPlaceholder'}}">{{system.biography.disposition}}</textarea>
+  </section>
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Notes"}}</h3></header>
+    <prose-mirror name="system.notes" value="{{system.notes}}" toggled {{#unless editable}}disabled{{/unless}}>{{{notesHTML}}}</prose-mirror>
+  </section>
+</section>

@@ -1,0 +1,388 @@
+{
+  "TYPES": {
+    "Actor": {
+      "character": "Персонаж",
+      "npc": "NPC"
+    },
+    "Item": {
+      "skill": "Навык",
+      "trait": "Черта",
+      "weapon": "Оружие",
+      "armor": "Броня",
+      "gear": "Предмет инвентаря"
+    }
+  },
+  "MWD": {
+    "Sheet": {
+      "Character": "Лист персонажа MechWarrior: Destiny",
+      "Npc": "Лист NPC MechWarrior: Destiny",
+      "Item": "Лист предмета MechWarrior: Destiny"
+    },
+    "Tab": {
+      "main": "Основное",
+      "story": "Черты и Cues",
+      "bio": "Биография"
+    },
+    "Edit": "Изменить",
+    "Delete": "Удалить",
+    "Description": "Описание",
+    "Notes": "Заметки",
+    "NewItem": "{type} (новый)",
+    "Attribute": {
+      "str": {
+        "long": "Сила",
+        "abbr": "STR"
+      },
+      "rfl": {
+        "long": "Рефлексы",
+        "abbr": "RFL"
+      },
+      "int": {
+        "long": "Интеллект",
+        "abbr": "INT"
+      },
+      "wil": {
+        "long": "Воля",
+        "abbr": "WIL"
+      },
+      "cha": {
+        "long": "Харизма",
+        "abbr": "CHA"
+      },
+      "edg": {
+        "long": "Удача (Edge)",
+        "abbr": "EDG"
+      },
+      "Modified": "Значение с учётом штрафа брони"
+    },
+    "Details": {
+      "label": "Личные данные",
+      "faction": "Фракция",
+      "experience": "Уровень опыта",
+      "rank": "Звание",
+      "age": "Возраст",
+      "height": "Рост",
+      "weight": "Вес"
+    },
+    "Experience": {
+      "green": "Green (новичок)",
+      "regular": "Regular (обычный)",
+      "veteran": "Veteran (ветеран)",
+      "elite": "Elite (элита)"
+    },
+    "XP": {
+      "label": "XP",
+      "total": "Всего получено XP"
+    },
+    "Tags": {
+      "label": "Tags",
+      "placeholder": "Через запятую, например: Разведчик, Быстрая, Внимательная"
+    },
+    "Cues": {
+      "label": "Cues",
+      "placeholder": "Одна реплика-подсказка на строку"
+    },
+    "LifeModule": {
+      "plural": "Life Modules",
+      "faction": "Фракция",
+      "childhood": "Детство",
+      "education": "Образование",
+      "realLife": "Взрослая жизнь"
+    },
+    "Bio": {
+      "history": "История",
+      "personality": "Характер",
+      "disposition": "Disposition",
+      "dispositionPlaceholder": "Короткие фразы, по одной на строку"
+    },
+    "PlotPoints": {
+      "label": "Plot Points",
+      "spend": "Потратить Plot Point",
+      "gain": "Получить Plot Point (максимум 5)",
+      "Open": "Панель Plot Points",
+      "Use": {
+        "turnOrder": "Изменить порядок хода",
+        "doubleTime": "Двойной темп (два перемещения)",
+        "firstAid": "Подлатать (снять 1 пипс)",
+        "takeTheHit": "Принять удар за союзника",
+        "coldDish": "Бесплатная контратака",
+        "twist": "Добавить поворот сюжета",
+        "headHit": "Полный урон при попадании в голову",
+        "pushIt": "Бесплатная смена дистанции",
+        "fightThrough": "+WIL к проверке сознания",
+        "downgrade": "Ослабить попадание оружия меха по человеку",
+        "support": "Battlefield Support",
+        "other": "Другое"
+      },
+      "NoneLeft": "Plot Points закончились.",
+      "Spent": "{name} тратит Plot Point: {use}",
+      "AtMax": "Уже 5 Plot Points.",
+      "Awarded": "{name} получает Plot Point",
+      "GmSpent": "ГМ тратит Plot Point",
+      "Take": "Забрать Plot Point",
+      "Award": "Выдать Plot Point",
+      "SpendButton": "Потратить",
+      "NoCharacters": "Нет персонажей игроков. Назначьте персонажей игрокам в настройках пользователей.",
+      "GmPool": "Пул ГМа"
+    },
+    "Edge": {
+      "label": "Edge",
+      "hint": "Потраченный за сессию Edge. Щелчок по кружку отмечает его; за сессию можно потратить не больше EDG.",
+      "remaining": "осталось {n}",
+      "Spend": "Потратить Edge",
+      "NoneLeft": "Edge на эту сессию закончился или уже потрачен на этот бросок.",
+      "Reroll": {
+        "first": "Мой куб 1",
+        "second": "Мой куб 2",
+        "both": "Оба моих куба",
+        "highest": "Старший куб противника",
+        "all": "Все кубы противника"
+      },
+      "Used": {
+        "first": "Edge: переброшен куб 1",
+        "second": "Edge: переброшен куб 2",
+        "both": "Edge: переброшены оба куба",
+        "highest": "Edge: противник перебросил старший куб",
+        "all": "Edge: противник перебросил все кубы"
+      },
+      "TargetUsed": "{name}: {how}",
+      "SpendDefender": "{name} тратит Edge"
+    },
+    "Skill": {
+      "plural": "Навыки",
+      "Add": "Добавить навык",
+      "None": "Навыков пока нет. Нажмите +, чтобы добавить из списка.",
+      "Name": "Навык",
+      "Rank": "Ранг",
+      "Attribute": "Атрибут",
+      "Bonus": "Бонус",
+      "Key": "Навык из списка",
+      "KeyHint": "Связывает навык со списком книги, чтобы оружие и тесты могли его найти.",
+      "Specialty": "Техника",
+      "SpecialtyHint": "Только для Gunnery и Piloting.",
+      "Subject": "Тема",
+      "SubjectHint": "Только для навыков Knowledge.",
+      "SubjectPlaceholder": "например: История Звёздной лиги",
+      "custom": "Свой навык",
+      "athletics": "Athletics (атлетика)",
+      "supportWeapons": "Support Weapons (тяжёлое оружие)",
+      "escapeArtist": "Escape Artist (освобождение)",
+      "gunnery": "Gunnery (стрельба)",
+      "meleeCombat": "Melee Combat (ближний бой)",
+      "piloting": "Piloting (пилотирование)",
+      "projectileWeapons": "Projectile Weapons (метательное)",
+      "smallArms": "Small Arms (стрелковое)",
+      "stealth": "Stealth (скрытность)",
+      "zeroG": "Zero-G Operations (невесомость)",
+      "art": "Art (искусство)",
+      "artillery": "Artillery (артиллерия)",
+      "communications": "Communications (связь)",
+      "computers": "Computers (компьютеры)",
+      "demolitions": "Demolitions (взрывчатка)",
+      "investigation": "Investigation (расследование)",
+      "knowledge": "Knowledge (знание)",
+      "medtech": "MedTech (медицина)",
+      "navigation": "Navigation (навигация)",
+      "perception": "Perception (восприятие)",
+      "science": "Science (наука)",
+      "tactics": "Tactics (тактика)",
+      "technician": "Technician (техник)",
+      "tracking": "Tracking (выслеживание)",
+      "animalHandling": "Animal Handling (обращение с животными)",
+      "survival": "Survival (выживание)",
+      "acting": "Acting (актёрство)",
+      "disguise": "Disguise (маскировка)",
+      "leadership": "Leadership (лидерство)",
+      "negotiation": "Negotiation (переговоры)",
+      "protocol": "Protocol (этикет)",
+      "streetwise": "Streetwise (улицы)",
+      "intimidation": "Intimidation (запугивание)"
+    },
+    "Specialty": {
+      "none": "—",
+      "mech": "BattleMech",
+      "vehicle": "Combat Vehicle",
+      "aero": "Aerospace Fighter"
+    },
+    "Trait": {
+      "plural": "Черты",
+      "Add": "Добавить черту",
+      "None": "Черт пока нет.",
+      "positive": "Положительная",
+      "negative": "Отрицательная",
+      "Polarity": "Тип",
+      "Modifier": "Модификатор",
+      "ModifierHint": "Предлагается галочкой в диалоге теста. Оставьте 0 для чисто сюжетных черт.",
+      "AppliesTo": "Когда действует",
+      "Effect": {
+        "label": "Эффект по правилам",
+        "hint": "Применяется автоматически: Toughness снижает каждое попадание в Condition Monitor на 1, Pain Resistance игнорирует штраф ранений –1.",
+        "none": "Нет",
+        "toughness": "Toughness",
+        "painResistance": "Pain Resistance"
+      },
+      "Initiative": "Модификатор инициативы",
+      "InitiativeHint": "Только для броска инициативы, например Combat Sense +1."
+    },
+    "Weapon": {
+      "plural": "Личное оружие",
+      "Add": "Добавить оружие",
+      "None": "Оружия нет.",
+      "Name": "Оружие",
+      "Damage": "Урон",
+      "Skill": "Навык атаки",
+      "Flags": "Свойства",
+      "Fatigue": "Урон усталостью (F)",
+      "StrBonus": "Добавляет бонус STR",
+      "Support": "Тяжёлое (support)",
+      "Ranges": "Дистанции",
+      "Special": "Особое"
+    },
+    "DamageType": {
+      "none": "—",
+      "B": "Баллистическое (B)",
+      "E": "Энергетическое (E)"
+    },
+    "Range": {
+      "close": "Close",
+      "near": "Near",
+      "far": "Far"
+    },
+    "Armor": {
+      "label": "Броня",
+      "Add": "Добавить броню",
+      "None": "Брони нет.",
+      "Pips": "Пипсы брони",
+      "Damage": "потеряно",
+      "Reduce": "Снижение урона",
+      "RflPenalty": "Штраф к RFL",
+      "Options": "Параметры",
+      "Equipped": "Надета",
+      "Concealed": "Скрытая"
+    },
+    "Gear": {
+      "plural": "Инвентарь",
+      "Add": "Добавить предмет",
+      "None": "Ничего нет.",
+      "Hint": "У предметов инвентаря нет характеристик: это подсказки (Cues) для ваших Narration."
+    },
+    "Condition": {
+      "label": "Condition Monitor",
+      "physical": "Физический",
+      "fatigue": "Усталость",
+      "Blocked": "Вычеркнуто из-за низкой STR/WIL",
+      "Con": "CON",
+      "Staggered": "Staggered (без действий)",
+      "Kia": "KIA (гибель)",
+      "Ko": "KO (без сознания)",
+      "KiaTest": "Тест KIA",
+      "KiaHint": "EDG + EDG без модификаторов; начинается с Easy и каждый раз сложнее.",
+      "KiaChecks": "Сделано тестов KIA: {n}",
+      "KiaReset": "Сбросить счётчик KIA (после лечения)",
+      "Wounds": "Ранения",
+      "WoundsHint": "Худший ряд каждого трека, сложенные вместе; действует на все броски."
+    },
+    "Difficulty": {
+      "easy": "Easy (лёгкий)",
+      "average": "Average (средний)",
+      "hard": "Hard (трудный)"
+    },
+    "Test": {
+      "Button": "Тест",
+      "Title": "Тест: {name}",
+      "Roll": "Бросить",
+      "Source": "Навык",
+      "OwnSkills": "Навыки персонажа",
+      "AttributeOnly": "Только атрибуты",
+      "AttributePair": "Атрибут + атрибут (ниже)",
+      "Untrained": "Без навыка (только атрибут, Hard — провал)",
+      "UntrainedBadge": "Без навыка",
+      "UntrainedLabel": "{skill} (без навыка)",
+      "Attributes": "Атрибуты",
+      "AttributesHint": "Только для тестов на атрибуты, например RFL + RFL, чтобы поймать предмет.",
+      "Difficulty": "Сложность",
+      "Modifier": "Ситуативный модификатор",
+      "Helpers": "Помощники (+1 за каждого)",
+      "WoundsApplied": "Модификатор ранений {mod} учитывается автоматически."
+    },
+    "Chat": {
+      "Actor": "Бросок",
+      "Opposing": "{difficulty}: {dice}D6",
+      "OpposingDice": "Противник {dice}D6",
+      "Breakdown": "Из чего бонус",
+      "Success": "Успех",
+      "Failure": "Провал",
+      "KiaSurvived": "Выжил",
+      "KiaDead": "Погиб",
+      "AutoFail": {
+        "natural2": "Выпало 2 — всегда провал",
+        "untrainedHard": "Без навыка на сложности Hard"
+      },
+      "Hit": "Попадание",
+      "Miss": "Промах"
+    },
+    "Attack": {
+      "Title": "Атака: {weapon}",
+      "Roll": "Атаковать",
+      "OutOfRange": "Оружие не достаёт на эту дистанцию.",
+      "Defense": "Защита",
+      "DefenseOf": "{name}: 2D6 + RFL + RFL",
+      "ManualDefense": "Бонус защиты (RFL + RFL)",
+      "Range": "Дистанция",
+      "Targets": "Цели",
+      "NoTarget": "Цель не выбрана: введите бонус защиты вручную или выделите токен как цель (T) и откройте снова.",
+      "DefenseModifier": "Модификатор защиты",
+      "DefenseModifierHint": "Укрытие, темнота, защитные черты: добавляется к броску цели."
+    },
+    "Damage": {
+      "Title": "{name}: попадание",
+      "Reduced": "Тип брони гасит {n}",
+      "Armor": "Броня теряет {n}",
+      "Physical": "Физический урон {n}",
+      "Fatigue": "Урон усталостью {n}",
+      "None": "Урон не прошёл",
+      "Staggered": "Оглушён (Staggered)",
+      "KnockedOut": "Без сознания",
+      "KiaNeeded": "Урон после Staggered: нужен тест KIA.",
+      "Apply": "Применить урон к {name}",
+      "Applied": "применён"
+    },
+    "Session": {
+      "New": "Новая сессия",
+      "Confirm": "Начать новую сессию? У всех персонажей станет 3 Plot Points и восстановится Edge, пул ГМа сбросится до 1.",
+      "Started": "Новая сессия: Plot Points и Edge восстановлены."
+    },
+    "Settings": {
+      "gmPlotPoints": {
+        "name": "Пул Plot Points ГМа"
+      },
+      "initiativeMode": {
+        "name": "Порядок ходов",
+        "hint": "Повествовательный: сначала сторона ГМа, затем игроки в порядке списка пользователей. Бросок: 2D6 + бонус инициативы (уровень опыта и черты), ничьи по EDG, затем RFL. Кинематографичный: ГМ задаёт порядок вручную в трекере."
+      },
+      "showPlotPoints": {
+        "name": "Показывать панель Plot Points при входе",
+        "hint": "Её всегда можно открыть по Shift+P или кнопкой со звездой в инструментах токенов."
+      }
+    },
+    "Initiative": {
+      "Mode": {
+        "narrative": "Повествовательный (по книге)",
+        "rolled": "Бросок инициативы (опционально, с. 55)",
+        "cinematic": "Кинематографичный (опционально, с. 55)"
+      }
+    },
+    "NoActiveGM": "Нет подключённого ГМа, чтобы это выполнить.",
+    "Con": {
+      "Title": "Проверка сознания (CON)",
+      "Label": "CON {n}",
+      "Hint": "Проверка сознания: чистые 2D6 против CON самого нижнего заполненного ряда Physical, без модификаторов. По книге её бросают после урона в бою мехов (с. 47).",
+      "NotNeeded": "Ни один ряд Physical не заполнен: проверка CON не нужна.",
+      "Conscious": "В сознании",
+      "Unconscious": "Без сознания: пропускает следующую Narration, затем проверяет снова",
+      "FightThrough": "WIL (Plot Point)",
+      "FightThroughButton": "Fight through it: Plot Point, +WIL",
+      "FoughtThrough": "Fight through it: потрачен Plot Point, добавлен WIL"
+    }
+  }
+}

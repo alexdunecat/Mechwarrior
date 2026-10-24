@@ -1,0 +1,24 @@
+<div class="mwd-dialog-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Name"}}</label>
+    <select name="key">
+      {{#each skills}}<option value="{{value}}">{{label}}</option>{{/each}}
+    </select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Rank"}}</label>
+    <input type="number" name="rank" value="1" min="0" max="10">
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Specialty"}}</label>
+    <select name="specialty">
+      {{#each specialties}}<option value="{{value}}">{{localize label}}</option>{{/each}}
+    </select>
+    <p class="hint">{{localize "MWD.Skill.SpecialtyHint"}}</p>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Skill.Subject"}}</label>
+    <input type="text" name="subject" placeholder="{{localize 'MWD.Skill.SubjectPlaceholder'}}">
+    <p class="hint">{{localize "MWD.Skill.SubjectHint"}}</p>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="mwd-item-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Armor.Pips"}}</label>
+    <div class="form-fields">
+      <input type="number" name="system.pips" value="{{system.pips}}" min="0">
+      <span>{{localize "MWD.Armor.Damage"}}</span>
+      <input type="number" name="system.damage" value="{{system.damage}}" min="0">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Armor.Reduce"}}</label>
+    <div class="form-fields">
+      <span>B</span><input type="number" name="system.reduceB" value="{{system.reduceB}}" min="0">
+      <span>E</span><input type="number" name="system.reduceE" value="{{system.reduceE}}" min="0">
+    </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Armor.RflPenalty"}}</label>
+    <input type="number" name="system.rflPenalty" value="{{system.rflPenalty}}" min="0">
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Armor.Options"}}</label>
+    <div class="form-fields mwd-checkboxes">
+      <label class="checkbox"><input type="checkbox" name="system.equipped" {{checked system.equipped}}> {{localize "MWD.Armor.Equipped"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.concealed" {{checked system.concealed}}> {{localize "MWD.Armor.Concealed"}}</label>
+    </div>
+  </div>
+  {{> "systems/mechwarrior-destiny/templates/item/description.hbs"}}
+</div>

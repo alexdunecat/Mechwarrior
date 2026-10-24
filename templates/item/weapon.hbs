@@ -1,0 +1,34 @@
+<div class="mwd-item-body">
+  <div class="form-group">
+    <label>{{localize "MWD.Weapon.Skill"}}</label>
+    <select name="system.skill">{{selectOptions weaponSkills selected=system.skill}}</select>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Weapon.Damage"}}</label>
+    <div class="form-fields">
+      <input type="number" name="system.damage" value="{{system.damage}}" min="0">
+      <select name="system.damageType">{{selectOptions damageTypes selected=system.damageType}}</select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Weapon.Flags"}}</label>
+    <div class="form-fields mwd-checkboxes">
+      <label class="checkbox"><input type="checkbox" name="system.fatigue" {{checked system.fatigue}}> {{localize "MWD.Weapon.Fatigue"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.strBonus" {{checked system.strBonus}}> {{localize "MWD.Weapon.StrBonus"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.support" {{checked system.support}}> {{localize "MWD.Weapon.Support"}}</label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Weapon.Ranges"}}</label>
+    <div class="form-fields mwd-ranges">
+      <label>{{localize "MWD.Range.close"}} <select name="system.ranges.close">{{selectOptions rangeCodes selected=system.ranges.close}}</select></label>
+      <label>{{localize "MWD.Range.near"}} <select name="system.ranges.near">{{selectOptions rangeCodes selected=system.ranges.near}}</select></label>
+      <label>{{localize "MWD.Range.far"}} <select name="system.ranges.far">{{selectOptions rangeCodes selected=system.ranges.far}}</select></label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "MWD.Weapon.Special"}}</label>
+    <input type="text" name="system.special" value="{{system.special}}">
+  </div>
+  {{> "systems/mechwarrior-destiny/templates/item/description.hbs"}}
+</div>

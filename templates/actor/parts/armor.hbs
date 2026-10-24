@@ -1,0 +1,32 @@
+<section class="mwd-block mwd-armor">
+  <header class="mwd-block-header">
+    <h3>{{localize "MWD.Armor.label"}}</h3>
+    {{#if editable}}
+    <a class="mwd-icon-button" data-action="createItem" data-type="armor" data-tooltip="MWD.Armor.Add"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </header>
+  {{#if system.armor}}
+  <div class="mwd-armor-worn">
+    <span class="mwd-pips mwd-armor-pips">
+      {{#each armorPips}}<a class="mwd-pip armor {{#if filled}}filled{{/if}}" data-action="armorPip" data-index="{{index}}"></a>{{/each}}
+    </span>
+    <span class="mwd-muted">{{system.armor.value}}/{{system.armor.max}}</span>
+  </div>
+  {{/if}}
+  <ol class="mwd-list">
+    {{#each armors as |armor|}}
+    <li class="mwd-list-row draggable" data-item-id="{{armor.id}}">
+      <a class="mwd-col-toggle" data-action="toggleEquipped" data-tooltip="MWD.Armor.Equipped">
+        <i class="fa-{{#if armor.system.equipped}}solid{{else}}regular{{/if}} fa-shield-halved"></i>
+      </a>
+      <span class="mwd-col-name">{{armor.name}} <span class="mwd-muted">{{armor.system.effectLabel}}</span></span>
+      <span class="mwd-col-controls">
+        <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
+        {{#if @root.editable}}<a data-action="deleteItem" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+      </span>
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize "MWD.Armor.None"}}</li>
+    {{/each}}
+  </ol>
+</section>

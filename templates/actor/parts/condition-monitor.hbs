@@ -1,0 +1,59 @@
+<section class="mwd-block mwd-condition">
+  <header class="mwd-block-header">
+    <h3>{{localize "MWD.Condition.label"}}</h3>
+    {{#if woundModifier}}<span class="mwd-wounds">{{mwdSigned woundModifier}}</span>{{/if}}
+  </header>
+  <div class="mwd-tracks">
+    {{#each tracks as |track key|}}
+    <div class="mwd-track mwd-track-{{key}}">
+      <h4>
+        {{localize (concat "MWD.Condition." key)}}
+        {{#if (and (eq key "physical") track.conCheck)}}
+        <a class="mwd-rollable mwd-con-check" data-action="conCheck" data-tooltip="MWD.Con.Hint">
+          <i class="fa-solid fa-dice"></i> {{localize "MWD.Con.Label" n=track.conCheck}}
+        </a>
+        {{/if}}
+      </h4>
+      {{#each track.rows as |row|}}
+      <div class="mwd-track-row {{#if row.filled}}filled{{/if}}">
+        <span class="mwd-pips">
+          {{#each row.pips as |pip|}}
+          {{#if pip.blocked}}<span class="mwd-pip blocked" data-tooltip="MWD.Condition.Blocked"></span>
+          {{else}}<a class="mwd-pip {{key}} {{#if pip.filled}}filled{{/if}}" data-action="damagePip" data-track="{{key}}" data-index="{{pip.index}}"></a>{{/if}}
+          {{/each}}
+        </span>
+        <span class="mwd-track-label">{{mwdSigned row.modifier}}{{#if (eq key "physical")}} <span class="mwd-muted">({{localize "MWD.Condition.Con"}} {{row.conCheck}})</span>{{/if}}</span>
+      </div>
+      {{/each}}
+      <div class="mwd-track-row {{#if track.staggered}}filled{{/if}}">
+        <span class="mwd-pips">
+          {{#if track.staggeredPip.blocked}}<span class="mwd-pip blocked"></span>
+          {{else}}<a class="mwd-pip {{key}} {{#if track.staggeredPip.filled}}filled{{/if}}" data-action="damagePip" data-track="{{key}}" data-index="{{track.staggeredPip.index}}"></a>{{/if}}
+        </span>
+        <span class="mwd-track-label">{{localize "MWD.Condition.Staggered"}}{{#if (eq key "physical")}} <span class="mwd-muted">({{localize "MWD.Condition.Con"}} {{@root.staggeredCon}})</span>{{/if}}</span>
+      </div>
+      <div class="mwd-track-row mwd-track-end {{#if track.beyond}}filled{{/if}}">
+        <span class="mwd-pips">
+          <a class="mwd-pip final {{key}} {{#if track.beyond}}filled{{/if}}" data-action="damagePip" data-track="{{key}}" data-index="{{track.capacity}}"></a>
+        </span>
+        {{#if (eq key "physical")}}
+        <span class="mwd-track-label">{{localize "MWD.Condition.Kia"}}</span>
+        {{#if track.beyond}}
+        <button type="button" class="mwd-button mwd-danger" data-action="kiaCheck" data-tooltip="MWD.Condition.KiaHint">
+          <i class="fa-solid fa-skull"></i> {{localize "MWD.Condition.KiaTest"}}
+        </button>
+        {{/if}}
+        {{else}}
+        <span class="mwd-track-label">{{localize "MWD.Condition.Ko"}}</span>
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{#if (gt system.condition.physical.kiaChecks 0)}}
+  <p class="mwd-muted mwd-small">
+    {{localize "MWD.Condition.KiaChecks" n=system.condition.physical.kiaChecks}}
+    <a data-action="resetKia" data-tooltip="MWD.Condition.KiaReset"><i class="fa-solid fa-rotate-left"></i></a>
+  </p>
+  {{/if}}
+</section>

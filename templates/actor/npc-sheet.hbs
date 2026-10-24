@@ -1,0 +1,35 @@
+<div class="mwd-npc">
+  <header class="mwd-header">
+    <img class="mwd-portrait" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img">
+    <div class="mwd-header-main">
+      <input class="mwd-name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'Name'}}">
+      <label class="mwd-field">
+        <span>{{localize "MWD.Tags.label"}}</span>
+        <input type="text" name="system.tags" value="{{system.tags}}" placeholder="{{localize 'MWD.Tags.placeholder'}}">
+      </label>
+      <div class="mwd-header-row mwd-resources">
+        {{#if woundModifier}}
+        <div class="mwd-resource mwd-wounds"><i class="fa-solid fa-droplet"></i> {{localize "MWD.Condition.Wounds"}} {{mwdSigned woundModifier}}</div>
+        {{/if}}
+        <button type="button" class="mwd-button mwd-roll-test" data-action="rollTest"><i class="fa-solid fa-dice"></i> {{localize "MWD.Test.Button"}}</button>
+      </div>
+    </div>
+  </header>
+  {{> "systems/mechwarrior-destiny/templates/actor/parts/attributes.hbs"}}
+  <div class="mwd-columns">
+    <div class="mwd-column">
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/skills.hbs"}}
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/weapons.hbs"}}
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/item-list.hbs" items=gear type="gear" title="MWD.Gear.plural" addLabel="MWD.Gear.Add" emptyLabel="MWD.Gear.None"}}
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/item-list.hbs" items=traits type="trait" title="MWD.Trait.plural" addLabel="MWD.Trait.Add" emptyLabel="MWD.Trait.None"}}
+    </div>
+    <div class="mwd-column mwd-column-narrow">
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/condition-monitor.hbs"}}
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/armor.hbs"}}
+    </div>
+  </div>
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Notes"}}</h3></header>
+    <prose-mirror name="system.notes" value="{{system.notes}}" toggled {{#unless editable}}disabled{{/unless}}>{{{notesHTML}}}</prose-mirror>
+  </section>
+</div>

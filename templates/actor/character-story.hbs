@@ -1,0 +1,23 @@
+<section class="tab mwd-tab {{tab.cssClass}}" data-group="primary" data-tab="story">
+  <div class="mwd-columns">
+    <div class="mwd-column">
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/item-list.hbs" items=traits type="trait" title="MWD.Trait.plural" addLabel="MWD.Trait.Add" emptyLabel="MWD.Trait.None"}}
+      <section class="mwd-block">
+        <header class="mwd-block-header"><h3>{{localize "MWD.Cues.label"}}</h3></header>
+        <textarea class="mwd-cues" name="system.cues" rows="10" placeholder="{{localize 'MWD.Cues.placeholder'}}">{{system.cues}}</textarea>
+      </section>
+    </div>
+    <div class="mwd-column">
+      <section class="mwd-block">
+        <header class="mwd-block-header"><h3>{{localize "MWD.LifeModule.plural"}}</h3></header>
+        {{#each lifeModuleKeys as |key|}}
+        <label class="mwd-field mwd-field-inline">
+          <span>{{localize (concat "MWD.LifeModule." key)}}</span>
+          <input type="text" name="system.lifeModules.{{key}}" value="{{lookup @root.system.lifeModules key}}">
+        </label>
+        {{/each}}
+      </section>
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/item-list.hbs" items=gear type="gear" title="MWD.Gear.plural" addLabel="MWD.Gear.Add" emptyLabel="MWD.Gear.None"}}
+    </div>
+  </div>
+</section>

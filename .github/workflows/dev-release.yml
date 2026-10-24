@@ -1,0 +1,54 @@
+name: Dev build
+
+# Every push to a work branch republishes the "dev" pre-release, so a branch can be installed
+# in Foundry before it is merged:
+#   https://github.com/<owner>/<repo>/releases/download/dev/system.json
+on:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dev-release
+  cancel-in-progress: true
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Build package
+        run: |
+          BASE="$(jq -r .version system.json)"
+          VERSION="$BASE.${{ github.run_number }}"
+          REPO="https://github.com/${{ github.repository }}"
+          mkdir -p dist/package
+          jq --arg version "$VERSION" \
+             --arg url "$REPO" \
+             --arg manifest "$REPO/releases/download/dev/system.json" \
+             --arg download "$REPO/releases/download/dev/system.zip" \
+             '.version = $version | .url = $url | .manifest = $manifest | .download = $download' system.json > dist/system.json
+          cp -r module templates styles lang dist/package/
+          cp dist/system.json dist/package/system.json
+          (cd dist/package && zip -r ../system.zip .)
+
+      - name: Replace the dev release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev --cleanup-tag --yes --repo "${{ github.repository }}" || true
+          gh release create dev dist/system.json dist/system.zip \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
+            --prerelease --latest=false \
+            --title "Dev build (${{ github.ref_name }})" \
+            --notes "Test build of branch ${{ github.ref_name }} at ${{ github.sha }}. Install with the manifest URL .../releases/download/dev/system.json"
