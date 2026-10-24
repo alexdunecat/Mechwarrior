@@ -1,13 +1,18 @@
 import * as MWD from "./config.mjs";
 import { CharacterData } from "./data/actor-character.mjs";
 import { NpcData } from "./data/actor-npc.mjs";
-import { ArmorData, GearData, SkillData, TraitData, WeaponData } from "./data/items.mjs";
+import { MechData } from "./data/actor-mech.mjs";
+import {
+  ArmorData, GearData, MechEquipmentData, MechWeaponData, SkillData, TraitData, WeaponData
+} from "./data/items.mjs";
 import { MWDActor } from "./documents/actor.mjs";
 import { CharacterSheet } from "./sheets/character-sheet.mjs";
 import { NpcSheet } from "./sheets/npc-sheet.mjs";
+import { MechSheet } from "./sheets/mech-sheet.mjs";
 import { MWDItemSheet } from "./sheets/item-sheet.mjs";
 import { MWDCombat, INITIATIVE_FORMULA } from "./documents/combat.mjs";
 import { onRenderChatMessage } from "./dice/test-roll.mjs";
+import { onRenderMechCard } from "./documents/mech.mjs";
 import { registerSettings } from "./settings.mjs";
 import { registerSocket } from "./socket.mjs";
 import { PlotPointsPanel, spendPlotPoint, startNewSession } from "./apps/plot-points.mjs";
@@ -35,13 +40,15 @@ Hooks.once("init", () => {
   CONFIG.Actor.documentClass = MWDActor;
   CONFIG.Combat.documentClass = MWDCombat;
   CONFIG.Combat.initiative = { formula: INITIATIVE_FORMULA, decimals: 0 };
-  Object.assign(CONFIG.Actor.dataModels, { character: CharacterData, npc: NpcData });
+  Object.assign(CONFIG.Actor.dataModels, { character: CharacterData, npc: NpcData, mech: MechData });
   Object.assign(CONFIG.Item.dataModels, {
-    skill: SkillData, trait: TraitData, weapon: WeaponData, armor: ArmorData, gear: GearData
+    skill: SkillData, trait: TraitData, weapon: WeaponData, armor: ArmorData, gear: GearData,
+    mechWeapon: MechWeaponData, mechEquipment: MechEquipmentData
   });
   CONFIG.Actor.trackableAttributes = {
     character: { bar: ["plotPoints"], value: ["edge.spent", "condition.physical.value", "condition.fatigue.value"] },
-    npc: { bar: [], value: ["condition.physical.value", "condition.fatigue.value"] }
+    npc: { bar: [], value: ["condition.physical.value", "condition.fatigue.value"] },
+    mech: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] }
   };
 
   const sheets = foundry.applications.apps.DocumentSheetConfig;
@@ -50,6 +57,9 @@ Hooks.once("init", () => {
   });
   sheets.registerSheet(Actor, SYSTEM_ID, NpcSheet, {
     types: ["npc"], makeDefault: true, label: "MWD.Sheet.Npc"
+  });
+  sheets.registerSheet(Actor, SYSTEM_ID, MechSheet, {
+    types: ["mech"], makeDefault: true, label: "MWD.Sheet.Mech"
   });
   sheets.registerSheet(Item, SYSTEM_ID, MWDItemSheet, { makeDefault: true, label: "MWD.Sheet.Item" });
 
@@ -72,6 +82,14 @@ Hooks.once("ready", () => {
 });
 
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
+Hooks.on("renderChatMessageHTML", onRenderMechCard);
+
+// A 'Mech that jumped stays harder to hit until its next Narration starts (p. 40).
+Hooks.on("combatTurnChange", (combat, _prior, current) => {
+  if ( game.user !== game.users.activeGM ) return;
+  const actor = combat.combatants.get(current?.combatantId)?.actor;
+  if ( (actor?.type === "mech") && actor.system.status.jumped ) actor.update({ "system.status.jumped": false });
+});
 
 // A button next to the token tools opens the Plot Points panel.
 Hooks.on("getSceneControlButtons", controls => {

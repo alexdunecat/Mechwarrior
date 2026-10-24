@@ -3,6 +3,7 @@ import { kiaDice } from "../rules/condition.mjs";
 import { resolvePersonalDamage } from "../rules/damage.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
+import * as Mech from "./mech.mjs";
 
 const DIALOG_TEMPLATE = `systems/${SYSTEM_ID}/templates/dialog/test-dialog.hbs`;
 const ATTACK_TEMPLATE = `systems/${SYSTEM_ID}/templates/dialog/attack-dialog.hbs`;
@@ -242,10 +243,13 @@ export class MWDActor extends Actor {
   /**
    * The best owned skill for a Skills List key, if any.
    * @param {string} key
+   * @param {string|null} [specialty]  For Gunnery and Piloting: "mech", "vehicle" or "aero". Skills
+   *   without a recorded specialty count for any.
    * @returns {Item|null}
    */
-  findSkill(key) {
-    const skills = this.itemTypes.skill.filter(s => s.system.key === key);
+  findSkill(key, specialty = null) {
+    const skills = this.itemTypes.skill.filter(s => (s.system.key === key)
+      && (!specialty || !s.system.specialty || (s.system.specialty === specialty)));
     return skills.sort((a, b) => b.system.bonus - a.system.bonus)[0] ?? null;
   }
 
@@ -384,14 +388,16 @@ export class MWDActor extends Actor {
    * @param {string} [options.source]  What dealt the damage, for the chat summary.
    * @param {boolean} [options.mechScale=false]  Damage taken in 'Mech-Scale Combat (head hits, ammo
    *   explosions): rolls the CON Check the book requires after any such damage (p. 47).
+   * @param {boolean} [options.ignoreArmor=false]  Cockpit injuries ignore personal armor (p. 47).
    * @returns {Promise<object>}  The damage split.
    */
-  async applyPersonalDamage(damage, { source, mechScale = false } = {}) {
+  async applyPersonalDamage(damage, { source, mechScale = false, ignoreArmor = false } = {}) {
     if ( !this.isPerson ) return null;
     const system = this.system;
     const wasStaggered = { physical: system.condition.physical.track.staggered, fatigue: system.condition.fatigue.track.staggered };
     const toughness = system.traitEffects.has("toughness") ? 1 : 0;
-    const split = resolvePersonalDamage({ damage: damage.value, type: damage.type, fatigue: damage.fatigue }, system.armor, { toughness });
+    const split = resolvePersonalDamage({ damage: damage.value, type: damage.type, fatigue: damage.fatigue },
+      ignoreArmor ? null : system.armor, { toughness });
 
     if ( split.armor && system.armor ) {
       const armorItem = this.items.get(system.armor.id);
@@ -417,5 +423,94 @@ export class MWDActor extends Actor {
     }));
     if ( mechScale && split.physical && !kia ) await this.rollConCheck();
     return split;
+  }
+
+  /* -------------------------------------------- */
+  /*  Hardware                                    */
+  /* -------------------------------------------- */
+
+  /**
+   * The 'Mech this person is piloting, if any.
+   * @type {Actor|null}
+   */
+  get piloting() {
+    if ( !this.isPerson ) return null;
+    return game.actors.find(a => (a.type === "mech") && (a.system.pilot === this.uuid)) ?? null;
+  }
+
+  /**
+   * Climb into a 'Mech (a pilot can own several and switch between them). Leaves any other
+   * 'Mech this person was piloting and records the machine in a character's Hardware list.
+   * @param {Actor} mech
+   */
+  async boardHardware(mech) {
+    if ( !this.isPerson || (mech?.type !== "mech") ) return;
+    for ( const other of game.actors.filter(a => (a.type === "mech") && (a !== mech) && (a.system.pilot === this.uuid)) ) {
+      await other.update({ "system.pilot": "" });
+    }
+    await mech.update({ "system.pilot": this.uuid });
+    if ( (this.type === "character") && !this.system.hardware.includes(mech.uuid) ) {
+      await this.update({ "system.hardware": [...this.system.hardware, mech.uuid] });
+    }
+  }
+
+  /** Leave the 'Mech this person is piloting. */
+  async leaveHardware() {
+    const mech = this.piloting;
+    if ( mech ) await mech.update({ "system.pilot": "" });
+  }
+
+  /* -------------------------------------------- */
+  /*  'Mech-Scale Combat                          */
+  /* -------------------------------------------- */
+
+  /** @see Mech.getPilot */
+  get pilot() {
+    return (this.type === "mech") ? Mech.getPilot(this) : null;
+  }
+
+  /**
+   * A 'Mech rolls Initiative with its pilot's bonus.
+   * @override
+   */
+  getRollData() {
+    const data = super.getRollData();
+    if ( this.type !== "mech" ) return data;
+    return { ...data, initiativeBonus: this.pilot?.system.initiativeBonus ?? 0 };
+  }
+
+  /** @see Mech.rollMechAttack */
+  async rollMechAttack(weapon) {
+    return Mech.rollMechAttack(this, weapon);
+  }
+
+  /** @see Mech.rollPhysicalAttack */
+  async rollPhysicalAttack() {
+    return Mech.rollPhysicalAttack(this);
+  }
+
+  /** @see Mech.applyMechHit */
+  async applyMechHit(damage) {
+    return Mech.applyMechHit(this, damage);
+  }
+
+  /** @see Mech.rollPilotingTest */
+  async rollPilotingTest(options) {
+    return Mech.rollPilotingTest(this, options);
+  }
+
+  /** @see Mech.resolveFall */
+  async resolveFall() {
+    return Mech.resolveFall(this);
+  }
+
+  /** @see Mech.jump */
+  async jump() {
+    return Mech.jump(this);
+  }
+
+  /** @see Mech.endNarration */
+  async endNarration() {
+    return Mech.endNarration(this);
   }
 }

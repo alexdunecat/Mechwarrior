@@ -30,6 +30,12 @@ class StringField extends DataField {}
 class HTMLField extends StringField {}
 class NumberField extends DataField {}
 class BooleanField extends DataField {}
+class ArrayField extends DataField {
+  constructor(element, options = {}) {
+    super({ initial: () => [], ...options });
+    this.element = element;
+  }
+}
 
 function merge(initial, source) {
   if ( !source || (typeof source !== "object") || Array.isArray(source) ) return source ?? initial;
@@ -51,7 +57,7 @@ class TypeDataModel {
 }
 
 globalThis.foundry = {
-  data: { fields: { DataField, SchemaField, StringField, HTMLField, NumberField, BooleanField } },
+  data: { fields: { DataField, SchemaField, StringField, HTMLField, NumberField, BooleanField, ArrayField } },
   abstract: { TypeDataModel }
 };
 

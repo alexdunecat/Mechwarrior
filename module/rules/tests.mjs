@@ -30,16 +30,20 @@ export function opposingDice(difficulty) {
  * @param {number} [test.opposingBonus=0] Defender's bonus in opposed rolls.
  * @param {boolean} [test.untrained=false]
  * @param {string|null} [test.difficulty=null]
+ * @param {number} [test.minNatural=0]  Lowest natural 2D6 that can succeed, e.g. 11 against a
+ *   Disengaged unit (p. 41).
  * @returns {{natural: number, total: number, opposingTotal: number, success: boolean,
- *            margin: number, autoFail: "natural2"|"untrainedHard"|null}}
+ *            margin: number, autoFail: "natural2"|"untrainedHard"|"disengaged"|null}}
  */
-export function resolveTest({ dice, bonus, opposingDice, opposingBonus = 0, untrained = false, difficulty = null }) {
+export function resolveTest({ dice, bonus, opposingDice, opposingBonus = 0, untrained = false, difficulty = null,
+  minNatural = 0 }) {
   const natural = sumDice(dice);
   const total = natural + bonus;
   const opposingTotal = sumDice(opposingDice) + opposingBonus;
   let autoFail = null;
   if ( natural === 2 ) autoFail = "natural2";
   else if ( untrained && (difficulty === "hard") ) autoFail = "untrainedHard";
+  else if ( natural < minNatural ) autoFail = "disengaged";
   const success = !autoFail && (total >= opposingTotal);
   return { natural, total, opposingTotal, success, margin: total - opposingTotal, autoFail };
 }

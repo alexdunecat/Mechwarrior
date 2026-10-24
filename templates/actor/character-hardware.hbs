@@ -1,0 +1,42 @@
+<section class="tab mwd-tab {{tab.cssClass}}" data-group="primary" data-tab="hardware">
+  <section class="mwd-block">
+    <header class="mwd-block-header">
+      <h3>{{localize "MWD.Hardware.label"}}</h3>
+      {{#if editable}}
+      <label class="mwd-field-inline">
+        <span>{{localize "MWD.Hardware.Add"}}</span>
+        <select data-add-hardware>{{selectOptions availableHardware}}</select>
+      </label>
+      {{/if}}
+    </header>
+    <p class="mwd-small mwd-muted">{{localize "MWD.Hardware.Hint"}}</p>
+    <ol class="mwd-list">
+      {{#each hardware}}
+      <li class="mwd-list-row mwd-hardware-row {{#if piloting}}active{{/if}} {{#if destroyed}}mwd-destroyed{{/if}}" data-uuid="{{uuid}}">
+        {{#if missing}}
+        <span class="mwd-col-name mwd-muted">{{localize "MWD.Hardware.Missing"}}</span>
+        {{else}}
+        <img class="mwd-portrait tiny" src="{{img}}" alt="{{name}}">
+        <a class="mwd-col-name" data-action="openHardware">{{name}} <span class="mwd-muted">{{model}} · {{weight}}</span></a>
+        {{#if piloting}}<span class="mwd-badge">{{localize "MWD.Hardware.Piloting"}}</span>{{/if}}
+        {{#if pilotName}}<span class="mwd-muted">{{localize "MWD.Hardware.PilotedBy" name=pilotName}}</span>{{/if}}
+        {{/if}}
+        <span class="mwd-col-controls">
+          {{#if @root.editable}}
+          {{#unless missing}}
+          {{#if piloting}}
+          <a data-action="leaveHardware" data-tooltip="MWD.Mech.Pilot.Leave"><i class="fa-solid fa-person-walking-arrow-right"></i></a>
+          {{else}}
+          <a data-action="boardHardware" data-tooltip="MWD.Hardware.Board"><i class="fa-solid fa-person-walking-arrow-loop-left"></i></a>
+          {{/if}}
+          {{/unless}}
+          <a data-action="removeHardware" data-tooltip="MWD.Hardware.Remove"><i class="fa-solid fa-trash"></i></a>
+          {{/if}}
+        </span>
+      </li>
+      {{else}}
+      <li class="mwd-empty">{{localize "MWD.Hardware.None"}}</li>
+      {{/each}}
+    </ol>
+  </section>
+</section>

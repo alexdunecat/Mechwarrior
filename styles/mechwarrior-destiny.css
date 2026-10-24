@@ -839,3 +839,184 @@
   font-size: 0.8em;
   font-weight: normal;
 }
+
+/* 'Mech sheet */
+
+.mechwarrior-destiny .mwd-pip.structure:not(.filled) { background: #7d8590; }
+.mechwarrior-destiny .mwd-pip.structure.filled { background: var(--mwd-physical); }
+.mechwarrior-destiny .mwd-pip.heat.filled.green { background: #4f9a4f; }
+.mechwarrior-destiny .mwd-pip.heat.filled.yellow { background: #d2b100; }
+.mechwarrior-destiny .mwd-pip.heat.filled.orange { background: #e07a1f; }
+.mechwarrior-destiny .mwd-pip.heat.filled.red,
+.mechwarrior-destiny .mwd-pip.heat.filled.critical { background: var(--mwd-physical); }
+
+.mechwarrior-destiny .mwd-heat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.mechwarrior-destiny .mwd-heat .mwd-muted {
+  margin-left: 6px;
+}
+
+.mechwarrior-destiny .mwd-diagram {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.mechwarrior-destiny .mwd-location {
+  border: 1px solid var(--mwd-line);
+  border-radius: 4px;
+  padding: 4px;
+  background: var(--mwd-panel);
+  min-width: 0;
+}
+
+.mechwarrior-destiny .mwd-location .mwd-pips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-height: 18px;
+}
+
+.mechwarrior-destiny .mwd-location .mwd-pip {
+  width: 12px;
+  height: 12px;
+  border-width: 1px;
+}
+
+.mechwarrior-destiny .mwd-location-head {
+  font-size: 0.85em;
+  margin-bottom: 2px;
+}
+
+.mechwarrior-destiny .mwd-location-max {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 3px;
+  font-size: 0.85em;
+}
+
+.mechwarrior-destiny .mwd-location-max input {
+  width: 3.2em;
+  height: 1.6em;
+}
+
+.mechwarrior-destiny .mwd-destroyed {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.mechwarrior-destiny .mwd-location.mwd-destroyed {
+  text-decoration: none;
+  border-color: var(--mwd-physical);
+}
+
+.mechwarrior-destiny .mwd-mech-weapons {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.mechwarrior-destiny .mwd-mech-weapons th,
+.mechwarrior-destiny .mwd-mech-weapons td {
+  padding: 2px 4px;
+  border-bottom: 1px solid var(--mwd-line);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mechwarrior-destiny .mwd-mech-weapons .mwd-col-name {
+  text-align: left;
+  white-space: normal;
+}
+
+.mechwarrior-destiny .mwd-mech-weapons .mwd-col-controls a {
+  margin-left: 4px;
+}
+
+.mechwarrior-destiny .mwd-range-col {
+  width: 3.5em;
+}
+
+.mechwarrior-destiny .mwd-pilot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mechwarrior-destiny .mwd-pilot-stats {
+  flex: 1;
+  min-width: 0;
+}
+
+.mechwarrior-destiny .mwd-mech-pilot select {
+  max-width: 50%;
+}
+
+.mechwarrior-destiny .mwd-statuses {
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.mechwarrior-destiny .mwd-statuses .mwd-tag {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.mechwarrior-destiny .mwd-statuses .mwd-tag.active {
+  opacity: 1;
+  background: var(--mwd-accent);
+  color: var(--mwd-accent-ink);
+}
+
+.mechwarrior-destiny .mwd-mech-actions .mwd-header-row {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.mechwarrior-destiny .mwd-crit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.mechwarrior-destiny .mwd-crit-row input {
+  width: 4em;
+}
+
+.mechwarrior-destiny .mwd-portrait.tiny {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+}
+
+.mechwarrior-destiny .mwd-hardware-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mechwarrior-destiny .mwd-hardware-row.active {
+  background: rgba(200, 86, 30, 0.12);
+}
+
+.mwd-head-controls,
+.mwd-fall-controls,
+.mwd-piloting-controls {
+  margin-top: 6px;
+}
+
+.mwd-head-controls button,
+.mwd-fall-controls button,
+.mwd-piloting-controls button {
+  width: 100%;
+  font-size: 0.85em;
+}

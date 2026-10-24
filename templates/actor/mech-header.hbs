@@ -1,0 +1,43 @@
+<header class="mwd-header">
+  <img class="mwd-portrait" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img">
+  <div class="mwd-header-main">
+    <div class="mwd-header-row">
+      <input class="mwd-name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'Name'}}">
+      <label class="mwd-field mwd-field-narrow">
+        <span>{{localize "MWD.Mech.Model"}}</span>
+        <input type="text" name="system.details.model" value="{{system.details.model}}" placeholder="WVR-6R">
+      </label>
+    </div>
+    <div class="mwd-header-row">
+      <label class="mwd-field mwd-field-narrow">
+        <span>{{localize "MWD.Mech.Weight.label"}}</span>
+        <select name="system.details.weightClass">{{selectOptions weightClasses selected=system.details.weightClass}}</select>
+      </label>
+      <label class="mwd-field mwd-field-xs">
+        <span>{{localize "MWD.Mech.Tonnage"}}</span>
+        <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="100">
+      </label>
+      <label class="mwd-field mwd-field-xs">
+        <span data-tooltip="MWD.Mech.HardwarePointsHint">{{localize "MWD.Mech.HardwarePoints"}}</span>
+        <input type="number" name="system.details.hardwarePoints" value="{{system.details.hardwarePoints}}" min="0">
+      </label>
+      <label class="mwd-field mwd-field-xs">
+        <span>{{localize "MWD.Mech.Movement"}}</span>
+        <input type="number" name="system.details.movement" value="{{system.details.movement}}" min="0">
+      </label>
+      <label class="mwd-field mwd-field-xs">
+        <span data-tooltip="MWD.Mech.HeatDissipationHint">{{localize "MWD.Mech.HeatDissipation"}}</span>
+        <input type="number" name="system.details.heatDissipation" value="{{system.details.heatDissipation}}" min="0">
+      </label>
+    </div>
+    <div class="mwd-header-row mwd-checkboxes">
+      <label class="checkbox"><input type="checkbox" name="system.details.jumpJets" {{checked system.details.jumpJets}}> {{localize "MWD.Mech.JumpJets"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.details.punch" {{checked system.details.punch}}> {{localize "MWD.Mech.CanPunch"}}</label>
+      <span class="mwd-muted">{{localize "MWD.Mech.MaxMovement"}}: <strong>{{system.maxMovement}}</strong> · {{localize "MWD.Mech.Physical.punch"}} {{system.physical.punch}} / {{localize "MWD.Mech.Physical.kick"}} {{system.physical.kick}}</span>
+    </div>
+    <label class="mwd-field">
+      <span>{{localize "MWD.Tags.label"}}</span>
+      <input type="text" name="system.details.tags" value="{{system.details.tags}}">
+    </label>
+  </div>
+</header>

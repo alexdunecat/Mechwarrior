@@ -2,26 +2,31 @@
   "TYPES": {
     "Actor": {
       "character": "Character",
-      "npc": "NPC"
+      "npc": "NPC",
+      "mech": "BattleMech"
     },
     "Item": {
       "skill": "Skill",
       "trait": "Trait",
       "weapon": "Weapon",
       "armor": "Armor",
-      "gear": "Inventory Item"
+      "gear": "Inventory Item",
+      "mechWeapon": "'Mech Weapon",
+      "mechEquipment": "'Mech Equipment"
     }
   },
   "MWD": {
     "Sheet": {
       "Character": "MechWarrior: Destiny character sheet",
       "Npc": "MechWarrior: Destiny NPC sheet",
-      "Item": "MechWarrior: Destiny item sheet"
+      "Item": "MechWarrior: Destiny item sheet",
+      "Mech": "MechWarrior: Destiny 'Mech sheet"
     },
     "Tab": {
       "main": "Main",
       "story": "Traits & Cues",
-      "bio": "Biography"
+      "bio": "Biography",
+      "hardware": "Hardware"
     },
     "Edit": "Edit",
     "Delete": "Delete",
@@ -383,6 +388,228 @@
       "FightThrough": "WIL (Plot Point)",
       "FightThroughButton": "Fight through it: Plot Point, +WIL",
       "FoughtThrough": "Fought through it: Plot Point spent, WIL added"
+    },
+    "Hardware": {
+      "label": "Hardware",
+      "Add": "Add",
+      "Hint": "Machines this character owns. Board one to pilot it; the character leaves any other machine. You can also drag a 'Mech onto this sheet, or a character onto a 'Mech sheet.",
+      "Missing": "Missing (deleted actor)",
+      "None": "No Hardware yet.",
+      "PilotedBy": "piloted by {name}",
+      "Piloting": "Piloting",
+      "Board": "Board",
+      "Remove": "Remove from list"
+    },
+    "Mech": {
+      "Model": "Model",
+      "Weight": {
+        "label": "Weight",
+        "light": "Light",
+        "medium": "Medium",
+        "heavy": "Heavy",
+        "assault": "Assault"
+      },
+      "Tonnage": "Tons",
+      "HardwarePoints": "HP",
+      "HardwarePointsHint": "Hardware Points (p. 76)",
+      "Movement": "Movement",
+      "MaxMovement": "Max Movement now",
+      "HeatDissipation": "Dissipation",
+      "HeatDissipationHint": "Heat tokens shed at the end of each Narration (p. 47)",
+      "JumpJets": "Jump Jets (J)",
+      "CanPunch": "Has hands (can punch)",
+      "Jump": "Jump (+1 Heat)",
+      "Armor": "Armor pips",
+      "Structure": "Structure pips",
+      "ArmorDiagram": "Armor Diagram",
+      "DiagramHint": "Top row: Armor, bottom row: Structure. Numbers in brackets are 2D6 hit location results. Click a pip to mark damage; the fields set the maximum.",
+      "Location": {
+        "head": "Head",
+        "torso": "Torso",
+        "rightArm": "Right Arm",
+        "leftArm": "Left Arm",
+        "rightLeg": "Right Leg",
+        "leftLeg": "Left Leg",
+        "headAbbr": "H",
+        "torsoAbbr": "T",
+        "rightArmAbbr": "RA",
+        "leftArmAbbr": "LA",
+        "rightLegAbbr": "RL",
+        "leftLegAbbr": "LL",
+        "none": "—"
+      },
+      "Range": {
+        "pointblank": "Pointblank",
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long"
+      },
+      "Terrain": {
+        "label": "Target's terrain",
+        "clear": "Clear",
+        "lightWoods": "Light Woods",
+        "heavyWoods": "Heavy Woods",
+        "shallowWater": "Shallow Water",
+        "deepWater": "Deep Water",
+        "partialCover": "Partial Cover (ignore leg hits)"
+      },
+      "Status": {
+        "prone": "Prone",
+        "jumped": "Jumped",
+        "shutdown": "Shut down",
+        "disengaged": "Disengaged",
+        "destroyed": "Destroyed"
+      },
+      "Pilot": {
+        "label": "MechWarrior",
+        "None": "No pilot. Pick one above or drag a character onto this sheet.",
+        "Leave": "Leave the cockpit",
+        "Piloting": "Piloting",
+        "Unconscious": "Unconscious"
+      },
+      "Weapon": {
+        "plural": "Weapons",
+        "Add": "Add Weapon Group",
+        "None": "No weapons.",
+        "Fire": "Fire",
+        "Primary": "Primary Weapon",
+        "PrimaryShort": "Primary",
+        "PrimaryHint": "A player character's Primary Weapon deals full damage on a head hit without a Plot Point (p. 45).",
+        "Base": "Base damage",
+        "Missiles": "Missile dice (M)",
+        "Max": "Max Damage",
+        "DamageHint": "As printed:",
+        "HeatAlternative": "Can deal Heat instead of damage (flamer, \"or H\")",
+        "Types": "Types (B, E, M)",
+        "TypeShort": "Type",
+        "Heat": "Heat",
+        "Loc": "Loc",
+        "Locations": "Mounted in",
+        "Destroyed": "Destroyed"
+      },
+      "Equipment": {
+        "label": "Equipment",
+        "Add": "Add Equipment",
+        "None": "No equipment.",
+        "Kind": "Kind",
+        "ammo": "Ammo",
+        "jumpJets": "Jump Jets",
+        "other": "Other",
+        "Location": "Location",
+        "LocationHint": "Ammo in a location can explode on a critical hit there (p. 45)."
+      },
+      "Attack": {
+        "Gunnery": "Gunnery",
+        "DefenseOf": "{name}: 2D6 + Piloting + RFL",
+        "ManualDefense": "Defender's bonus (Piloting + RFL)",
+        "NoTarget": "No 'Mech targeted: enter the defender's bonus by hand, or target a token (T) and reopen.",
+        "Speed": "Speed",
+        "TargetJumped": "Target jumped",
+        "Helpless": "Shut down / unconscious pilot",
+        "JumpPosition": "Jump position",
+        "JumpTarget": "Jump target",
+        "JumpTargetHint": "You jumped: +1 against the target you picked, –1 against any other (p. 40).",
+        "HeatInstead": "Deal Heat instead of damage",
+        "AutoHint": "Added automatically: range, speed (your Max Movement minus the target's), target jumped (–1), shut-down or unconscious target (+2), wounds, Disengaged target (needs 11+).",
+        "HeatPenalty": "Heat: {n} to ranged attacks."
+      },
+      "Physical": {
+        "Button": "Physical attack",
+        "Title": "Physical attack: {name}",
+        "Type": "Attack",
+        "punch": "Punch",
+        "kick": "Kick",
+        "push": "Push",
+        "charge": "Charge",
+        "dfa": "Death from Above",
+        "Hint": "Pointblank only. Punch: no arm weapons fired this Narration. Death from Above: needs a jump.",
+        "Movement": "Movement spent",
+        "MovementHint": "Charge and Death from Above deal (tonnage / 30) × Movement.",
+        "Note": {
+          "punch": "",
+          "kick": "The target must make a Piloting Test to stay standing.",
+          "push": "The target must make a Piloting Test to stay standing.",
+          "charge": "Both 'Mechs must make a Piloting Test to stay standing.",
+          "dfa": "Both 'Mechs must make a Piloting Test to stay standing."
+        }
+      },
+      "Damage": {
+        "Self": "{n} to attacker",
+        "Missiles": "Missile dice: {dice} → extra {extra}",
+        "Location": "Location {roll}: {location}, {n} damage",
+        "CoverIgnored": "Location {roll}: {location}, stopped by partial cover",
+        "Glancing": "Glancing blow: 1 damage to the head. A Plot Point buys the rest.",
+        "Step": "{location}: armor –{armor}, structure –{structure}",
+        "LocationDestroyed": "Destroyed!",
+        "HeatTokens": "+{n} Heat tokens",
+        "MechDestroyed": "The 'Mech is out of the fight.",
+        "Falls": "The 'Mech falls.",
+        "PilotingTest": "Piloting Test to stay standing.",
+        "BuyHead": "Plot Point: full head damage (+{n})",
+        "FullHead": "{source}: full head hit"
+      },
+      "Crit": {
+        "label": "Critical Hits",
+        "NoCrit": "Critical check {location}: {roll}, none",
+        "None": "Critical hit {location} ({roll}), but nothing left to hit",
+        "Hit": "Critical hit {location} ({roll}):",
+        "Weapon": "{weapon} destroyed",
+        "AmmoTorso": "ammo explosion, the 'Mech is destroyed",
+        "AmmoLimb": "ammo explosion, {location} destroyed",
+        "Gyro": "gyro damaged (–2 Piloting)",
+        "GyroDestroyed": "gyro destroyed: no Movement, the 'Mech falls",
+        "GyroShort": "Gyro",
+        "Engine": "engine shielding damaged (+1 Heat each Narration)",
+        "EngineDestroyed": "engine destroyed, the 'Mech is destroyed",
+        "EngineShort": "Engine",
+        "Leg": "leg actuator hit (–1 Max Movement)",
+        "LegShort": "Leg hits (–1 Movement each)"
+      },
+      "Heat": {
+        "label": "Heat",
+        "CarriedHint": "Penalties this Narration come from the {n} tokens left after the last cool down.",
+        "Engine": "Damaged engine: +1 Heat token",
+        "Cooled": "Cool down: {from} → {to} (dissipation {dissipation})",
+        "Level": {
+          "blue": "Blue: no effects",
+          "green": "Green: –1 Max Movement",
+          "yellow": "Yellow: –1 Movement, –1 ranged attacks",
+          "orange": "Orange: shutdown risk (avoid on 8+)",
+          "red": "Red: ammo explosion risk (avoid on 8+)",
+          "critical": "Critical: automatic shutdown"
+        },
+        "AutoShutdown": "Automatic shutdown",
+        "ShutdownAvoided": "Shutdown avoided ({roll})",
+        "ShutdownFailed": "The reactor shuts down ({roll})",
+        "AmmoAvoided": "Ammo explosion avoided ({roll})",
+        "AmmoExploded": "Ammo explodes ({roll}): the pilot takes 3 damage",
+        "Restarted": "The engine restarts",
+        "RestartFailed": "Restart failed ({roll})",
+        "TooHotToRestart": "Too hot to restart (more than 3 Heat tokens)"
+      },
+      "EndNarration": {
+        "Button": "End of Narration",
+        "Title": "{name}: end of Narration",
+        "Hint": "CON Check if the pilot is unconscious, cool down, shutdown and ammo checks, engine restart (p. 38, 47–48)."
+      },
+      "Piloting": {
+        "Title": "Piloting Test",
+        "AutoFail": "Automatic failure: {reason}"
+      },
+      "Fall": {
+        "Title": "Fall",
+        "Resolve": "Resolve the fall",
+        "PilotTest": "Piloting Test to avoid pilot damage",
+        "PilotDamage": "Pilot takes 3 damage"
+      },
+      "Warn": {
+        "Destroyed": "This 'Mech is destroyed.",
+        "NoPilot": "This 'Mech has no pilot.",
+        "Shutdown": "The 'Mech is shut down.",
+        "Unconscious": "The pilot is unconscious.",
+        "WeaponDestroyed": "That weapon is destroyed.",
+        "NoJumpJets": "This 'Mech has no Jump Jets."
+      }
     }
   }
 }

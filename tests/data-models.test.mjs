@@ -90,3 +90,37 @@ test("traits feed Initiative and rules effects", async () => {
   assert.equal(actor.system.traitEffects.has("painResistance"), true);
   assert.equal(actor.system.woundModifier, 0);
 });
+
+test("a 'Mech derives remaining Armor, Movement and physical damage", async () => {
+  const { MechData } = await import("../module/data/actor-mech.mjs");
+  const loc = (armor, structure, armorDamage = 0, structureDamage = 0) => ({ armor, structure, armorDamage, structureDamage });
+  const actor = makeActor(MechData, {
+    details: { tonnage: 55, movement: 3, punch: true },
+    locations: {
+      head: loc(3, 1), torso: loc(7, 6, 2), rightArm: loc(5, 3), leftArm: loc(5, 3),
+      rightLeg: loc(5, 4, 5, 4), leftLeg: loc(5, 4)
+    },
+    heat: { value: 3, level: 2 }
+  });
+  const { system } = actor;
+  assert.equal(system.locations.torso.armorLeft, 5);
+  assert.equal(system.locations.rightLeg.destroyed, true);
+  assert.equal(system.legDestroyed, true);
+  // Heat 2 carried over: –1 Movement; a destroyed leg caps it at 1.
+  assert.equal(system.maxMovement, 1);
+  assert.equal(system.heatEffects.ranged, -1);
+  assert.deepEqual(system.physical, { punch: 2, kick: 4 });
+  assert.deepEqual(system.armorTotal, { value: 3 + 5 + 5 + 5 + 0 + 5, max: 30 });
+});
+
+test("'Mech weapon damage codes", async () => {
+  const { MechWeaponData } = await import("../module/data/items.mjs");
+  const srm = makeItem(MechWeaponData, { type: "mechWeapon", system: { damage: 4, missiles: 1, maxDamage: 6, heat: 1, types: "E, M" } });
+  assert.equal(srm.system.damageLabel, "4+M (Max 6)");
+  assert.equal(srm.system.heatLabel, "H");
+  assert.equal(srm.system.usesAmmo, true);
+  const flamer = makeItem(MechWeaponData, { type: "mechWeapon", system: { damage: 1, heatAlternative: true, types: "E" } });
+  assert.equal(flamer.system.damageLabel, "1 (or H)");
+  assert.equal(flamer.system.usesAmmo, false);
+  assert.deepEqual(flamer.system.locations, ["torso"]);
+});

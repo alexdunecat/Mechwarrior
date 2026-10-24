@@ -39,6 +39,7 @@ export class CharacterData extends PersonData {
         realLife: new fields.StringField({ required: true, initial: "" })
       }),
       cues: new fields.StringField({ required: true, initial: "" }),
+      hardware: new fields.ArrayField(new fields.StringField({ required: true, blank: false })),
       biography: new fields.SchemaField({
         history: new fields.HTMLField({ required: true, initial: "" }),
         personality: new fields.HTMLField({ required: true, initial: "" }),
