@@ -208,10 +208,11 @@ export function heatEffects(tokens) {
  * @param {number} unit.heat
  * @param {number} unit.dissipation
  * @param {number} [unit.engineHits=0]
+ * @param {number} [unit.engineHeat]  Heat from the engine, if not the 'Mech's 1 per damaged engine.
  * @returns {number}
  */
-export function coolDown({ heat, dissipation, engineHits = 0 }) {
-  return Math.max(0, heat + (engineHits >= 1 ? 1 : 0) - dissipation);
+export function coolDown({ heat, dissipation, engineHits = 0, engineHeat = (engineHits >= 1 ? 1 : 0) }) {
+  return Math.max(0, heat + engineHeat - dissipation);
 }
 
 /**
@@ -257,11 +258,11 @@ export function speedModifier(mine, theirs) {
 
 /**
  * Damage of a physical attack (p. 43), rounded up.
- * @param {"punch"|"kick"|"push"|"charge"|"dfa"} type
+ * @param {"punch"|"kick"|"push"|"charge"|"dfa"|"ram"} type
  * @param {object} data
  * @param {number} data.tonnage        Attacker's tonnage.
  * @param {number} [data.targetTonnage=0]
- * @param {number} [data.movement=0]   Movement spent this Narration (charge, death from above).
+ * @param {number} [data.movement=0]   Movement spent this Narration (charge, ram, death from above).
  * @returns {{damage: number, self: number, selfTable: string|null}}
  *   Damage to the target, damage to the attacker and the hit table for the attacker's share.
  */
@@ -271,6 +272,7 @@ export function physicalDamage(type, { tonnage, targetTonnage = 0, movement = 0 
     case "punch": return { damage: Math.ceil(tonnage / 30), self: 0, selfTable: null };
     case "kick": return { damage: Math.ceil(tonnage / 15), self: 0, selfTable: null };
     case "charge": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(targetTonnage / 30), selfTable: "standard" };
+    case "ram": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(targetTonnage / 30), selfTable: "kick" };
     case "dfa": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(tonnage / 30), selfTable: "kick" };
     default: return { damage: 0, self: 0, selfTable: null };
   }

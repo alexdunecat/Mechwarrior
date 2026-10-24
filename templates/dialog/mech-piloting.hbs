@@ -9,5 +9,5 @@
     <label>{{localize "MWD.Test.Modifier"}}</label>
     <input type="number" name="modifier" value="0" min="-3" max="3" step="1">
   </div>
-  {{#if gyro}}<p class="mwd-wounds">{{localize "MWD.Mech.Crit.GyroShort"}} {{mwdSigned gyro}}</p>{{/if}}
+  {{#if penalty}}<p class="mwd-wounds">{{localize penalty.label}} {{mwdSigned penalty.value}}</p>{{/if}}
 </div>

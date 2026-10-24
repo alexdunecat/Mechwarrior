@@ -72,13 +72,14 @@ export class CharacterSheet extends PersonSheet {
         img: mech.img,
         model: mech.system.details?.model ?? "",
         weight: game.i18n.localize(WEIGHT_CLASSES[mech.system.details?.weightClass]?.label ?? ""),
+        type: game.i18n.localize(`TYPES.Actor.${mech.type}`),
         piloting: mech.system.pilot === actor.uuid,
         pilotName: (mech.system.pilot && (mech.system.pilot !== actor.uuid)) ? fromUuidSync(mech.system.pilot)?.name : null,
         destroyed: mech.system.status?.destroyed
       };
     });
     const owned = new Set(actor.system.hardware);
-    const available = game.actors.filter(a => (a.type === "mech") && a.isOwner && !owned.has(a.uuid))
+    const available = game.actors.filter(a => a.isUnit && a.isOwner && !owned.has(a.uuid))
       .sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang));
     return {
       hardware,
@@ -96,9 +97,9 @@ export class CharacterSheet extends PersonSheet {
     });
   }
 
-  /** Dropping a 'Mech on the sheet adds it to the pilot's Hardware. @override */
+  /** Dropping a 'Mech, vehicle or fighter on the sheet adds it to the pilot's Hardware. @override */
   async _onDropActor(event, actor) {
-    if ( !this.isEditable || (actor?.type !== "mech") ) return null;
+    if ( !this.isEditable || !actor?.isUnit ) return null;
     if ( this.document.system.hardware.includes(actor.uuid) ) return null;
     await this.document.update({ "system.hardware": [...this.document.system.hardware, actor.uuid] });
     return actor;

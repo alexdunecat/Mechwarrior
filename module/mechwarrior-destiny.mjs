@@ -1,14 +1,16 @@
 import * as MWD from "./config.mjs";
 import { CharacterData } from "./data/actor-character.mjs";
 import { NpcData } from "./data/actor-npc.mjs";
+import { FighterData } from "./data/actor-fighter.mjs";
 import { MechData } from "./data/actor-mech.mjs";
+import { VehicleData } from "./data/actor-vehicle.mjs";
 import {
   ArmorData, GearData, MechEquipmentData, MechWeaponData, SkillData, TraitData, WeaponData
 } from "./data/items.mjs";
 import { MWDActor } from "./documents/actor.mjs";
 import { CharacterSheet } from "./sheets/character-sheet.mjs";
 import { NpcSheet } from "./sheets/npc-sheet.mjs";
-import { MechSheet } from "./sheets/mech-sheet.mjs";
+import { UnitSheet } from "./sheets/unit-sheet.mjs";
 import { MWDItemSheet } from "./sheets/item-sheet.mjs";
 import { MWDCombat, INITIATIVE_FORMULA } from "./documents/combat.mjs";
 import { onRenderChatMessage } from "./dice/test-roll.mjs";
@@ -40,7 +42,9 @@ Hooks.once("init", () => {
   CONFIG.Actor.documentClass = MWDActor;
   CONFIG.Combat.documentClass = MWDCombat;
   CONFIG.Combat.initiative = { formula: INITIATIVE_FORMULA, decimals: 0 };
-  Object.assign(CONFIG.Actor.dataModels, { character: CharacterData, npc: NpcData, mech: MechData });
+  Object.assign(CONFIG.Actor.dataModels, {
+    character: CharacterData, npc: NpcData, mech: MechData, vehicle: VehicleData, fighter: FighterData
+  });
   Object.assign(CONFIG.Item.dataModels, {
     skill: SkillData, trait: TraitData, weapon: WeaponData, armor: ArmorData, gear: GearData,
     mechWeapon: MechWeaponData, mechEquipment: MechEquipmentData
@@ -48,7 +52,9 @@ Hooks.once("init", () => {
   CONFIG.Actor.trackableAttributes = {
     character: { bar: ["plotPoints"], value: ["edge.spent", "condition.physical.value", "condition.fatigue.value"] },
     npc: { bar: [], value: ["condition.physical.value", "condition.fatigue.value"] },
-    mech: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] }
+    mech: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] },
+    vehicle: { bar: ["armorTotal", "structureTotal"], value: [] },
+    fighter: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] }
   };
 
   const sheets = foundry.applications.apps.DocumentSheetConfig;
@@ -58,8 +64,8 @@ Hooks.once("init", () => {
   sheets.registerSheet(Actor, SYSTEM_ID, NpcSheet, {
     types: ["npc"], makeDefault: true, label: "MWD.Sheet.Npc"
   });
-  sheets.registerSheet(Actor, SYSTEM_ID, MechSheet, {
-    types: ["mech"], makeDefault: true, label: "MWD.Sheet.Mech"
+  sheets.registerSheet(Actor, SYSTEM_ID, UnitSheet, {
+    types: ["mech", "vehicle", "fighter"], makeDefault: true, label: "MWD.Sheet.Unit"
   });
   sheets.registerSheet(Item, SYSTEM_ID, MWDItemSheet, { makeDefault: true, label: "MWD.Sheet.Item" });
 
@@ -71,6 +77,7 @@ Hooks.once("init", () => {
     `systems/${SYSTEM_ID}/templates/actor/parts/weapons.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/armor.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/item-list.hbs`,
+    `systems/${SYSTEM_ID}/templates/actor/parts/unit-person.hbs`,
     `systems/${SYSTEM_ID}/templates/item/description.hbs`
   ]);
 });

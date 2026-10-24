@@ -124,3 +124,37 @@ test("'Mech weapon damage codes", async () => {
   assert.equal(flamer.system.usesAmmo, false);
   assert.deepEqual(flamer.system.locations, ["torso"]);
 });
+
+test("combat vehicle locations and motive damage", async () => {
+  const { VehicleData } = await import("../module/data/actor-vehicle.mjs");
+  const loc = (armor, structure, armorDamage = 0) => ({ armor, structure, armorDamage, structureDamage: 0 });
+  const tank = makeActor(VehicleData, {
+    details: { tonnage: 50, movement: 3, motive: "tracked", turret: true },
+    locations: { front: loc(5, 2, 1), rightSide: loc(4, 2), leftSide: loc(4, 2), rear: loc(3, 2), turret: loc(4, 2), rotor: loc(9, 9) },
+    crits: { movement: 2 }
+  });
+  assert.deepEqual(tank.system.locationKeys, ["front", "rightSide", "leftSide", "rear", "turret"]);
+  assert.deepEqual(tank.system.armorTotal, { value: 4 + 4 + 4 + 3 + 4, max: 20 });
+  assert.equal(tank.system.maxMovement, 1);
+  assert.equal(tank.system.physical.ram, 5);
+  assert.equal(tank.system.usesHeat, false);
+
+  const vtol = makeActor(VehicleData, { details: { motive: "vtol" } });
+  assert.deepEqual(vtol.system.locationKeys, ["front", "rightSide", "leftSide", "rear", "rotor"]);
+});
+
+test("aerospace fighters share Structure", async () => {
+  const { FighterData } = await import("../module/data/actor-fighter.mjs");
+  const fighter = makeActor(FighterData, {
+    details: { movement: 5 },
+    locations: { nose: { armor: 2, armorDamage: 2 }, rightWing: { armor: 2 }, leftWing: { armor: 2 }, aft: { armor: 2 } },
+    structure: { max: 3, damage: 1 },
+    heat: { value: 1, level: 1 },
+    crits: { engine: 1 }
+  });
+  assert.deepEqual(fighter.system.armorTotal, { value: 6, max: 8 });
+  assert.deepEqual(fighter.system.structureTotal, { value: 2, max: 3 });
+  // Engine hit –1 and Heat 1 –1.
+  assert.equal(fighter.system.maxMovement, 3);
+  assert.equal(fighter.system.usesHeat, true);
+});

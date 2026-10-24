@@ -1,6 +1,6 @@
 import {
-  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_LOCATIONS, MECH_LOCATION_KEYS, MECH_RANGES, RANGE_CODES, SKILLS,
-  SPECIALTIES, TRAIT_EFFECTS, TRAIT_POLARITIES
+  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS,
+  TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
 import { meleeStrBonus } from "../rules/tests.mjs";
 import { counter } from "./actor-base.mjs";
@@ -170,7 +170,9 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
       heatAlternative: new fields.BooleanField({ initial: false }),
       types: new fields.StringField({ required: true, initial: "E" }),
       heat: counter(0, { max: 6 }),
-      mounts: new fields.SchemaField(Object.fromEntries(MECH_LOCATION_KEYS.map(k => [k,
+      count: counter(1, { min: 1 }),
+      bomb: new fields.BooleanField({ initial: false }),
+      mounts: new fields.SchemaField(Object.fromEntries(Object.keys(UNIT_LOCATIONS).map(k => [k,
         new fields.BooleanField({ initial: k === "torso" })]))),
       ranges: new fields.SchemaField(Object.fromEntries(Object.keys(MECH_RANGES).map(k => [k,
         rangeField(["pointblank", "short"].includes(k) ? "0" : "x")]))),
@@ -179,9 +181,24 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
     };
   }
 
+  /** Mount new weapons where that kind of unit usually carries them. @override */
+  async _preCreate(data, options, user) {
+    const allowed = await super._preCreate(data, options, user);
+    if ( allowed === false ) return false;
+    const type = UNIT_TYPES[this.parent?.parent?.type];
+    if ( type && !foundry.utils.hasProperty(data, "system.mounts") ) {
+      this.updateSource({ mounts: Object.fromEntries(Object.keys(UNIT_LOCATIONS).map(k => [k, k === type.defaultMount])) });
+    }
+  }
+
+  /** Location keys of the unit carrying this weapon, or every location when it is not on a unit. */
+  get unitLocations() {
+    return UNIT_TYPES[this.parent?.parent?.type]?.locations ?? Object.keys(UNIT_LOCATIONS);
+  }
+
   /** Locations the group's weapons are mounted in. */
   get locations() {
-    return MECH_LOCATION_KEYS.filter(k => this.mounts[k]);
+    return this.unitLocations.filter(k => this.mounts[k]);
   }
 
   /** Whether the group contains Ballistic or Missile weapons (ammo explosions, p. 48). */
@@ -205,21 +222,22 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
 
   /** Location abbreviation keys, e.g. ["MWD.Mech.Location.rightArmAbbr"]. */
   get locationAbbrs() {
-    return this.locations.map(k => MECH_LOCATIONS[k].abbr);
+    return this.locations.map(k => UNIT_LOCATIONS[k].abbr);
   }
 }
 
 /* -------------------------------------------- */
 
 /**
- * 'Mech equipment (p. 158): ammo bins matter for ammo explosion critical hits; jump jets allow jumping.
+ * 'Mech-Scale equipment (p. 158): ammo bins matter for ammo explosion critical hits; jump jets allow
+ * jumping. Vehicles and fighters list ammo without a location.
  */
 export class MechEquipmentData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       kind: new fields.StringField({ required: true, initial: "ammo", choices: () => ({ ...MECH_EQUIPMENT_KINDS }) }),
       location: new fields.StringField({ required: true, blank: true, initial: "torso",
-        choices: () => ({ "": "MWD.Mech.Location.none", ...labels(MECH_LOCATIONS) }) }),
+        choices: () => ({ "": "MWD.Mech.Location.none", ...labels(UNIT_LOCATIONS) }) }),
       destroyed: new fields.BooleanField({ initial: false }),
       description: description()
     };

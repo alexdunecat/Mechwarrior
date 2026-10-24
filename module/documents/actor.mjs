@@ -1,9 +1,15 @@
-import { ATTRIBUTES, DIFFICULTIES, PLOT_POINTS, SKILLS, SPECIALTIES, SYSTEM_ID } from "../config.mjs";
+import {
+  ATTRIBUTES, DIFFICULTIES, DISENGAGED_TARGET, MIXED_LARGE_TARGET, PLOT_POINTS, SKILLS, SPECIALTIES, SYSTEM_ID
+} from "../config.mjs";
 import { kiaDice } from "../rules/condition.mjs";
 import { resolvePersonalDamage } from "../rules/damage.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
+import * as Fighter from "./fighter.mjs";
 import * as Mech from "./mech.mjs";
+import * as Mixed from "./mixed.mjs";
+import * as Unit from "./unit.mjs";
+import * as Vehicle from "./vehicle.mjs";
 
 const DIALOG_TEMPLATE = `systems/${SYSTEM_ID}/templates/dialog/test-dialog.hbs`;
 const ATTACK_TEMPLATE = `systems/${SYSTEM_ID}/templates/dialog/attack-dialog.hbs`;
@@ -276,13 +282,23 @@ export class MWDActor extends Actor {
    * @returns {Promise<ChatMessage[]>}
    */
   async rollAttack(weapon) {
-    const targets = Array.from(game.user.targets).map(t => t.actor).filter(a => a?.isPerson && (a !== this));
+    const targeted = Array.from(game.user.targets).map(t => t.actor).filter(a => a && (a !== this));
+    const targets = targeted.filter(a => a.isPerson);
+    const units = targeted.filter(a => a.isUnit);
+    const unitDefense = (unit, mod = 0) => {
+      const parts = Unit.unitParts(unit, "piloting").parts;
+      if ( mod ) parts.push({ label: game.i18n.localize("MWD.Test.Modifier"), value: mod });
+      return parts;
+    };
     const skillKey = weapon.system.skill;
     const skill = this.findSkill(skillKey);
     const ranges = Object.fromEntries(["close", "near", "far"].map(r => [r, rangeModifier(weapon.system.ranges[r])]));
     const context = {
       weapon,
-      targets: targets.map(t => ({ name: t.name, defense: t.getDefenseParts().reduce((n, p) => n + p.value, 0) })),
+      targets: [
+        ...targets.map(t => ({ name: t.name, defense: t.getDefenseParts().reduce((n, p) => n + p.value, 0) })),
+        ...units.map(u => ({ name: u.name, defense: unitDefense(u).reduce((n, p) => n + p.value, 0) }))
+      ],
       skillLabel: skill ? `${skill.name} (${skill.system.bonus >= 0 ? "+" : ""}${skill.system.bonus})`
         : game.i18n.format("MWD.Test.UntrainedLabel", { skill: game.i18n.localize(`MWD.Skill.${skillKey}`) }),
       ranges: Object.entries(ranges).map(([key, mod]) => ({
@@ -328,7 +344,7 @@ export class MWDActor extends Actor {
     const label = `${weapon.name} · ${game.i18n.localize(`MWD.Range.${data.range}`)}`;
     const defenseMod = Number(data.defenseModifier) || 0;
 
-    if ( !targets.length ) {
+    if ( !targets.length && !units.length ) {
       const manual = Number(data.manualDefense) || 0;
       return [await rollTest(this, {
         kind: "attack", label, parts, dice: 2, damage, untrained: !skill,
@@ -342,6 +358,19 @@ export class MWDActor extends Actor {
         kind: "attack", label, parts, dice: 2, damage, target, untrained: !skill,
         opposingLabel: game.i18n.format("MWD.Attack.DefenseOf", { name: target.name }),
         opposingParts: target.getDefenseParts(defenseMod)
+      }));
+    }
+    // People against 'Mech-Scale units (p. 66): +2 at Close range, damage adds up 20 at a time.
+    for ( const unit of units ) {
+      const unitAttackParts = [...parts];
+      if ( data.range === "close" ) unitAttackParts.push({ label: game.i18n.localize("MWD.Mixed.LargeTarget"), value: MIXED_LARGE_TARGET });
+      messages.push(await rollTest(this, {
+        kind: "attack", label, parts: unitAttackParts, dice: 2, untrained: !skill,
+        damage: { ...damage, kind: "smallArms" },
+        target: unit.pilot, applyTo: unit, targetName: unit.name,
+        minNatural: unit.system.status.disengaged ? DISENGAGED_TARGET : 0,
+        opposingLabel: game.i18n.format("MWD.Attack.DefenseOf", { name: unit.name }),
+        opposingParts: unitDefense(unit, defenseMod)
       }));
     }
     return messages;
@@ -429,79 +458,136 @@ export class MWDActor extends Actor {
   /*  Hardware                                    */
   /* -------------------------------------------- */
 
+  /** Whether this actor is a 'Mech-Scale unit ('Mech, combat vehicle or aerospace fighter). */
+  get isUnit() {
+    return Unit.isUnit(this);
+  }
+
   /**
-   * The 'Mech this person is piloting, if any.
+   * The unit this person is piloting, if any.
    * @type {Actor|null}
    */
   get piloting() {
     if ( !this.isPerson ) return null;
-    return game.actors.find(a => (a.type === "mech") && (a.system.pilot === this.uuid)) ?? null;
+    return game.actors.find(a => a.isUnit && (a.system.pilot === this.uuid)) ?? null;
   }
 
   /**
-   * Climb into a 'Mech (a pilot can own several and switch between them). Leaves any other
-   * 'Mech this person was piloting and records the machine in a character's Hardware list.
-   * @param {Actor} mech
+   * Take the controls of a unit (a pilot can own several and switch between them). Leaves any
+   * other unit this person was piloting and records the machine in a character's Hardware list.
+   * @param {Actor} unit
    */
-  async boardHardware(mech) {
-    if ( !this.isPerson || (mech?.type !== "mech") ) return;
-    for ( const other of game.actors.filter(a => (a.type === "mech") && (a !== mech) && (a.system.pilot === this.uuid)) ) {
+  async boardHardware(unit) {
+    if ( !this.isPerson || !unit?.isUnit ) return;
+    for ( const other of game.actors.filter(a => a.isUnit && (a !== unit) && (a.system.pilot === this.uuid)) ) {
       await other.update({ "system.pilot": "" });
     }
-    await mech.update({ "system.pilot": this.uuid });
-    if ( (this.type === "character") && !this.system.hardware.includes(mech.uuid) ) {
-      await this.update({ "system.hardware": [...this.system.hardware, mech.uuid] });
+    await unit.update({ "system.pilot": this.uuid, "system.crew": unit.system.crew.filter(u => u !== this.uuid) });
+    if ( (this.type === "character") && !this.system.hardware.includes(unit.uuid) ) {
+      await this.update({ "system.hardware": [...this.system.hardware, unit.uuid] });
     }
   }
 
-  /** Leave the 'Mech this person is piloting. */
+  /** Leave the unit this person is piloting. */
   async leaveHardware() {
-    const mech = this.piloting;
-    if ( mech ) await mech.update({ "system.pilot": "" });
+    const unit = this.piloting;
+    if ( unit ) await unit.update({ "system.pilot": "" });
+  }
+
+  /**
+   * Killed in Action outright, e.g. by a direct hit from a 'Mech-Scale weapon (p. 65): no KIA Test
+   * or other death-avoidance option applies.
+   * @param {string} [source]
+   */
+  async killInAction(source) {
+    if ( !this.isPerson ) return null;
+    await this.toggleStatusEffect("dead", { active: true, overlay: true });
+    return ChatMessage.create(applyDefaultMode({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `<div class="mwd-card failure"><header class="mwd-card-header"><h3>${this.name}</h3></header>`
+        + `<p>${game.i18n.format("MWD.Mixed.KilledBy", { source: source ?? "" })}</p></div>`
+    }));
   }
 
   /* -------------------------------------------- */
   /*  'Mech-Scale Combat                          */
   /* -------------------------------------------- */
 
-  /** @see Mech.getPilot */
+  /** @see Unit.getPilot */
   get pilot() {
-    return (this.type === "mech") ? Mech.getPilot(this) : null;
+    return this.isUnit ? Unit.getPilot(this) : null;
   }
 
   /**
-   * A 'Mech rolls Initiative with its pilot's bonus.
+   * A unit rolls Initiative with its pilot's bonus.
    * @override
    */
   getRollData() {
     const data = super.getRollData();
-    if ( this.type !== "mech" ) return data;
+    if ( !this.isUnit ) return data;
     return { ...data, initiativeBonus: this.pilot?.system.initiativeBonus ?? 0 };
   }
 
-  /** @see Mech.rollMechAttack */
-  async rollMechAttack(weapon) {
-    return Mech.rollMechAttack(this, weapon);
+  /** @see Unit.rollUnitAttack */
+  async rollUnitAttack(weapon) {
+    return Unit.rollUnitAttack(this, weapon);
   }
 
-  /** @see Mech.rollPhysicalAttack */
+  /** @see Unit.rollPhysicalAttack */
   async rollPhysicalAttack() {
-    return Mech.rollPhysicalAttack(this);
+    return Unit.rollPhysicalAttack(this);
   }
 
-  /** @see Mech.applyMechHit */
-  async applyMechHit(damage) {
-    return Mech.applyMechHit(this, damage);
+  /**
+   * Resolve a 'Mech-Scale hit on this unit.
+   * @param {import("./unit.mjs").MechDamage} damage
+   * @returns {Promise<ChatMessage|null>}
+   */
+  async applyUnitHit(damage) {
+    switch ( this.type ) {
+      case "mech": return Mech.applyMechHit(this, damage);
+      case "vehicle": return Vehicle.applyVehicleHit(this, damage);
+      case "fighter": return Fighter.applyFighterHit(this, damage);
+      default: return null;
+    }
   }
 
-  /** @see Mech.rollPilotingTest */
+  /** @see Mixed.applySmallArms */
+  async applySmallArms(damage) {
+    return this.isUnit ? Mixed.applySmallArms(this, damage) : null;
+  }
+
+  /** @see Unit.rollPilotingTest */
   async rollPilotingTest(options) {
-    return Mech.rollPilotingTest(this, options);
+    return Unit.rollPilotingTest(this, options);
+  }
+
+  /**
+   * What a failed Piloting Test does (p. 49): a 'Mech falls, a vehicle crashes, a fighter goes out
+   * of control until its pilot passes a Piloting Test at the end of a later Narration.
+   * @param {"fall"|"crash"|"control"} kind
+   */
+  async pilotingFailure(kind) {
+    if ( kind === "fall" ) return this.resolveFall();
+    if ( kind === "crash" ) return this.resolveCrash();
+    if ( kind === "control" ) {
+      await this.update({ "system.status.outOfControl": true });
+      return ChatMessage.create(applyDefaultMode({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `<div class="mwd-card failure"><p>${game.i18n.format("MWD.Fighter.OutOfControl", { name: this.name })}</p></div>`
+      }));
+    }
+    return null;
   }
 
   /** @see Mech.resolveFall */
   async resolveFall() {
-    return Mech.resolveFall(this);
+    return (this.type === "mech") ? Mech.resolveFall(this) : null;
+  }
+
+  /** @see Unit.resolveCrash */
+  async resolveCrash() {
+    return this.isUnit ? Unit.resolveCrash(this) : null;
   }
 
   /** @see Mech.jump */
@@ -509,8 +595,23 @@ export class MWDActor extends Actor {
     return Mech.jump(this);
   }
 
-  /** @see Mech.endNarration */
+  /** @see Unit.addCrew */
+  async addCrew(person) {
+    return Unit.addCrew(this, person);
+  }
+
+  /** @see Unit.removeCrew */
+  async removeCrew(uuid) {
+    return Unit.removeCrew(this, uuid);
+  }
+
+  /** End of this unit's Narration: Heat, upkeep and recovery. */
   async endNarration() {
-    return Mech.endNarration(this);
+    switch ( this.type ) {
+      case "mech": return Mech.endNarration(this);
+      case "vehicle": return Vehicle.endVehicleNarration(this);
+      case "fighter": return Fighter.endFighterNarration(this);
+      default: return null;
+    }
   }
 }

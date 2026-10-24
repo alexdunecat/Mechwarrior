@@ -43,6 +43,14 @@
   {{#if damageLabel}}
   <div class="mwd-card-damage">{{localize "MWD.Weapon.Damage"}}: <strong>{{damageLabel}}</strong>{{#if applied}} · {{localize "MWD.Damage.Applied"}}{{/if}}</div>
   {{/if}}
+  {{#if hitTypeLabel}}
+  <div class="mwd-card-damage"><strong>{{hitTypeLabel}}</strong>{{#if applied}} · {{localize "MWD.Damage.Applied"}}{{/if}}</div>
+  {{/if}}
+  {{#if hitTypeOptions.length}}
+  <div class="mwd-hittype-controls">
+    {{#each hitTypeOptions}}<button type="button" data-option="{{key}}"><i class="fa-solid fa-star"></i> {{label}}</button>{{/each}}
+  </div>
+  {{/if}}
   {{#if canApply}}
   <div class="mwd-apply-controls">
     <button type="button" data-apply><i class="fa-solid fa-heart-crack"></i> {{applyLabel}}</button>

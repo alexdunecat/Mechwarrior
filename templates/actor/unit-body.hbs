@@ -7,35 +7,30 @@
       {{/if}}
     </header>
     {{#if pilot}}
-    <div class="mwd-pilot-row">
-      <img class="mwd-portrait small" src="{{pilot.img}}" alt="{{pilot.name}}">
-      <div class="mwd-pilot-stats">
-        <a class="mwd-pp-name" data-action="openPilot">{{pilot.name}}</a>
-        {{#if pilot.unconscious}}<span class="mwd-badge negative">{{localize "MWD.Mech.Pilot.Unconscious"}}</span>{{/if}}
-        <div class="mwd-muted">
-          {{localize "MWD.Mech.Attack.Gunnery"}} {{mwdSigned pilot.gunnery}} ·
-          {{localize "MWD.Mech.Pilot.Piloting"}} {{mwdSigned pilot.piloting}} ·
-          {{localize "MWD.Condition.physical"}} {{pilot.physical}}{{#if pilot.wounds}} ({{mwdSigned pilot.wounds}}){{/if}}
-          {{#if pilot.edge}} · {{localize "MWD.Edge.label"}} {{pilot.edge}}{{/if}}
-          {{#if (ne pilot.plotPoints null)}} · {{localize "MWD.PlotPoints.label"}} {{pilot.plotPoints}}{{/if}}
-        </div>
-      </div>
-      {{#if pilot.conCheck}}
-      <button type="button" class="mwd-button" data-action="conCheck" data-tooltip="MWD.Con.Hint"><i class="fa-solid fa-dice"></i> {{localize "MWD.Con.Label" n=pilot.conCheck}}</button>
-      {{/if}}
-      {{#if editable}}<button type="button" class="mwd-button" data-action="leavePilot"><i class="fa-solid fa-person-walking-arrow-right"></i> {{localize "MWD.Mech.Pilot.Leave"}}</button>{{/if}}
-    </div>
+    {{> "systems/mechwarrior-destiny/templates/actor/parts/unit-person.hbs" person=pilot isPilot=true editable=editable}}
     {{else}}
     <p class="mwd-empty">{{localize "MWD.Mech.Pilot.None"}}</p>
     {{/if}}
+    {{#unless isMech}}
+    <header class="mwd-block-header">
+      <h3>{{localize "MWD.Unit.Crew.label"}}</h3>
+      {{#if editable}}<select data-crew-select>{{selectOptions crewChoices}}</select>{{/if}}
+    </header>
+    {{#each crew}}
+    {{> "systems/mechwarrior-destiny/templates/actor/parts/unit-person.hbs" person=this editable=@root.editable}}
+    {{else}}
+    <p class="mwd-empty">{{localize "MWD.Unit.Crew.None"}}</p>
+    {{/each}}
+    {{/unless}}
   </section>
 
   <section class="mwd-block mwd-mech-actions">
     <div class="mwd-header-row">
-      <button type="button" class="mwd-button" data-action="physical"><i class="fa-solid fa-hand-fist"></i> {{localize "MWD.Mech.Physical.Button"}}</button>
-      {{#if system.details.jumpJets}}<button type="button" class="mwd-button" data-action="jump"><i class="fa-solid fa-jet-fighter-up"></i> {{localize "MWD.Mech.Jump"}}</button>{{/if}}
+      {{#unless isFighter}}<button type="button" class="mwd-button" data-action="physical"><i class="fa-solid fa-hand-fist"></i> {{localize physicalLabel}}</button>{{/unless}}
+      {{#if isMech}}{{#if system.details.jumpJets}}<button type="button" class="mwd-button" data-action="jump"><i class="fa-solid fa-jet-fighter-up"></i> {{localize "MWD.Mech.Jump"}}</button>{{/if}}{{/if}}
       <button type="button" class="mwd-button" data-action="piloting"><i class="fa-solid fa-person-falling"></i> {{localize "MWD.Mech.Piloting.Title"}}</button>
-      <button type="button" class="mwd-button" data-action="fall"><i class="fa-solid fa-person-falling-burst"></i> {{localize "MWD.Mech.Fall.Resolve"}}</button>
+      {{#if isMech}}<button type="button" class="mwd-button" data-action="fall"><i class="fa-solid fa-person-falling-burst"></i> {{localize "MWD.Mech.Fall.Resolve"}}</button>{{/if}}
+      {{#unless isMech}}<button type="button" class="mwd-button" data-action="crash"><i class="fa-solid fa-car-burst"></i> {{localize "MWD.Vehicle.Crash.Resolve"}}</button>{{/unless}}
       <button type="button" class="mwd-button mwd-roll-test" data-action="endNarration" data-tooltip="MWD.Mech.EndNarration.Hint"><i class="fa-solid fa-hourglass-end"></i> {{localize "MWD.Mech.EndNarration.Button"}}</button>
     </div>
     <div class="mwd-header-row mwd-statuses">
@@ -58,18 +53,27 @@
               <th class="mwd-col-name">{{localize "MWD.Weapon.Name"}}</th>
               <th>{{localize "MWD.Weapon.Damage"}}</th>
               <th>{{localize "MWD.Mech.Weapon.TypeShort"}}</th>
-              <th>{{localize "MWD.Mech.Weapon.Heat"}}</th>
+              {{#if usesHeat}}<th>{{localize "MWD.Mech.Weapon.Heat"}}</th>{{/if}}
               <th>{{localize "MWD.Mech.Weapon.Loc"}}</th>
               {{#each rangeLabels}}<th class="mwd-range-col">{{this}}</th>{{/each}}
               <th></th>
             </tr>
           </thead>
           <tbody>
+            {{#if isMech}}
             <tr class="mwd-muted">
               <td>{{localize "MWD.Mech.Physical.punch"}} / {{localize "MWD.Mech.Physical.kick"}}</td>
               <td>{{system.physical.punch}}/{{system.physical.kick}}</td>
               <td>—</td><td>—</td><td>—</td><td>OK</td><td>—</td><td>—</td><td>—</td><td></td>
             </tr>
+            {{/if}}
+            {{#if isVehicle}}
+            <tr class="mwd-muted">
+              <td>{{localize "MWD.Mech.Physical.ram"}}</td>
+              <td>{{system.physical.ram}}</td>
+              <td>—</td><td>—</td><td>OK</td><td>—</td><td>—</td><td>—</td><td></td>
+            </tr>
+            {{/if}}
             {{#each weapons}}
             <tr data-item-id="{{id}}" class="{{#if destroyed}}mwd-destroyed{{/if}}">
               <td class="mwd-col-name">
@@ -78,7 +82,7 @@
               </td>
               <td>{{damage}}</td>
               <td>{{types}}</td>
-              <td>{{heat}}</td>
+              {{#if @root.usesHeat}}<td>{{heat}}</td>{{/if}}
               <td>{{locations}}</td>
               {{#each ranges}}<td class="mwd-range-col">{{this}}</td>{{/each}}
               <td class="mwd-col-controls">
@@ -122,6 +126,7 @@
     </div>
 
     <div class="mwd-column mwd-column-narrow">
+      {{#if usesHeat}}
       <section class="mwd-block">
         <header class="mwd-block-header">
           <h3>{{localize "MWD.Mech.Heat.label"}}</h3>
@@ -133,10 +138,11 @@
         </div>
         <p class="mwd-small mwd-muted">{{localize "MWD.Mech.Heat.CarriedHint" n=system.heat.level}}</p>
       </section>
+      {{/if}}
 
       <section class="mwd-block">
         <header class="mwd-block-header"><h3>{{localize "MWD.Mech.ArmorDiagram"}}</h3></header>
-        <div class="mwd-diagram">
+        <div class="mwd-diagram mwd-diagram-{{actor.type}}">
           {{#each locations}}
           <div class="mwd-location mwd-location-{{key}} {{#if destroyed}}mwd-destroyed{{/if}}">
             <div class="mwd-location-head">
@@ -145,36 +151,55 @@
             <div class="mwd-pips">
               {{#each armorPips}}<a class="mwd-pip armor {{#if filled}}filled{{/if}}" data-action="armorPip" data-location="{{../key}}" data-layer="armor" data-index="{{index}}"></a>{{/each}}
             </div>
+            {{#if hasStructure}}
             <div class="mwd-pips">
               {{#each structurePips}}<a class="mwd-pip structure {{#if filled}}filled{{/if}}" data-action="armorPip" data-location="{{../key}}" data-layer="structure" data-index="{{index}}"></a>{{/each}}
             </div>
+            {{/if}}
             {{#if @root.editable}}
             <div class="mwd-location-max">
               <input type="number" name="system.locations.{{key}}.armor" value="{{armor}}" min="0" data-tooltip="MWD.Mech.Armor">
+              {{#if hasStructure}}
               /
               <input type="number" name="system.locations.{{key}}.structure" value="{{structure}}" min="0" data-tooltip="MWD.Mech.Structure">
+              {{/if}}
             </div>
             {{/if}}
           </div>
           {{/each}}
         </div>
-        <p class="mwd-small mwd-muted">{{localize "MWD.Mech.DiagramHint"}}</p>
+        {{#if isFighter}}
+        <div class="mwd-location mwd-fighter-structure">
+          <div class="mwd-location-head"><strong>{{localize "MWD.Mech.Structure"}}</strong> <span class="mwd-muted">({{localize "MWD.Fighter.SharedStructure"}})</span></div>
+          <div class="mwd-pips">
+            {{#each structurePips}}<a class="mwd-pip structure {{#if filled}}filled{{/if}}" data-action="structurePip" data-index="{{index}}"></a>{{/each}}
+          </div>
+          {{#if editable}}<div class="mwd-location-max"><input type="number" name="system.structure.max" value="{{system.structure.max}}" min="0" data-tooltip="MWD.Mech.Structure"></div>{{/if}}
+        </div>
+        {{/if}}
+        <p class="mwd-small mwd-muted">{{localize diagramHint}}</p>
       </section>
 
       <section class="mwd-block">
         <header class="mwd-block-header"><h3>{{localize "MWD.Mech.Crit.label"}}</h3></header>
+        {{#each critPips}}
         <div class="mwd-crit-row">
-          <span>{{localize "MWD.Mech.Crit.GyroShort"}}</span>
-          <span class="mwd-pips">{{#each crits.gyro}}<a class="mwd-pip {{#if filled}}filled{{/if}}" data-action="critPip" data-crit="gyro" data-index="{{index}}"></a>{{/each}}</span>
+          <span>{{label}}</span>
+          <span class="mwd-pips">{{#each pips}}<a class="mwd-pip {{#if filled}}filled{{/if}}" data-action="critPip" data-crit="{{../key}}" data-index="{{index}}"></a>{{/each}}</span>
         </div>
-        <div class="mwd-crit-row">
-          <span>{{localize "MWD.Mech.Crit.EngineShort"}}</span>
-          <span class="mwd-pips">{{#each crits.engine}}<a class="mwd-pip {{#if filled}}filled{{/if}}" data-action="critPip" data-crit="engine" data-index="{{index}}"></a>{{/each}}</span>
-        </div>
+        {{/each}}
+        {{#if isMech}}
         <div class="mwd-crit-row">
           <span>{{localize "MWD.Mech.Crit.LegShort"}}</span>
-          <input type="number" name="system.crits.legs" value="{{crits.legs}}" min="0">
+          <input type="number" name="system.crits.legs" value="{{system.crits.legs}}" min="0">
         </div>
+        {{/if}}
+        {{#if isVehicle}}
+        <div class="mwd-crit-row">
+          <span data-tooltip="MWD.Vehicle.MovementLostHint">{{localize "MWD.Vehicle.MovementLost"}}</span>
+          <input type="number" name="system.crits.movement" value="{{system.crits.movement}}" min="0">
+        </div>
+        {{/if}}
       </section>
     </div>
   </div>

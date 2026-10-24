@@ -3,7 +3,9 @@
     "Actor": {
       "character": "Character",
       "npc": "NPC",
-      "mech": "BattleMech"
+      "mech": "BattleMech",
+      "vehicle": "Combat Vehicle",
+      "fighter": "Aerospace Fighter"
     },
     "Item": {
       "skill": "Skill",
@@ -11,8 +13,8 @@
       "weapon": "Weapon",
       "armor": "Armor",
       "gear": "Inventory Item",
-      "mechWeapon": "'Mech Weapon",
-      "mechEquipment": "'Mech Equipment"
+      "mechWeapon": "Hardware Weapon",
+      "mechEquipment": "Hardware Equipment"
     }
   },
   "MWD": {
@@ -20,7 +22,7 @@
       "Character": "MechWarrior: Destiny character sheet",
       "Npc": "MechWarrior: Destiny NPC sheet",
       "Item": "MechWarrior: Destiny item sheet",
-      "Mech": "MechWarrior: Destiny 'Mech sheet"
+      "Unit": "MechWarrior: Destiny Hardware sheet"
     },
     "Tab": {
       "main": "Main",
@@ -453,13 +455,6 @@
         "deepWater": "Deep Water",
         "partialCover": "Partial Cover (ignore leg hits)"
       },
-      "Status": {
-        "prone": "Prone",
-        "jumped": "Jumped",
-        "shutdown": "Shut down",
-        "disengaged": "Disengaged",
-        "destroyed": "Destroyed"
-      },
       "Pilot": {
         "label": "MechWarrior",
         "None": "No pilot. Pick one above or drag a character onto this sheet.",
@@ -485,7 +480,10 @@
         "Heat": "Heat",
         "Loc": "Loc",
         "Locations": "Mounted in",
-        "Destroyed": "Destroyed"
+        "Destroyed": "Destroyed",
+        "Count": "Weapons in group",
+        "CountHint": "Used for indirect hits on people (p. 66).",
+        "Bomb": "Bomb"
       },
       "Equipment": {
         "label": "Equipment",
@@ -530,8 +528,10 @@
           "kick": "The target must make a Piloting Test to stay standing.",
           "push": "The target must make a Piloting Test to stay standing.",
           "charge": "Both 'Mechs must make a Piloting Test to stay standing.",
-          "dfa": "Both 'Mechs must make a Piloting Test to stay standing."
-        }
+          "dfa": "Both 'Mechs must make a Piloting Test to stay standing.",
+          "ram": "The rammer takes the target's Tonnage/30 in 2-point clusters."
+        },
+        "ram": "Ram"
       },
       "Damage": {
         "Self": "{n} to attacker",
@@ -568,7 +568,7 @@
       "Heat": {
         "label": "Heat",
         "CarriedHint": "Penalties this Narration come from the {n} tokens left after the last cool down.",
-        "Engine": "Damaged engine: +1 Heat token",
+        "Engine": "Damaged engine: +{n} Heat",
         "Cooled": "Cool down: {from} → {to} (dissipation {dissipation})",
         "Level": {
           "blue": "Blue: no effects",
@@ -603,13 +603,146 @@
         "PilotDamage": "Pilot takes 3 damage"
       },
       "Warn": {
-        "Destroyed": "This 'Mech is destroyed.",
-        "NoPilot": "This 'Mech has no pilot.",
-        "Shutdown": "The 'Mech is shut down.",
+        "Destroyed": "This unit is destroyed.",
+        "NoPilot": "This unit has no pilot.",
+        "Shutdown": "The engine is shut down.",
         "Unconscious": "The pilot is unconscious.",
         "WeaponDestroyed": "That weapon is destroyed.",
         "NoJumpJets": "This 'Mech has no Jump Jets."
       }
+    },
+    "Unit": {
+      "Status": {
+        "prone": "Prone",
+        "jumped": "Jumped",
+        "shutdown": "Shut down",
+        "disengaged": "Disengaged",
+        "destroyed": "Destroyed",
+        "stunned": "Crew stunned",
+        "outOfControl": "Out of control",
+        "atmosphere": "In atmosphere"
+      },
+      "Crew": {
+        "label": "Crew",
+        "Add": "Add crew…",
+        "None": "No other crew aboard.",
+        "Remove": "Leave"
+      }
+    },
+    "Vehicle": {
+      "Location": {
+        "front": "Front",
+        "frontAbbr": "F",
+        "rightSide": "Right Side",
+        "rightSideAbbr": "RS",
+        "leftSide": "Left Side",
+        "leftSideAbbr": "LS",
+        "rear": "Rear",
+        "rearAbbr": "R",
+        "turret": "Turret",
+        "turretAbbr": "T",
+        "rotor": "Rotor",
+        "rotorAbbr": "Ro"
+      },
+      "Motive": {
+        "label": "Motive type",
+        "tracked": "Tracked",
+        "wheeled": "Wheeled",
+        "hover": "Hover",
+        "vtol": "VTOL"
+      },
+      "HasTurret": "Turret",
+      "Immobile": "Immobile",
+      "MovementLost": "Movement lost",
+      "MovementLostHint": "Motive damage (–2) and critical hits (–1 or –2).",
+      "DiagramHint": "Top row: Armor, bottom row: Structure. Any location losing all of its pips destroys the vehicle; nothing transfers. Without a turret, 10–12 hit the front.",
+      "Damage": {
+        "HeatCrits": "{n} Heat: one critical hit check per token (vehicles have no Heat scale)",
+        "Motive": "Motive damage ({roll}): –2 Movement",
+        "MotiveSafe": "Motive system holds ({roll})",
+        "Destroyed": "The vehicle is destroyed.",
+        "Immobile": "The vehicle is immobile until repaired."
+      },
+      "Crit": {
+        "Crew": "crew compartment hit: 3 Physical damage to everyone aboard.",
+        "Stunned": "crew stunned: –2 to all Tests during their next Narration.",
+        "Ammo": "ammo explosion, the vehicle is destroyed.",
+        "Movement": "–{n} maximum Movement.",
+        "StunRecovered": "The crew shakes off the stun."
+      },
+      "NoUpkeep": "Combat vehicles ignore Heat; nothing to do.",
+      "Crash": {
+        "Title": "{name} crashes",
+        "Resolve": "Crash",
+        "Movement": "Movement spent this Narration",
+        "Hint": "Treated as a ram: (Tonnage/30) × Movement to the unit in 2-point clusters, and 3 Physical damage per Movement (min. 1) to everyone aboard (p. 49)."
+      }
+    },
+    "Fighter": {
+      "Location": {
+        "nose": "Nose",
+        "noseAbbr": "N",
+        "rightWing": "Right Wing",
+        "rightWingAbbr": "RW",
+        "leftWing": "Left Wing",
+        "leftWingAbbr": "LW",
+        "aft": "Aft",
+        "aftAbbr": "A"
+      },
+      "SharedStructure": "shared by all locations",
+      "DiagramHint": "Each location has its own Armor; damage past it goes to the shared Structure. 2+ damage to a location from one attack calls for a critical hit check.",
+      "Crit": {
+        "AvionicsShort": "Avionics",
+        "Avionics": "avionics damaged: –2 to Piloting Tests; make a Piloting Test.",
+        "FuelExploded": "fuel tank hit and explodes ({roll}), the fighter is destroyed.",
+        "FuelHeld": "fuel tank hit, but it holds ({roll}).",
+        "Engine": "engine shielding damaged: –1 maximum Movement, +2 Heat at the end of the next Narration.",
+        "Ammo": "ammo explosion, the fighter is destroyed.",
+        "Bomb": "{weapon} rendered useless.",
+        "Cockpit": "cockpit hit: the pilot takes 3 Physical damage."
+      },
+      "Damage": {
+        "StructureGone": "All Structure gone.",
+        "Destroyed": "The fighter is destroyed.",
+        "PilotingTest": "Piloting Test to stay in control."
+      },
+      "OutOfControl": "{name} is out of control: no Movement or attacks until a Piloting Test at the end of a later Narration succeeds.",
+      "LoseControl": "Lose control",
+      "RegainControl": "Regain control",
+      "Warn": {
+        "OutOfControl": "The fighter is out of control.",
+        "NoPhysical": "Aerospace fighters cannot make physical attacks."
+      }
+    },
+    "Mixed": {
+      "SmallTarget": "Single person",
+      "SmallTargetShort": "on foot, –2",
+      "LargeTarget": "'Mech-Scale target at Close",
+      "RollHitType": "Roll for direct or indirect hit",
+      "HitTypeTitle": "{source}: direct or indirect hit?",
+      "Hit": {
+        "direct": "Direct hit: Killed in Action",
+        "indirect": "Indirect hit",
+        "none": "Avoided with Plot Points"
+      },
+      "Option": {
+        "direct": {
+          "downgrade": "Downgrade to indirect ({n} PP)",
+          "avoid": "Avoid the hit ({n} PP)"
+        },
+        "indirect": {
+          "avoid": "Avoid the hit ({n} PP)"
+        }
+      },
+      "Apply": {
+        "direct": "Kill {name}",
+        "indirect": "Apply {n} damage to {name}"
+      },
+      "IndirectSource": "{source}, indirect hit",
+      "KilledBy": "Killed in Action by a direct hit: {source}.",
+      "SmallArmsTotal": "Personal damage {before} + {add} = {total} of 20",
+      "SmallArmsNoDamage": "Not enough to hurt it yet.",
+      "SmallArmsShort": "personal damage {n}/20"
     }
   }
 }

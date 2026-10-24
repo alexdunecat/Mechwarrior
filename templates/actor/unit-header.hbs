@@ -5,7 +5,7 @@
       <input class="mwd-name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'Name'}}">
       <label class="mwd-field mwd-field-narrow">
         <span>{{localize "MWD.Mech.Model"}}</span>
-        <input type="text" name="system.details.model" value="{{system.details.model}}" placeholder="WVR-6R">
+        <input type="text" name="system.details.model" value="{{system.details.model}}">
       </label>
     </div>
     <div class="mwd-header-row">
@@ -13,9 +13,15 @@
         <span>{{localize "MWD.Mech.Weight.label"}}</span>
         <select name="system.details.weightClass">{{selectOptions weightClasses selected=system.details.weightClass}}</select>
       </label>
+      {{#if isVehicle}}
+      <label class="mwd-field mwd-field-narrow">
+        <span>{{localize "MWD.Vehicle.Motive.label"}}</span>
+        <select name="system.details.motive">{{selectOptions motives selected=system.details.motive}}</select>
+      </label>
+      {{/if}}
       <label class="mwd-field mwd-field-xs">
         <span>{{localize "MWD.Mech.Tonnage"}}</span>
-        <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="100">
+        <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="200">
       </label>
       <label class="mwd-field mwd-field-xs">
         <span data-tooltip="MWD.Mech.HardwarePointsHint">{{localize "MWD.Mech.HardwarePoints"}}</span>
@@ -25,15 +31,26 @@
         <span>{{localize "MWD.Mech.Movement"}}</span>
         <input type="number" name="system.details.movement" value="{{system.details.movement}}" min="0">
       </label>
+      {{#if usesHeat}}
       <label class="mwd-field mwd-field-xs">
         <span data-tooltip="MWD.Mech.HeatDissipationHint">{{localize "MWD.Mech.HeatDissipation"}}</span>
         <input type="number" name="system.details.heatDissipation" value="{{system.details.heatDissipation}}" min="0">
       </label>
+      {{/if}}
     </div>
     <div class="mwd-header-row mwd-checkboxes">
+      {{#if isMech}}
       <label class="checkbox"><input type="checkbox" name="system.details.jumpJets" {{checked system.details.jumpJets}}> {{localize "MWD.Mech.JumpJets"}}</label>
       <label class="checkbox"><input type="checkbox" name="system.details.punch" {{checked system.details.punch}}> {{localize "MWD.Mech.CanPunch"}}</label>
-      <span class="mwd-muted">{{localize "MWD.Mech.MaxMovement"}}: <strong>{{system.maxMovement}}</strong> · {{localize "MWD.Mech.Physical.punch"}} {{system.physical.punch}} / {{localize "MWD.Mech.Physical.kick"}} {{system.physical.kick}}</span>
+      {{/if}}
+      {{#if isVehicle}}{{#unless system.vtol}}
+      <label class="checkbox"><input type="checkbox" name="system.details.turret" {{checked system.details.turret}}> {{localize "MWD.Vehicle.HasTurret"}}</label>
+      {{/unless}}{{/if}}
+      <span class="mwd-muted">{{localize "MWD.Mech.MaxMovement"}}: <strong>{{system.maxMovement}}</strong>
+        {{#if isMech}} · {{localize "MWD.Mech.Physical.punch"}} {{system.physical.punch}} / {{localize "MWD.Mech.Physical.kick"}} {{system.physical.kick}}{{/if}}
+        {{#if isVehicle}} · {{localize "MWD.Mech.Physical.ram"}} {{system.physical.ram}}{{#if system.immobile}} · <strong>{{localize "MWD.Vehicle.Immobile"}}</strong>{{/if}}{{/if}}
+        {{#if system.smallArms}} · {{localize "MWD.Mixed.SmallArmsShort" n=system.smallArms}}{{/if}}
+      </span>
     </div>
     <label class="mwd-field">
       <span>{{localize "MWD.Tags.label"}}</span>
