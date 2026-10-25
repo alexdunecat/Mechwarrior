@@ -18,6 +18,12 @@ test("shredded armor no longer reduces damage", () => {
   assert.deepEqual(resolvePersonalDamage({ damage: 3 }, null), { armor: 0, physical: 3, fatigue: 0, reduced: 0 });
 });
 
+test("natural armor has no pips but always reduces its damage type", () => {
+  const hide = { value: 0, natural: true, reduceB: 1, reduceE: 0 };
+  assert.deepEqual(resolvePersonalDamage({ damage: 3, type: "B" }, hide), { armor: 0, physical: 2, fatigue: 0, reduced: 1 });
+  assert.deepEqual(resolvePersonalDamage({ damage: 3, type: "E" }, hide), { armor: 0, physical: 3, fatigue: 0, reduced: 0 });
+});
+
 test("Fatigue weapons skip armor", () => {
   assert.deepEqual(resolvePersonalDamage({ damage: 3, fatigue: true }, plate), { armor: 0, physical: 0, fatigue: 3, reduced: 0 });
 });

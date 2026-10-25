@@ -67,7 +67,7 @@ export function repairXpCost(destroyed) {
  * @returns {string}
  */
 export function improveRange(code) {
-  if ( (code === "x") || !(code in RANGE_CODES) ) return code;
+  if ( (code === "x") || !(code in RANGE_CODES) || (Number(code) >= 0) ) return code;
   return String(Math.min(0, Number(code) + 1));
 }
 

@@ -94,10 +94,11 @@ export const PERSONAL_RANGES = {
 };
 
 /**
- * Range notation codes stored on weapons: "0" is OK, negative numbers are penalties,
- * "x" means the weapon cannot be used at that range.
+ * Range notation codes stored on weapons: "0" is OK, negative numbers are penalties, "2" is the
+ * bomb's Pointblank bonus, "x" means the weapon cannot be used at that range.
  */
 export const RANGE_CODES = {
+  2: "+2",
   0: "OK",
   "-1": "–1",
   "-2": "–2",
@@ -113,6 +114,17 @@ export const TRAIT_EFFECTS = {
   painResistance: "MWD.Trait.Effect.painResistance",
   glassJaw: "MWD.Trait.Effect.glassJaw",
   unlucky: "MWD.Trait.Effect.unlucky"
+};
+
+/**
+ * Built-in crew of an NPC unit: Gunnery and Piloting bonuses (RFL included) by Experience Level.
+ * The book's sample MechWarrior and Aerojock NPCs (p. 128–129) have +5 and +6.
+ */
+export const CREW_PRESETS = {
+  green: { gunnery: 4, piloting: 4 },
+  regular: { gunnery: 5, piloting: 5 },
+  veteran: { gunnery: 6, piloting: 6 },
+  elite: { gunnery: 7, piloting: 7 }
 };
 
 /** Base Initiative modifier by Experience Level for the optional rolled Initiative (p. 55). */

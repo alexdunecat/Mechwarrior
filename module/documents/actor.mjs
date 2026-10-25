@@ -37,6 +37,11 @@ export class MWDActor extends Actor {
     return ["character", "npc"].includes(this.type);
   }
 
+  /** Whether this actor has a Condition Monitor: a person, or a unit's built-in crew in the seat. */
+  get canBeInjured() {
+    return this.isPerson || Unit.usesBuiltInCrew(this);
+  }
+
   /**
    * Option value used by the test dialog for an attribute-only Test.
    * @type {string}
@@ -182,7 +187,8 @@ export class MWDActor extends Actor {
    */
   async rollKiaCheck() {
     const physical = this.system.condition.physical;
-    const edg = this.system.attributes.edg.total;
+    // A unit's built-in crew is an NPC with the lowest EDG.
+    const edg = this.system.attributes?.edg.total ?? 1;
     const abbr = game.i18n.localize(ATTRIBUTES.edg.abbr);
     const dice = kiaDice(physical.kiaChecks);
     await this.update({ "system.condition.physical.kiaChecks": physical.kiaChecks + 1 });
@@ -416,7 +422,7 @@ export class MWDActor extends Actor {
    * @returns {Promise<object>}  The damage split.
    */
   async applyPersonalDamage(damage, { source, mechScale = false, ignoreArmor = false } = {}) {
-    if ( !this.isPerson ) return null;
+    if ( !this.canBeInjured ) return null;
     const system = this.system;
     const wasStaggered = { physical: system.condition.physical.track.staggered, fatigue: system.condition.fatigue.track.staggered };
     const toughness = system.traitEffects.has("toughness") ? 1 : 0;
@@ -437,7 +443,8 @@ export class MWDActor extends Actor {
     const knockedOut = (split.fatigue > 0) && (wasStaggered.fatigue || this.system.condition.fatigue.track.beyond);
     const content = await foundry.applications.handlebars.renderTemplate(
       `systems/${SYSTEM_ID}/templates/chat/damage-card.hbs`, {
-        name: this.name, source, damage, split, kia, knockedOut,
+        name: this.isUnit ? game.i18n.format("MWD.Crew.NameOf", { name: this.name }) : this.name,
+        source, damage, split, kia, knockedOut,
         wounds: this.system.woundModifier,
         staggered: this.system.condition.physical.track.staggered || this.system.condition.fatigue.track.staggered
       });
@@ -497,7 +504,7 @@ export class MWDActor extends Actor {
    * @param {string} [source]
    */
   async killInAction(source) {
-    if ( !this.isPerson ) return null;
+    if ( !this.canBeInjured ) return null;
     await this.toggleStatusEffect("dead", { active: true, overlay: true });
     return ChatMessage.create(applyDefaultMode({
       speaker: ChatMessage.getSpeaker({ actor: this }),

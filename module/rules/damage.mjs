@@ -27,7 +27,7 @@ export function resolvePersonalDamage({ damage, type = "", fatigue = false }, ar
   }
 
   const armorLeft = armor?.value ?? 0;
-  if ( armorLeft > 0 ) {
+  if ( (armorLeft > 0) || armor?.natural ) {
     const reduction = (type === "B") ? (armor.reduceB ?? 0) : (type === "E") ? (armor.reduceE ?? 0) : 0;
     result.reduced = Math.min(reduction, remaining);
     remaining -= result.reduced;

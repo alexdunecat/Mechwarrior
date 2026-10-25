@@ -46,15 +46,25 @@ export function isUnit(actor) {
 }
 
 /**
- * The actor piloting or commanding a unit, if any.
+ * The actor piloting or commanding a unit, if any. With nobody in the seat, a unit with an active
+ * built-in crew is its own pilot: it rolls with the crew's bonuses and takes the crew's injuries.
  * @param {Actor} unit
  * @returns {Actor|null}
  */
 export function getPilot(unit) {
   const uuid = unit?.system?.pilot;
-  if ( !uuid ) return null;
-  const pilot = fromUuidSync(uuid);
-  return pilot?.isPerson ? pilot : null;
+  const pilot = uuid ? fromUuidSync(uuid) : null;
+  if ( pilot?.isPerson ) return pilot;
+  return unit?.system?.builtInCrew?.active ? unit : null;
+}
+
+/**
+ * Whether a unit is crewed by its built-in crew right now.
+ * @param {Actor} unit
+ * @returns {boolean}
+ */
+export function usesBuiltInCrew(unit) {
+  return !!unit && (getPilot(unit) === unit);
 }
 
 /**
@@ -75,7 +85,7 @@ export function pilotUnconscious(pilot) {
 
 /**
  * Bonus breakdown for a pilot's Gunnery or Piloting with a kind of Hardware: Skill + RFL, or RFL
- * alone without the Skill (p. 40–41), plus wounds.
+ * alone without the Skill (p. 40–41), plus wounds. A built-in crew has the bonuses as they are.
  * @param {Actor|null} pilot
  * @param {"gunnery"|"piloting"} key
  * @param {string} [specialty="mech"]  "mech", "vehicle" or "aero".
@@ -83,6 +93,11 @@ export function pilotUnconscious(pilot) {
  */
 export function pilotParts(pilot, key, specialty = "mech") {
   if ( !pilot ) return { skill: null, parts: [] };
+  if ( pilot.isUnit ) {
+    const parts = [{ label: t(`MWD.Crew.${key}`), value: pilot.system.builtInCrew[key] }];
+    if ( pilot.system.woundModifier ) parts.push({ label: t("MWD.Condition.Wounds"), value: pilot.system.woundModifier });
+    return { skill: null, parts };
+  }
   const skill = pilot.findSkill(key, specialty);
   const parts = [];
   if ( skill ) {

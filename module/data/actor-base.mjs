@@ -8,7 +8,8 @@ export function counter(initial = 0, options = {}) {
   return new fields.NumberField({ required: true, nullable: false, integer: true, min: 0, initial, ...options });
 }
 
-function trackField() {
+/** One Damage Track of a Condition Monitor: marked pips, lost pips and KIA Tests taken. */
+export function trackField() {
   return new fields.SchemaField({
     value: counter(0),
     lost: counter(0),
@@ -48,7 +49,8 @@ export class PersonData extends foundry.abstract.TypeDataModel {
       value: Math.max(0, armor.system.pips - armor.system.damage),
       reduceB: armor.system.reduceB,
       reduceE: armor.system.reduceE,
-      rflPenalty: armor.system.rflPenalty
+      rflPenalty: armor.system.rflPenalty,
+      natural: armor.system.natural
     } : null;
 
     for ( const [key, attr] of Object.entries(this.attributes) ) {

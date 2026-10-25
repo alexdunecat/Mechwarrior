@@ -21,6 +21,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run build:packs
 
       - name: Read version
         id: version
@@ -45,7 +46,7 @@ jobs:
              --arg manifest "$REPO/releases/latest/download/system.json" \
              --arg download "$REPO/releases/download/v$VERSION/system.zip" \
              '.url = $url | .manifest = $manifest | .download = $download' system.json > dist/system.json
-          cp -r module templates styles lang dist/package/
+          cp -r module templates styles lang packs dist/package/
           cp dist/system.json dist/package/system.json
           (cd dist/package && zip -r ../system.zip .)
 

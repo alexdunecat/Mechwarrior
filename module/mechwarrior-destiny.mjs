@@ -18,6 +18,7 @@ import { onRenderMechCard } from "./documents/mech.mjs";
 import { registerSettings } from "./settings.mjs";
 import { registerSocket } from "./socket.mjs";
 import { CharacterCreator } from "./apps/character-creator.mjs";
+import { registerCompendiumHooks } from "./documents/compendium.mjs";
 import { PlotPointsPanel, spendPlotPoint, startNewSession } from "./apps/plot-points.mjs";
 
 const { SYSTEM_ID } = MWD;
@@ -79,6 +80,7 @@ Hooks.once("init", () => {
     `systems/${SYSTEM_ID}/templates/actor/parts/armor.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/item-list.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/unit-person.hbs`,
+    `systems/${SYSTEM_ID}/templates/actor/parts/unit-crew.hbs`,
     `systems/${SYSTEM_ID}/templates/item/description.hbs`,
     ...CharacterCreator.partials
   ]);
@@ -89,6 +91,8 @@ Hooks.once("ready", () => {
   game.mwd.plotPoints = new PlotPointsPanel();
   if ( game.settings.get(SYSTEM_ID, "showPlotPoints") ) game.mwd.plotPoints.render({ force: true });
 });
+
+registerCompendiumHooks();
 
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 Hooks.on("renderChatMessageHTML", onRenderMechCard);
