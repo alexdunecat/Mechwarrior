@@ -1,0 +1,24 @@
+<section class="mwd-creator-step">
+  <header class="mwd-block-header">
+    <h2>{{stepNumber}}. {{stepLabel}}</h2>
+  </header>
+  <p class="mwd-small mwd-muted">{{stepHint}}</p>
+  {{#if issues.length}}
+  <ul class="mwd-creator-issues">
+    {{#each issues}}<li><i class="fa-solid fa-triangle-exclamation"></i> {{this}}</li>{{/each}}
+  </ul>
+  {{/if}}
+  {{#if is_theme}}{{> "systems/mechwarrior-destiny/templates/creation/theme.hbs"}}{{/if}}
+  {{#if is_faction}}{{> "systems/mechwarrior-destiny/templates/creation/faction.hbs"}}{{/if}}
+  {{#if is_experience}}{{> "systems/mechwarrior-destiny/templates/creation/experience.hbs"}}{{/if}}
+  {{#if is_attributes}}{{> "systems/mechwarrior-destiny/templates/creation/attributes.hbs"}}{{/if}}
+  {{#if is_skills}}{{> "systems/mechwarrior-destiny/templates/creation/skills.hbs"}}{{/if}}
+  {{#if is_traits}}{{> "systems/mechwarrior-destiny/templates/creation/traits.hbs"}}{{/if}}
+  {{#if is_lifeModules}}{{> "systems/mechwarrior-destiny/templates/creation/lifeModules.hbs"}}{{/if}}
+  {{#if is_armor}}{{> "systems/mechwarrior-destiny/templates/creation/armor.hbs"}}{{/if}}
+  {{#if is_weapons}}{{> "systems/mechwarrior-destiny/templates/creation/weapons.hbs"}}{{/if}}
+  {{#if is_inventory}}{{> "systems/mechwarrior-destiny/templates/creation/inventory.hbs"}}{{/if}}
+  {{#if is_hardware}}{{> "systems/mechwarrior-destiny/templates/creation/hardware.hbs"}}{{/if}}
+  {{#if is_cues}}{{> "systems/mechwarrior-destiny/templates/creation/cues.hbs"}}{{/if}}
+  {{#if is_background}}{{> "systems/mechwarrior-destiny/templates/creation/background.hbs"}}{{/if}}
+</section>

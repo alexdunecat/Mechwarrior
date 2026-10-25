@@ -1,0 +1,34 @@
+<p><strong>{{localize "MWD.Creation.HardwareBudget" n=hardwareBudget}}</strong></p>
+<ol class="mwd-list">
+  {{#each units}}
+  <li class="mwd-list-row {{#if selected}}active{{/if}}">
+    <a class="mwd-col-name" data-action="chooseHardware" data-uuid="{{uuid}}">
+      <i class="fa-regular {{#if selected}}fa-circle-dot{{else}}fa-circle{{/if}}"></i> {{name}}
+      <span class="mwd-muted">{{type}} · {{weight}} · {{localize "MWD.Advance.HardwarePoints" n=cost}}</span>
+    </a>
+    {{#if tooExpensive}}<span class="mwd-badge warn">{{localize "MWD.Creation.TooExpensive"}}</span>{{/if}}
+    {{#unless skillsOk}}<span class="mwd-badge warn">{{localize "MWD.Creation.MissingSkills"}}</span>{{/unless}}
+    {{#if pilotName}}<span class="mwd-muted">{{localize "MWD.Hardware.PilotedBy" name=pilotName}}</span>{{/if}}
+  </li>
+  {{else}}
+  <li class="mwd-empty">{{localize "MWD.Creation.NoUnits"}}</li>
+  {{/each}}
+</ol>
+<ul class="mwd-small mwd-muted">
+  {{#each requirements}}<li>{{type}}: {{text}}</li>{{/each}}
+</ul>
+<label class="checkbox"><input type="checkbox" name="dispossessed" {{checked draft.dispossessed}}> {{localize "MWD.Creation.Dispossessed"}}</label>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.DispossessedHint"}}</p>
+<label class="checkbox"><input type="checkbox" name="hardwarePool" {{checked draft.hardwarePool}}> {{localize "MWD.Creation.HardwarePool"}}</label>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.HardwarePoolHint"}}</p>
+{{#if unspent}}
+<fieldset>
+  <legend>{{localize "MWD.Creation.Unspent" n=unspent}}</legend>
+  <label class="mwd-field-inline"><span>{{localize "MWD.Creation.ConvertXp" n=conversionRates.xp}}</span>
+    <input type="number" name="conversion.xp" value="{{draft.conversion.xp}}" min="0" max="{{unspent}}"></label>
+  <label class="mwd-field-inline"><span>{{localize "MWD.Creation.ConvertSkills" n=conversionRates.skills}}</span>
+    <input type="number" name="conversion.skills" value="{{draft.conversion.skills}}" min="0" max="{{unspent}}"></label>
+  <label class="mwd-field-inline"><span>{{localize "MWD.Creation.ConvertEdge" n=conversionRates.edge}}</span>
+    <input type="number" name="conversion.edge" value="{{draft.conversion.edge}}" min="0" max="{{unspent}}"></label>
+</fieldset>
+{{/if}}

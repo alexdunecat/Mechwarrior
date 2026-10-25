@@ -17,6 +17,7 @@ import { onRenderChatMessage } from "./dice/test-roll.mjs";
 import { onRenderMechCard } from "./documents/mech.mjs";
 import { registerSettings } from "./settings.mjs";
 import { registerSocket } from "./socket.mjs";
+import { CharacterCreator } from "./apps/character-creator.mjs";
 import { PlotPointsPanel, spendPlotPoint, startNewSession } from "./apps/plot-points.mjs";
 
 const { SYSTEM_ID } = MWD;
@@ -27,7 +28,7 @@ Hooks.once("init", () => {
   game.mwd = {
     config: MWD,
     plotPoints: null,
-    api: { spendPlotPoint, startNewSession }
+    api: { spendPlotPoint, startNewSession, openCreator: actor => CharacterCreator.open(actor) }
   };
   registerSettings();
   game.keybindings.register(SYSTEM_ID, "plotPoints", {
@@ -78,7 +79,8 @@ Hooks.once("init", () => {
     `systems/${SYSTEM_ID}/templates/actor/parts/armor.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/item-list.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/unit-person.hbs`,
-    `systems/${SYSTEM_ID}/templates/item/description.hbs`
+    `systems/${SYSTEM_ID}/templates/item/description.hbs`,
+    ...CharacterCreator.partials
   ]);
 });
 

@@ -28,7 +28,8 @@
       "main": "Main",
       "story": "Traits & Cues",
       "bio": "Biography",
-      "hardware": "Hardware"
+      "hardware": "Hardware",
+      "advancement": "Advancement"
     },
     "Edit": "Edit",
     "Delete": "Delete",
@@ -60,7 +61,8 @@
         "long": "Edge",
         "abbr": "EDG"
       },
-      "Modified": "Value after armor penalties"
+      "Modified": "Value after armor penalties",
+      "plural": "Attributes"
     },
     "Details": {
       "label": "Vital Factors",
@@ -223,10 +225,12 @@
       "AppliesTo": "Applies to",
       "Effect": {
         "label": "Rules effect",
-        "hint": "Applied automatically: Toughness takes 1 off each hit to the Condition Monitor, Pain Resistance ignores the –1 wound modifier.",
+        "hint": "Applied automatically: Toughness takes 1 off each hit to the Condition Monitor and Glass Jaw adds 1, Pain Resistance ignores the –1 wound modifier, Unlucky turns 6s on your own Edge rerolls into 1s.",
         "none": "None",
         "toughness": "Toughness",
-        "painResistance": "Pain Resistance"
+        "painResistance": "Pain Resistance",
+        "glassJaw": "Glass Jaw",
+        "unlucky": "Unlucky"
       },
       "Initiative": "Initiative modifier",
       "InitiativeHint": "Used only with rolled Initiative, e.g. Combat Sense +1."
@@ -243,7 +247,19 @@
       "StrBonus": "Adds STR bonus",
       "Support": "Support weapon",
       "Ranges": "Ranges",
-      "Special": "Special"
+      "Special": "Special",
+      "Mod": {
+        "none": "—",
+        "accuracy": "Accuracy",
+        "lethality": "Lethality",
+        "range": "Range",
+        "accuracyHint": "Accuracy: a negative modifier here is reduced by 1."
+      },
+      "Unique": "invented at creation",
+      "Free": {
+        "unarmed": "Unarmed",
+        "martialArts": "Martial Arts"
+      }
     },
     "DamageType": {
       "none": "—",
@@ -265,7 +281,15 @@
       "RflPenalty": "RFL penalty",
       "Options": "Options",
       "Equipped": "Worn",
-      "Concealed": "Concealed"
+      "Concealed": "Concealed",
+      "Type": {
+        "flak": "Flak Armor",
+        "ablative": "Ablative Armor",
+        "ballisticPlate": "Ballistic Plate Armor",
+        "concealedFlak": "Concealed Flak Armor",
+        "concealedAblative": "Concealed Ablative Armor",
+        "infiltration": "Infiltration Suit"
+      }
     },
     "Gear": {
       "plural": "Inventory",
@@ -652,6 +676,7 @@
         "vtol": "VTOL"
       },
       "HasTurret": "Turret",
+      "HasTurretHint": "Without a turret there is no Turret location: hit rolls 10–12 go to the Front.",
       "Immobile": "Immobile",
       "MovementLost": "Movement lost",
       "MovementLostHint": "Motive damage (–2) and critical hits (–1 or –2).",
@@ -743,6 +768,439 @@
       "SmallArmsTotal": "Personal damage {before} + {add} = {total} of 20",
       "SmallArmsNoDamage": "Not enough to hurt it yet.",
       "SmallArmsShort": "personal damage {n}/20"
+    },
+    "Faction": {
+      "Group": {
+        "successor": "The Successor States",
+        "periphery": "The Periphery",
+        "other": "Other"
+      },
+      "capellan": "Capellan Confederation (House Liao)",
+      "draconis": "Draconis Combine (House Kurita)",
+      "fedsuns": "Federated Suns (House Davion)",
+      "fwl": "Free Worlds League (House Marik)",
+      "lyran": "Lyran Commonwealth (House Steiner)",
+      "canopus": "Magistracy of Canopus",
+      "outworlds": "Outworlds Alliance",
+      "taurian": "Taurian Concordat",
+      "banditKingdom": "Pirate (Bandit Kingdom)",
+      "comstar": "ComStar",
+      "mercenary": "Mercenary",
+      "pirate": "Pirate (Independent)",
+      "unaffiliated": "Unaffiliated"
+    },
+    "LifeModules": {
+      "childhood": {
+        "backwoods": "Backwoods",
+        "blueCollar": "Blue Collar",
+        "mercenaryBrat": "Mercenary Brat",
+        "farm": "Farm",
+        "fugitives": "Fugitives",
+        "nobility": "Nobility",
+        "slave": "Slave",
+        "spacerFamily": "Spacer Family",
+        "street": "Street",
+        "warOrphan": "War Orphan",
+        "whiteCollar": "White Collar"
+      },
+      "education": {
+        "technicalCollege": "Technical College",
+        "tradeSchool": "Trade School",
+        "university": "University",
+        "solarisInternship": "Solaris VII Internship",
+        "policeAcademy": "Police Academy",
+        "intelligenceTraining": "Intelligence Operative Training",
+        "militaryAcademy": "Military Academy",
+        "militaryEnlistment": "Military Enlistment",
+        "familyTraining": "Family Training",
+        "officerCandidate": "Officer Candidate School"
+      },
+      "realLife": {
+        "agitator": "Agitator",
+        "civilianJob": "Civilian Job",
+        "combatCorrespondent": "Combat Correspondent",
+        "comstarService": "ComStar Service",
+        "covertOperations": "Covert Operations",
+        "explorer": "Explorer",
+        "guerrilla": "Guerrilla Insurgent",
+        "merchant": "Merchant",
+        "neerDoWell": "Ne'er-Do-Well",
+        "organizedCrime": "Organized Crime",
+        "postgraduate": "Postgraduate Studies",
+        "solarisInsider": "Solaris Insider",
+        "solarisGames": "Solaris VII Games",
+        "thinkTank": "Think Tank",
+        "tourOfDuty": "Tour of Duty",
+        "toServeAndProtect": "To Serve and Protect",
+        "travel": "Travel"
+      }
+    },
+    "BookTrait": {
+      "alternateId": {
+        "name": "Alternate ID",
+        "hint": "You lead a double life; you or the GM can bring it into the story."
+      },
+      "animalEmpathy": {
+        "name": "Animal Empathy",
+        "hint": "+1 to Tests involving animals."
+      },
+      "attractive": {
+        "name": "Attractive",
+        "hint": "+1 to CHA Tests where looks matter."
+      },
+      "citizenship": {
+        "name": "Citizenship",
+        "hint": "+1 to CHA Tests with citizens of your faction."
+      },
+      "combatSense": {
+        "name": "Combat Sense",
+        "hint": "Pick your place in the turn order without a Plot Point."
+      },
+      "connections": {
+        "name": "Connections",
+        "hint": "+1 to CHA Tests with your connections."
+      },
+      "equipped": {
+        "name": "Equipped",
+        "hint": "At creation: 1 extra weapon or 2 extra Inventory items. Not for XP."
+      },
+      "gTolerance": {
+        "name": "G-Tolerance",
+        "hint": "Ignore modifiers for high-g maneuvers and zero gravity."
+      },
+      "goodHearing": {
+        "name": "Good Hearing",
+        "hint": "+1 to Perception Tests by hearing."
+      },
+      "goodReputation": {
+        "name": "Good Reputation",
+        "hint": "+1 to CHA Tests with people who know you."
+      },
+      "goodVision": {
+        "name": "Good Vision",
+        "hint": "+1 to Perception Tests by sight."
+      },
+      "painResistance": {
+        "name": "Pain Resistance",
+        "hint": "Ignore the first wound modifier on both tracks."
+      },
+      "poisonResistance": {
+        "name": "Poison Resistance",
+        "hint": "Toxins deal 2 less damage."
+      },
+      "prosthetic": {
+        "name": "Prosthetic",
+        "hint": "Cancels Lost Limb while worn; needs Lost Limb."
+      },
+      "rank": {
+        "name": "Rank",
+        "hint": "Needed for Captain or higher; you command a unit."
+      },
+      "sixthSense": {
+        "name": "Sixth Sense",
+        "hint": "+1 to Perception Tests against surprise and ambush."
+      },
+      "techEmpathy": {
+        "name": "Tech Empathy",
+        "hint": "+1 to non-combat Tests with technology."
+      },
+      "thickSkinned": {
+        "name": "Thick-Skinned",
+        "hint": "Ignore modifiers for extreme heat and cold."
+      },
+      "toughness": {
+        "name": "Toughness",
+        "hint": "1 less Physical and Fatigue damage from each hit."
+      },
+      "wealthy": {
+        "name": "Wealthy",
+        "hint": "+1 Hardware Point at creation. Not for XP."
+      },
+      "animalAntipathy": {
+        "name": "Animal Antipathy",
+        "hint": "–1 to Tests involving animals."
+      },
+      "badReputation": {
+        "name": "Bad Reputation",
+        "hint": "–1 to CHA Tests with people who know you."
+      },
+      "bloodmark": {
+        "name": "Bloodmark",
+        "hint": "There is a price on your head; the GM can use it."
+      },
+      "combatParalysis": {
+        "name": "Combat Paralysis",
+        "hint": "Always take the last Narration in a round."
+      },
+      "compulsion": {
+        "name": "Compulsion",
+        "hint": "–1 to Tests to resist your compulsion."
+      },
+      "darkSecret": {
+        "name": "Dark Secret",
+        "hint": "–1 to Tests to keep your secret."
+      },
+      "dependents": {
+        "name": "Dependents",
+        "hint": "Someone depends on you; the GM can use it."
+      },
+      "enemy": {
+        "name": "Enemy",
+        "hint": "A nemesis can turn up at any time."
+      },
+      "glassJaw": {
+        "name": "Glass Jaw",
+        "hint": "1 more Physical and Fatigue damage from each hit."
+      },
+      "gremlins": {
+        "name": "Gremlins",
+        "hint": "–1 to non-combat Tests with technology."
+      },
+      "illiterate": {
+        "name": "Illiterate",
+        "hint": "–2 to Tests involving written material."
+      },
+      "inForLife": {
+        "name": "In for Life",
+        "hint": "You belong to a shadowy organization; the GM can use it."
+      },
+      "introvert": {
+        "name": "Introvert",
+        "hint": "–1 to CHA Tests."
+      },
+      "lostLimb": {
+        "name": "Lost Limb",
+        "hint": "–4 to Tests using the missing limb."
+      },
+      "poor": {
+        "name": "Poor",
+        "hint": "At creation: 1 weapon, 2 Inventory items, half the Hardware Points (at least 1)."
+      },
+      "poorHearing": {
+        "name": "Poor Hearing",
+        "hint": "–1 to Perception Tests by hearing."
+      },
+      "poorVision": {
+        "name": "Poor Vision",
+        "hint": "–1 to Perception Tests by sight."
+      },
+      "thinSkinned": {
+        "name": "Thin-Skinned",
+        "hint": "Double modifiers for extreme heat and cold."
+      },
+      "tds": {
+        "name": "TDS (Transit Disorientation Syndrome)",
+        "hint": "–2 to all Tests for 20 minutes after a hyperspace jump."
+      },
+      "unattractive": {
+        "name": "Unattractive",
+        "hint": "–1 to CHA Tests where looks matter."
+      },
+      "unlucky": {
+        "name": "Unlucky",
+        "hint": "6s on your own Edge rerolls count as 1s."
+      }
+    },
+    "Creation": {
+      "Open": "Create",
+      "OpenHint": "Character creation, step by step (p. 68)",
+      "Title": "Character creation: {name}",
+      "Prev": "Back",
+      "Next": "Next",
+      "Finish": "Finish",
+      "FinishTitle": "Finish character creation",
+      "FinishWithIssues": "{n} rule problems are left. The GM may allow them. Finish anyway?",
+      "ReplaceItems": "The character's {n} skills, traits, weapons, armor and Inventory items will be replaced by the ones from the wizard. Continue?",
+      "Done": "{name} is ready.",
+      "TotalIssues": "Problems: {n}",
+      "NoIssues": "Everything fits the rules",
+      "StepWarnings": "Problems: {n}",
+      "PointsLeft": "Points left: {left} of {budget}",
+      "Optional": "optional",
+      "Or": "or",
+      "AnySkill": "+1 to any Skill except Artillery, Gunnery, Piloting, Support Weapons",
+      "Step": {
+        "theme": "Theme and name",
+        "faction": "Faction",
+        "experience": "Experience Level",
+        "attributes": "Attributes",
+        "skills": "Skills",
+        "traits": "Traits",
+        "lifeModules": "Life Modules",
+        "armor": "Armor",
+        "weapons": "Weapons",
+        "inventory": "Inventory",
+        "hardware": "Hardware",
+        "cues": "Cues",
+        "background": "Background"
+      },
+      "Hint": {
+        "theme": "A few words on who the character is, a name and some one-word Tags (p. 68).",
+        "faction": "The nation or group the character is loyal to (p. 69).",
+        "experience": "Sets the points for Attributes and Skills, the number of weapons and Hardware Points (p. 69).",
+        "attributes": "Every Attribute starts at 1 and goes up to 4 here. Each point of EDG above 1 costs 2 (p. 70).",
+        "skills": "Each Skill takes at least 1 point and at most 4. Take at least one Knowledge Skill (p. 70).",
+        "traits": "One or two positive Traits and as many negative ones (p. 72).",
+        "lifeModules": "One module for Childhood, Higher Education (optional) and Real Life; each gives +1 to a Skill, or the Skill at 1 (p. 73).",
+        "armor": "Choose one armor (p. 75).",
+        "weapons": "Weapons by experience level, plus Unarmed or Martial Arts for free (p. 75).",
+        "inventory": "Up to four non-combat items without stats (p. 75).",
+        "hardware": "One starting unit within your Hardware Points; leftover points turn into XP, Skill points or EDG (p. 76).",
+        "cues": "Catchphrases and bold lines the character might say, one per line (p. 77).",
+        "background": "Personal data, history, personality and Dispositions (p. 77)."
+      },
+      "Theme": "Theme",
+      "ThemePlaceholder": "e.g. grizzled tank sergeant with an attitude",
+      "FactionModule": "The faction is also the character's Faction Life Module.",
+      "NoFaction": "not chosen",
+      "LevelBudget": "{attributes} Attribute points, {skills} Skill points, {weapons} weapons, {hardware} Hardware Points",
+      "LevelGroupRule": "At least half the group plays the chosen level, and nobody is more than two levels away from it (p. 69).",
+      "EdgeCost": "2 points each",
+      "ConditionHint": "STR and WIL below 5 cross off pips on the Condition Monitor; the sheet does that by itself.",
+      "LifeModuleBonus": "Life Module",
+      "FromLifeModule": "from a Life Module",
+      "SkillsFromHardware": "including {n} unspent Hardware Points",
+      "SkillsRules": "Gunnery and Piloting are taken separately for BattleMechs, combat vehicles and aerospace fighters.",
+      "TraitCounts": "Positive: {positive}, negative: {negative} (up to {max} each)",
+      "CustomTraitModifier": "Bonus or penalty, at most 1",
+      "TraitsRules": "Your own Traits give at most +1 or –1 to any one thing.",
+      "ModuleSkill": "Skill",
+      "LifeModulesRules": "Greyed-out modules need another module first, e.g. Tour of Duty needs a military education.",
+      "ArmorStats": "{pips} pips",
+      "FreeWeapon": "Free melee option",
+      "WeaponCount": "Weapons: {n} of {max}",
+      "EquippedHint": "Equipped: one more weapon, or two more Inventory items.",
+      "AddWeapon": "Add a weapon",
+      "InventWeapon": "Invent one",
+      "NewWeapon": "New weapon",
+      "WeaponsRules": "Pick from the list, drag a weapon here from the sidebar or a compendium, or invent one from a comparable weapon's stats. At most {max} weapons in total. Invented weapons cannot be customized later.",
+      "InventoryCount": "Items: {n} of {max}",
+      "InventoryRules": "Inventory items are Cues with no rules; skip ammo and other mundane things.",
+      "HardwareBudget": "Hardware Points: {n}",
+      "NoUnits": "No units you can use yet. The GM creates the 'Mech, vehicle or fighter and gives you ownership.",
+      "TooExpensive": "too expensive",
+      "MissingSkills": "skills missing",
+      "HardwareSkills": {
+        "mech": "Gunnery and Piloting (BattleMech)",
+        "vehicle": "Gunnery or Piloting (Combat Vehicle)",
+        "fighter": "Gunnery and Piloting (Aerospace Fighter)"
+      },
+      "Dispossessed": "Dispossessed: start without a 'Mech",
+      "DispossessedHint": "All Hardware Points are kept for later; the first 'Mech bought with them costs 1 less (p. 76).",
+      "HardwarePool": "Hardware Pool: the group pooled its points",
+      "HardwarePoolHint": "With the group's agreement, a unit may cost more than your own Hardware Points (p. 76).",
+      "Unspent": "Unspent Hardware Points: {n}",
+      "ConvertXp": "into XP ({n} each)",
+      "ConvertSkills": "into Skill points ({n} each)",
+      "ConvertEdge": "into EDG (+{n} each)",
+      "Issue": {
+        "attributesOver": "{spent} Attribute points spent, only {budget} available.",
+        "attributesLeft": "{n} Attribute points left to assign.",
+        "attributeMax": "{attribute} is above {max}.",
+        "edgeMax": "EDG cannot start above {max}.",
+        "skillsOver": "{spent} Skill points spent, only {budget} available.",
+        "skillsLeft": "{n} Skill points left to assign.",
+        "skillMin": "{skill} needs at least 1 point.",
+        "skillMax": "{skill} is above {max}.",
+        "skillSpecialty": "{skill}: choose BattleMech, combat vehicle or aerospace fighter.",
+        "skillSubject": "{skill} needs a subject.",
+        "skillDuplicate": "{skill} is taken twice.",
+        "knowledgeNeeded": "Take at least one Knowledge Skill.",
+        "traitsNeeded": "Take at least one positive and one negative Trait.",
+        "traitsMax": "At most {max} Traits of each kind.",
+        "traitsBalance": "Positive and negative Traits must match ({positive} and {negative}).",
+        "traitModifier": "{name}: your own Traits give at most ±1.",
+        "traitRequires": "{trait} needs {requires}.",
+        "traitDuplicate": "A Trait is taken twice.",
+        "lifeModuleMissing": "Choose a {slot} module.",
+        "lifeModuleRequires": "{module} needs another module first.",
+        "lifeModuleSkill": "{slot}: choose which Skill gets +1.",
+        "lifeModuleSubject": "{slot}: name the Knowledge Skill.",
+        "lifeModuleSpecialty": "{slot}: choose the hardware for Gunnery or Piloting.",
+        "armorMissing": "Choose an armor.",
+        "weaponsOver": "{n} weapons, only {max} allowed.",
+        "weaponsTotal": "No more than {max} weapons in total, counting the free melee option.",
+        "inventoryOver": "{n} Inventory items, only {max} allowed.",
+        "hardwareOver": "The unit costs {cost} Hardware Points, you have {budget}.",
+        "hardwareSkills": "A {type} needs the right Gunnery and Piloting.",
+        "conversion": "{unspent} unspent Hardware Points, {converted} converted: convert them all."
+      }
+    },
+    "Advance": {
+      "label": "Character Advancement",
+      "Available": "XP available: {n}",
+      "Hint": "Spend XP between Missions (p. 77–78). The latest purchase can be undone from the log.",
+      "Confirm": "Confirm",
+      "Max": "maximum",
+      "AtMax": "Already at the maximum of {max}.",
+      "RaiseFor": "to {n} for {cost} XP",
+      "NotEnoughXp": "Needs {cost} XP, you have {xp}.",
+      "NewSkill": "Buy a new Skill",
+      "NewSkillFor": "New Skill for {cost} XP",
+      "NeedSpecialty": "Choose the hardware for Gunnery or Piloting.",
+      "NeedSubject": "A Knowledge Skill needs a subject.",
+      "HasSkill": "The character already has this Skill.",
+      "BuyTrait": "Buy a positive Trait",
+      "BuyTraitFor": "Positive Trait for {cost} XP",
+      "BuyTraitHint": "{cost} XP, with a Narration of how the character gained it. Equipped and Wealthy cannot be bought.",
+      "BookTrait": "Trait from the book",
+      "CustomTrait": "Your own Trait",
+      "TraitRequires": "Needs {name} first.",
+      "RemoveTrait": "Remove a negative Trait",
+      "RemoveTraitFor": "Remove for {cost} XP",
+      "RemoveTraitConfirm": "Remove {name} for {cost} XP? Tell the story of how the character overcame it.",
+      "NoNegativeTraits": "No negative Traits.",
+      "Weapons": "Weapon customization",
+      "WeaponsHint": "{cost} XP each, once per weapon: Accuracy cancels one –1 modifier, Lethality adds 1 damage, Range improves one range bracket by 1.",
+      "CannotCustomize": "This weapon cannot take that customization.",
+      "RangeTitle": "Which range bracket?",
+      "RangeHint": "The penalty in that bracket goes down by 1.",
+      "AcquireHardware": "Acquire a unit",
+      "AcquireHint": "Salvage needs a unit defeated in the last Mission; repairing or rebuilding it is paid separately.",
+      "Unit": "Unit",
+      "How": "How",
+      "HowBuy": "Buy: its Hardware Points in XP (+{mech} for a 'Mech)",
+      "HowSalvage": "Salvage: its Hardware Points –{n} in XP",
+      "HowBanked": "Use saved Hardware Points ({n} left)",
+      "DispossessedDiscount": "— the first 'Mech costs 1 less",
+      "HardwarePoints": "{n} HP",
+      "NotEnoughHardware": "Needs {cost} Hardware Points, {banked} saved.",
+      "NoUnits": "No units you own to acquire. The GM creates the unit and gives you ownership.",
+      "Banked": "Saved Hardware Points: {n}",
+      "RepairFor": "Repair for {cost} XP",
+      "RebuildFor": "Rebuild for {cost} XP",
+      "NotUnitOwner": "You do not own that unit.",
+      "NotDamaged": "The unit is not damaged.",
+      "Status": {
+        "intact": "intact",
+        "damaged": "damaged",
+        "destroyed": "destroyed"
+      },
+      "Award": "Award XP",
+      "AwardHint": "Mission objectives, plus 1 for a clever or bold Narration (p. 77).",
+      "Reason": "Reason",
+      "ReasonPlaceholder": "e.g. Mission 3, objectives",
+      "AwardGmOnly": "Only the GM can take back awarded XP.",
+      "Undo": "Undo the latest entry",
+      "UndoConfirm": "Undo “{label}” and return its XP?",
+      "UndoRepairHint": "The XP comes back, but the unit stays repaired.",
+      "Log": {
+        "label": "XP log",
+        "None": "No entries yet.",
+        "attribute": "{name} {from} → {to}",
+        "skill": "{name} {from} → {to}",
+        "newSkill": "New Skill: {name}",
+        "buyTrait": "New Trait: {name}",
+        "removeTrait": "Overcame: {name}",
+        "weaponMod": "{name}: {mod}",
+        "repair": "Repaired {name}",
+        "rebuild": "Rebuilt {name}",
+        "buy": "Bought {name}",
+        "salvage": "Salvaged {name}",
+        "banked": "Acquired {name}",
+        "award": "Awarded {n} XP",
+        "awardFor": "Awarded {n} XP: {reason}"
+      }
     }
   }
 }

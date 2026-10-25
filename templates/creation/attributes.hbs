@@ -1,0 +1,12 @@
+<p><strong>{{localize "MWD.Creation.PointsLeft" left=attributePoints.left budget=attributePoints.budget}}</strong></p>
+<ol class="mwd-list">
+  {{#each attributeRows}}
+  <li class="mwd-list-row">
+    <span class="mwd-col-name">{{label}} ({{abbr}}){{#if edge}} <span class="mwd-muted">{{localize "MWD.Creation.EdgeCost"}}</span>{{/if}}</span>
+    <a class="mwd-icon-button {{#unless canDec}}disabled{{/unless}}" data-action="attribute" data-attribute="{{key}}" data-delta="-1"><i class="fa-solid fa-minus"></i></a>
+    <span class="mwd-col-num"><strong>{{value}}</strong></span>
+    <a class="mwd-icon-button {{#unless canInc}}disabled{{/unless}}" data-action="attribute" data-attribute="{{key}}" data-delta="1"><i class="fa-solid fa-plus"></i></a>
+  </li>
+  {{/each}}
+</ol>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.ConditionHint"}}</p>

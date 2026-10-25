@@ -278,7 +278,10 @@ export async function spendEdge(message, which, role = "actor") {
   const indices = edgeRerollIndices(state[key], which);
   const roll = await new Roll(`${indices.length}d6`).evaluate();
   if ( game.dice3d ) await game.dice3d.showForRoll(roll, game.user, true);
-  state[key] = replaceDice(state[key], indices, diceResults(roll));
+  // Unlucky (p. 73): 6s on your own Edge reroll count as 1s.
+  let results = diceResults(roll);
+  if ( own && spender.system.traitEffects?.has("unlucky") ) results = results.map(r => (r === 6 ? 1 : r));
+  state[key] = replaceDice(state[key], indices, results);
   state[flag] = which;
 
   await spender.update({ "system.edge.spent": spender.system.edge.spent + 1 });

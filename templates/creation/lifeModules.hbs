@@ -1,0 +1,32 @@
+<div class="mwd-field mwd-field-inline">
+  <span>{{localize "MWD.LifeModule.faction"}}</span>
+  <strong>{{factionLabel}}</strong>
+</div>
+{{#each slots}}
+<fieldset class="mwd-creator-module">
+  <legend>{{label}}{{#if optional}} <span class="mwd-muted">({{localize "MWD.Creation.Optional"}})</span>{{/if}}</legend>
+  <select name="lifeModules.{{slot}}.key">
+    <option value="">—</option>
+    {{#each modules}}<option value="{{value}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+  </select>
+  {{#if skills.length}}
+  <label class="mwd-field-inline">
+    <span>{{localize "MWD.Creation.ModuleSkill"}}</span>
+    <select name="lifeModules.{{slot}}.skill.key">
+      {{#each skills}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+  </label>
+  {{/if}}
+  {{#if needsSubject}}
+  <input type="text" name="lifeModules.{{slot}}.skill.subject" value="{{subject}}" list="mwd-knowledge-{{slot}}" placeholder="{{localize 'MWD.Skill.SubjectPlaceholder'}}">
+  <datalist id="mwd-knowledge-{{slot}}">{{#each @root.knowledgeSubjects}}<option value="{{this}}"></option>{{/each}}</datalist>
+  {{/if}}
+  {{#if needsSpecialty}}
+  <select name="lifeModules.{{slot}}.skill.specialty">
+    <option value="">—</option>
+    {{selectOptions @root.specialties selected=specialty}}
+  </select>
+  {{/if}}
+</fieldset>
+{{/each}}
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.LifeModulesRules"}}</p>

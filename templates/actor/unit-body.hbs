@@ -141,7 +141,14 @@
       {{/if}}
 
       <section class="mwd-block">
-        <header class="mwd-block-header"><h3>{{localize "MWD.Mech.ArmorDiagram"}}</h3></header>
+        <header class="mwd-block-header">
+          <h3>{{localize "MWD.Mech.ArmorDiagram"}}</h3>
+          {{#if isVehicle}}{{#unless system.vtol}}
+          <label class="checkbox mwd-turret-toggle" data-tooltip="MWD.Vehicle.HasTurretHint">
+            <input type="checkbox" name="system.details.turret" {{checked system.details.turret}}> {{localize "MWD.Vehicle.HasTurret"}}
+          </label>
+          {{/unless}}{{/if}}
+        </header>
         <div class="mwd-diagram mwd-diagram-{{actor.type}}">
           {{#each locations}}
           <div class="mwd-location mwd-location-{{key}} {{#if destroyed}}mwd-destroyed{{/if}}">

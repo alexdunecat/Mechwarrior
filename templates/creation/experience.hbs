@@ -1,0 +1,11 @@
+<ol class="mwd-list mwd-creator-choices">
+  {{#each levels}}
+  <li class="mwd-list-row {{#if selected}}active{{/if}}">
+    <label class="checkbox mwd-col-name">
+      <input type="radio" name="experience" value="{{key}}" {{checked selected}}> <strong>{{label}}</strong>
+    </label>
+    <span class="mwd-muted">{{localize "MWD.Creation.LevelBudget" attributes=attributes skills=skills weapons=weapons hardware=hardware}}</span>
+  </li>
+  {{/each}}
+</ol>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.LevelGroupRule"}}</p>

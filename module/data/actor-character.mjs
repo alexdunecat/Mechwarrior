@@ -23,6 +23,8 @@ export class CharacterData extends PersonData {
       }),
       details: new fields.SchemaField({
         faction: new fields.StringField({ required: true, initial: "" }),
+        factionKey: new fields.StringField({ required: true, blank: true, initial: "" }),
+        theme: new fields.StringField({ required: true, initial: "" }),
         rank: new fields.StringField({ required: true, initial: "" }),
         age: new fields.StringField({ required: true, initial: "" }),
         height: new fields.StringField({ required: true, initial: "" }),
@@ -40,6 +42,18 @@ export class CharacterData extends PersonData {
       }),
       cues: new fields.StringField({ required: true, initial: "" }),
       hardware: new fields.ArrayField(new fields.StringField({ required: true, blank: false })),
+      creation: new fields.SchemaField({
+        complete: new fields.BooleanField({ initial: false }),
+        dispossessed: new fields.BooleanField({ initial: false }),
+        bankedHardware: counter(0)
+      }),
+      advancement: new fields.ArrayField(new fields.SchemaField({
+        time: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0 }),
+        kind: new fields.StringField({ required: true, initial: "" }),
+        label: new fields.StringField({ required: true, initial: "" }),
+        cost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0 }),
+        undo: new fields.ObjectField()
+      })),
       biography: new fields.SchemaField({
         history: new fields.HTMLField({ required: true, initial: "" }),
         personality: new fields.HTMLField({ required: true, initial: "" }),

@@ -28,7 +28,8 @@
       "main": "Основное",
       "story": "Черты и Cues",
       "bio": "Биография",
-      "hardware": "Техника"
+      "hardware": "Техника",
+      "advancement": "Развитие"
     },
     "Edit": "Изменить",
     "Delete": "Удалить",
@@ -60,7 +61,8 @@
         "long": "Удача (Edge)",
         "abbr": "EDG"
       },
-      "Modified": "Значение с учётом штрафа брони"
+      "Modified": "Значение с учётом штрафа брони",
+      "plural": "Атрибуты"
     },
     "Details": {
       "label": "Личные данные",
@@ -223,10 +225,12 @@
       "AppliesTo": "Когда действует",
       "Effect": {
         "label": "Эффект по правилам",
-        "hint": "Применяется автоматически: Toughness снижает каждое попадание в Condition Monitor на 1, Pain Resistance игнорирует штраф ранений –1.",
+        "hint": "Применяется автоматически: Toughness снижает каждое попадание в Condition Monitor на 1, Glass Jaw добавляет 1, Pain Resistance игнорирует штраф ранений –1, Unlucky превращает шестёрки на своём переброске Edge в единицы.",
         "none": "Нет",
         "toughness": "Toughness",
-        "painResistance": "Pain Resistance"
+        "painResistance": "Pain Resistance",
+        "glassJaw": "Glass Jaw",
+        "unlucky": "Unlucky"
       },
       "Initiative": "Модификатор инициативы",
       "InitiativeHint": "Только для броска инициативы, например Combat Sense +1."
@@ -243,7 +247,19 @@
       "StrBonus": "Добавляет бонус STR",
       "Support": "Тяжёлое (support)",
       "Ranges": "Дистанции",
-      "Special": "Особое"
+      "Special": "Особое",
+      "Mod": {
+        "none": "—",
+        "accuracy": "Accuracy (точность)",
+        "lethality": "Lethality (убойность)",
+        "range": "Range (дальность)",
+        "accuracyHint": "Accuracy: отрицательный модификатор здесь уменьшается на 1."
+      },
+      "Unique": "придумано при создании",
+      "Free": {
+        "unarmed": "Unarmed (без оружия)",
+        "martialArts": "Martial Arts (боевые искусства)"
+      }
     },
     "DamageType": {
       "none": "—",
@@ -265,7 +281,15 @@
       "RflPenalty": "Штраф к RFL",
       "Options": "Параметры",
       "Equipped": "Надета",
-      "Concealed": "Скрытая"
+      "Concealed": "Скрытая",
+      "Type": {
+        "flak": "Flak Armor (противоосколочная)",
+        "ablative": "Ablative Armor (абляционная)",
+        "ballisticPlate": "Ballistic Plate Armor (бронепластины)",
+        "concealedFlak": "Concealed Flak Armor (скрытая противоосколочная)",
+        "concealedAblative": "Concealed Ablative Armor (скрытая абляционная)",
+        "infiltration": "Infiltration Suit (костюм проникновения)"
+      }
     },
     "Gear": {
       "plural": "Инвентарь",
@@ -652,6 +676,7 @@
         "vtol": "VTOL"
       },
       "HasTurret": "Есть башня",
+      "HasTurretHint": "Без башни нет локации «Башня»: попадания 10–12 идут в «Перед».",
       "Immobile": "Обездвижена",
       "MovementLost": "Потеряно Movement",
       "MovementLostHint": "Повреждения ходовой (–2) и криты (–1 или –2).",
@@ -743,6 +768,439 @@
       "SmallArmsTotal": "Личный урон {before} + {add} = {total} из 20",
       "SmallArmsNoDamage": "Пока недостаточно, чтобы повредить.",
       "SmallArmsShort": "личный урон {n}/20"
+    },
+    "Faction": {
+      "Group": {
+        "successor": "Государства-наследники",
+        "periphery": "Периферия",
+        "other": "Другие"
+      },
+      "capellan": "Капелланская Конфедерация (Дом Ляо)",
+      "draconis": "Синдикат Дракона (Дом Курита)",
+      "fedsuns": "Федеративные Солнца (Дом Дэвион)",
+      "fwl": "Лига Свободных Миров (Дом Марик)",
+      "lyran": "Лиранское Содружество (Дом Штайнер)",
+      "canopus": "Магистрат Канопуса",
+      "outworlds": "Альянс Внешних Миров",
+      "taurian": "Таурианский Конкордат",
+      "banditKingdom": "Пираты (бандитское королевство)",
+      "comstar": "Комстар",
+      "mercenary": "Наёмники",
+      "pirate": "Пираты (независимые)",
+      "unaffiliated": "Без принадлежности"
+    },
+    "LifeModules": {
+      "childhood": {
+        "backwoods": "Backwoods (глушь)",
+        "blueCollar": "Blue Collar (рабочая семья)",
+        "mercenaryBrat": "Mercenary Brat (дитя наёмников)",
+        "farm": "Farm (ферма)",
+        "fugitives": "Fugitives (беглецы)",
+        "nobility": "Nobility (знать)",
+        "slave": "Slave (рабство)",
+        "spacerFamily": "Spacer Family (семья космолётчиков)",
+        "street": "Street (улица)",
+        "warOrphan": "War Orphan (сирота войны)",
+        "whiteCollar": "White Collar (семья служащих)"
+      },
+      "education": {
+        "technicalCollege": "Technical College (технический колледж)",
+        "tradeSchool": "Trade School (ремесленное училище)",
+        "university": "University (университет)",
+        "solarisInternship": "Solaris VII Internship (стажировка на Солярисе VII)",
+        "policeAcademy": "Police Academy (полицейская академия)",
+        "intelligenceTraining": "Intelligence Operative Training (подготовка разведчика)",
+        "militaryAcademy": "Military Academy (военная академия)",
+        "militaryEnlistment": "Military Enlistment (призыв на службу)",
+        "familyTraining": "Family Training (семейное обучение)",
+        "officerCandidate": "Officer Candidate School (офицерские курсы)"
+      },
+      "realLife": {
+        "agitator": "Agitator (агитатор)",
+        "civilianJob": "Civilian Job (гражданская работа)",
+        "combatCorrespondent": "Combat Correspondent (военкор)",
+        "comstarService": "ComStar Service (служба в Комстаре)",
+        "covertOperations": "Covert Operations (тайные операции)",
+        "explorer": "Explorer (исследователь)",
+        "guerrilla": "Guerrilla Insurgent (партизан)",
+        "merchant": "Merchant (торговец)",
+        "neerDoWell": "Ne'er-Do-Well (бездельник)",
+        "organizedCrime": "Organized Crime (оргпреступность)",
+        "postgraduate": "Postgraduate Studies (аспирантура)",
+        "solarisInsider": "Solaris Insider (свой на Солярисе)",
+        "solarisGames": "Solaris VII Games (игры Соляриса VII)",
+        "thinkTank": "Think Tank (аналитический центр)",
+        "tourOfDuty": "Tour of Duty (срок службы)",
+        "toServeAndProtect": "To Serve and Protect (служить и защищать)",
+        "travel": "Travel (путешествия)"
+      }
+    },
+    "BookTrait": {
+      "alternateId": {
+        "name": "Alternate ID (вторая личность)",
+        "hint": "Двойная жизнь: вы или ГМ можете ввести её в сюжет."
+      },
+      "animalEmpathy": {
+        "name": "Animal Empathy (друг животных)",
+        "hint": "+1 к тестам с животными."
+      },
+      "attractive": {
+        "name": "Attractive (привлекательность)",
+        "hint": "+1 к тестам CHA, где важна внешность."
+      },
+      "citizenship": {
+        "name": "Citizenship (гражданство)",
+        "hint": "+1 к тестам CHA с гражданами своей фракции."
+      },
+      "combatSense": {
+        "name": "Combat Sense (чутьё боя)",
+        "hint": "Выбираете место в порядке ходов без Plot Point."
+      },
+      "connections": {
+        "name": "Connections (связи)",
+        "hint": "+1 к тестам CHA со своими связями."
+      },
+      "equipped": {
+        "name": "Equipped (снаряжён)",
+        "hint": "При создании: +1 оружие или +2 предмета инвентаря. Не покупается за XP."
+      },
+      "gTolerance": {
+        "name": "G-Tolerance (переносимость перегрузок)",
+        "hint": "Игнорирует модификаторы перегрузок и невесомости."
+      },
+      "goodHearing": {
+        "name": "Good Hearing (острый слух)",
+        "hint": "+1 к тестам Perception на слух."
+      },
+      "goodReputation": {
+        "name": "Good Reputation (добрая слава)",
+        "hint": "+1 к тестам CHA с теми, кто вас знает."
+      },
+      "goodVision": {
+        "name": "Good Vision (острое зрение)",
+        "hint": "+1 к тестам Perception на зрение."
+      },
+      "painResistance": {
+        "name": "Pain Resistance (терпение к боли)",
+        "hint": "Игнорирует первый штраф ранений на обоих треках."
+      },
+      "poisonResistance": {
+        "name": "Poison Resistance (стойкость к ядам)",
+        "hint": "Токсины наносят на 2 урона меньше."
+      },
+      "prosthetic": {
+        "name": "Prosthetic (протез)",
+        "hint": "Снимает Lost Limb, пока надет; требует Lost Limb."
+      },
+      "rank": {
+        "name": "Rank (звание)",
+        "hint": "Нужен для звания капитана и выше; командуете подразделением."
+      },
+      "sixthSense": {
+        "name": "Sixth Sense (шестое чувство)",
+        "hint": "+1 к тестам Perception против засад и внезапности."
+      },
+      "techEmpathy": {
+        "name": "Tech Empathy (чутьё техники)",
+        "hint": "+1 к небоевым тестам с техникой."
+      },
+      "thickSkinned": {
+        "name": "Thick-Skinned (толстокожий)",
+        "hint": "Игнорирует модификаторы сильной жары и холода."
+      },
+      "toughness": {
+        "name": "Toughness (крепкий)",
+        "hint": "Каждое попадание наносит на 1 меньше Physical и Fatigue урона."
+      },
+      "wealthy": {
+        "name": "Wealthy (богатство)",
+        "hint": "+1 Hardware Point при создании. Не покупается за XP."
+      },
+      "animalAntipathy": {
+        "name": "Animal Antipathy (нелюбовь животных)",
+        "hint": "–1 к тестам с животными."
+      },
+      "badReputation": {
+        "name": "Bad Reputation (дурная слава)",
+        "hint": "–1 к тестам CHA с теми, кто вас знает."
+      },
+      "bloodmark": {
+        "name": "Bloodmark (награда за голову)",
+        "hint": "За вашу голову назначена награда; ГМ может это использовать."
+      },
+      "combatParalysis": {
+        "name": "Combat Paralysis (ступор в бою)",
+        "hint": "Всегда последняя Narration в раунде."
+      },
+      "compulsion": {
+        "name": "Compulsion (зависимость)",
+        "hint": "–1 к тестам, чтобы устоять перед зависимостью."
+      },
+      "darkSecret": {
+        "name": "Dark Secret (тёмная тайна)",
+        "hint": "–1 к тестам, чтобы сохранить тайну."
+      },
+      "dependents": {
+        "name": "Dependents (иждивенцы)",
+        "hint": "От вас кто-то зависит; ГМ может это использовать."
+      },
+      "enemy": {
+        "name": "Enemy (враг)",
+        "hint": "Заклятый враг может появиться в любой момент."
+      },
+      "glassJaw": {
+        "name": "Glass Jaw (стеклянная челюсть)",
+        "hint": "Каждое попадание наносит на 1 больше Physical и Fatigue урона."
+      },
+      "gremlins": {
+        "name": "Gremlins (техника не любит)",
+        "hint": "–1 к небоевым тестам с техникой."
+      },
+      "illiterate": {
+        "name": "Illiterate (неграмотность)",
+        "hint": "–2 к тестам с письменными материалами."
+      },
+      "inForLife": {
+        "name": "In for Life (навсегда в организации)",
+        "hint": "Вы состоите в тайной организации; ГМ может это использовать."
+      },
+      "introvert": {
+        "name": "Introvert (интроверт)",
+        "hint": "–1 к тестам CHA."
+      },
+      "lostLimb": {
+        "name": "Lost Limb (потеря конечности)",
+        "hint": "–4 к тестам, где нужна потерянная конечность."
+      },
+      "poor": {
+        "name": "Poor (бедность)",
+        "hint": "При создании: 1 оружие, 2 предмета, половина Hardware Points (минимум 1)."
+      },
+      "poorHearing": {
+        "name": "Poor Hearing (плохой слух)",
+        "hint": "–1 к тестам Perception на слух."
+      },
+      "poorVision": {
+        "name": "Poor Vision (плохое зрение)",
+        "hint": "–1 к тестам Perception на зрение."
+      },
+      "thinSkinned": {
+        "name": "Thin-Skinned (тонкокожий)",
+        "hint": "Модификаторы жары и холода удваиваются."
+      },
+      "tds": {
+        "name": "TDS (синдром дезориентации при прыжке)",
+        "hint": "–2 ко всем тестам 20 минут после гиперпрыжка."
+      },
+      "unattractive": {
+        "name": "Unattractive (непривлекательность)",
+        "hint": "–1 к тестам CHA, где важна внешность."
+      },
+      "unlucky": {
+        "name": "Unlucky (невезение)",
+        "hint": "Шестёрки на своём переброске Edge считаются единицами."
+      }
+    },
+    "Creation": {
+      "Open": "Создание",
+      "OpenHint": "Пошаговое создание персонажа (с. 68)",
+      "Title": "Создание персонажа: {name}",
+      "Prev": "Назад",
+      "Next": "Далее",
+      "Finish": "Готово",
+      "FinishTitle": "Завершить создание персонажа",
+      "FinishWithIssues": "Осталось нарушений правил: {n}. ГМ может их разрешить. Всё равно завершить?",
+      "ReplaceItems": "Навыки, черты, оружие, броня и инвентарь персонажа ({n} шт.) будут заменены на выбранные в мастере. Продолжить?",
+      "Done": "{name}: персонаж готов.",
+      "TotalIssues": "Нарушений: {n}",
+      "NoIssues": "Всё по правилам",
+      "StepWarnings": "Нарушений: {n}",
+      "PointsLeft": "Осталось очков: {left} из {budget}",
+      "Optional": "необязательно",
+      "Or": "или",
+      "AnySkill": "+1 к любому навыку, кроме Artillery, Gunnery, Piloting, Support Weapons",
+      "Step": {
+        "theme": "Образ и имя",
+        "faction": "Фракция",
+        "experience": "Уровень опыта",
+        "attributes": "Атрибуты",
+        "skills": "Навыки",
+        "traits": "Черты",
+        "lifeModules": "Life Modules",
+        "armor": "Броня",
+        "weapons": "Оружие",
+        "inventory": "Инвентарь",
+        "hardware": "Техника",
+        "cues": "Cues",
+        "background": "Предыстория"
+      },
+      "Hint": {
+        "theme": "Пара слов о том, кто этот персонаж, имя и несколько Tags одним словом (с. 68).",
+        "faction": "Государство или группа, которой верен персонаж (с. 69).",
+        "experience": "Задаёт очки атрибутов и навыков, число оружия и Hardware Points (с. 69).",
+        "attributes": "Каждый атрибут начинается с 1 и здесь растёт до 4. Каждое очко EDG выше 1 стоит 2 (с. 70).",
+        "skills": "В каждый навык минимум 1 очко, максимум 4. Нужен хотя бы один навык Knowledge (с. 70).",
+        "traits": "Одна или две положительные черты и столько же отрицательных (с. 72).",
+        "lifeModules": "По модулю на детство, образование (необязательно) и взрослую жизнь; каждый даёт +1 к навыку или сам навык на 1 (с. 73).",
+        "armor": "Выберите одну броню (с. 75).",
+        "weapons": "Оружие по уровню опыта, плюс бесплатно Unarmed или Martial Arts (с. 75).",
+        "inventory": "До четырёх небоевых предметов без характеристик (с. 75).",
+        "hardware": "Одна стартовая машина в пределах Hardware Points; остаток превращается в XP, очки навыков или EDG (с. 76).",
+        "cues": "Коронные фразы и смелые реплики персонажа, по одной на строку (с. 77).",
+        "background": "Личные данные, история, характер и Dispositions (с. 77)."
+      },
+      "Theme": "Образ",
+      "ThemePlaceholder": "например: ворчливый сержант-танкист с характером",
+      "FactionModule": "Фракция заодно становится модулем жизни Faction.",
+      "NoFaction": "не выбрана",
+      "LevelBudget": "{attributes} очков атрибутов, {skills} очков навыков, оружия: {weapons}, Hardware Points: {hardware}",
+      "LevelGroupRule": "Хотя бы половина группы играет выбранный уровень, и никто не отличается от него больше чем на два (с. 69).",
+      "EdgeCost": "по 2 очка",
+      "ConditionHint": "STR и WIL ниже 5 вычёркивают пипсы Condition Monitor; лист делает это сам.",
+      "LifeModuleBonus": "Модули",
+      "FromLifeModule": "от модуля жизни",
+      "SkillsFromHardware": "в том числе от неистраченных Hardware Points: {n}",
+      "SkillsRules": "Gunnery и Piloting берутся отдельно для мехов, техники и истребителей.",
+      "TraitCounts": "Положительных: {positive}, отрицательных: {negative} (до {max} каждой)",
+      "CustomTraitModifier": "Бонус или штраф, не больше 1",
+      "TraitsRules": "Свои черты дают не больше +1 или –1 к чему-либо одному.",
+      "ModuleSkill": "Навык",
+      "LifeModulesRules": "Недоступные модули требуют другого модуля, например Tour of Duty требует военного образования.",
+      "ArmorStats": "{pips} пипсов",
+      "FreeWeapon": "Бесплатный ближний бой",
+      "WeaponCount": "Оружие: {n} из {max}",
+      "EquippedHint": "Equipped: ещё одно оружие или два предмета инвентаря.",
+      "AddWeapon": "Добавить оружие",
+      "InventWeapon": "Придумать своё",
+      "NewWeapon": "Новое оружие",
+      "WeaponsRules": "Выберите из списка, перетащите оружие сюда из боковой панели или компендиума или придумайте своё по образцу похожего. Всего не больше {max} единиц оружия. Придуманное оружие потом нельзя модифицировать.",
+      "InventoryCount": "Предметов: {n} из {max}",
+      "InventoryRules": "Предметы инвентаря — это подсказки без правил; патроны и прочие мелочи не нужны.",
+      "HardwareBudget": "Hardware Points: {n}",
+      "NoUnits": "Подходящих машин пока нет. ГМ создаёт меха, технику или истребитель и даёт вам права владельца.",
+      "TooExpensive": "дорого",
+      "MissingSkills": "нет навыков",
+      "HardwareSkills": {
+        "mech": "Gunnery и Piloting (BattleMech)",
+        "vehicle": "Gunnery или Piloting (Combat Vehicle)",
+        "fighter": "Gunnery и Piloting (Aerospace Fighter)"
+      },
+      "Dispossessed": "Dispossessed: начать без меха",
+      "DispossessedHint": "Все Hardware Points сохраняются на потом; первый мех за них стоит на 1 дешевле (с. 76).",
+      "HardwarePool": "Hardware Pool: группа сложила очки",
+      "HardwarePoolHint": "С согласия группы машина может стоить больше ваших Hardware Points (с. 76).",
+      "Unspent": "Неистраченных Hardware Points: {n}",
+      "ConvertXp": "в XP (по {n})",
+      "ConvertSkills": "в очки навыков (по {n})",
+      "ConvertEdge": "в EDG (по +{n})",
+      "Issue": {
+        "attributesOver": "Потрачено {spent} очков атрибутов, доступно только {budget}.",
+        "attributesLeft": "Осталось распределить очков атрибутов: {n}.",
+        "attributeMax": "{attribute} выше {max}.",
+        "edgeMax": "EDG на старте не может быть выше {max}.",
+        "skillsOver": "Потрачено {spent} очков навыков, доступно только {budget}.",
+        "skillsLeft": "Осталось распределить очков навыков: {n}.",
+        "skillMin": "{skill}: нужно хотя бы 1 очко.",
+        "skillMax": "{skill} выше {max}.",
+        "skillSpecialty": "{skill}: выберите мех, технику или истребитель.",
+        "skillSubject": "{skill}: нужна тема.",
+        "skillDuplicate": "{skill} взят дважды.",
+        "knowledgeNeeded": "Нужен хотя бы один навык Knowledge.",
+        "traitsNeeded": "Нужны хотя бы одна положительная и одна отрицательная черта.",
+        "traitsMax": "Не больше {max} черт каждого вида.",
+        "traitsBalance": "Положительных и отрицательных черт должно быть поровну ({positive} и {negative}).",
+        "traitModifier": "{name}: свои черты дают не больше ±1.",
+        "traitRequires": "{trait} требует {requires}.",
+        "traitDuplicate": "Черта взята дважды.",
+        "lifeModuleMissing": "Выберите модуль: {slot}.",
+        "lifeModuleRequires": "{module} требует другого модуля.",
+        "lifeModuleSkill": "{slot}: выберите навык для +1.",
+        "lifeModuleSubject": "{slot}: укажите тему Knowledge.",
+        "lifeModuleSpecialty": "{slot}: выберите технику для Gunnery или Piloting.",
+        "armorMissing": "Выберите броню.",
+        "weaponsOver": "Оружия {n}, можно только {max}.",
+        "weaponsTotal": "Всего не больше {max} единиц оружия вместе с бесплатным ближним боем.",
+        "inventoryOver": "Предметов {n}, можно только {max}.",
+        "hardwareOver": "Машина стоит {cost} Hardware Points, у вас {budget}.",
+        "hardwareSkills": "Для этой машины ({type}) нужны подходящие Gunnery и Piloting.",
+        "conversion": "Неистраченных Hardware Points: {unspent}, превращено: {converted}. Превратите все."
+      }
+    },
+    "Advance": {
+      "label": "Развитие персонажа",
+      "Available": "Доступно XP: {n}",
+      "Hint": "Тратьте XP между миссиями (с. 77–78). Последнюю покупку можно отменить в журнале.",
+      "Confirm": "Подтвердить",
+      "Max": "максимум",
+      "AtMax": "Уже максимум: {max}.",
+      "RaiseFor": "до {n} за {cost} XP",
+      "NotEnoughXp": "Нужно {cost} XP, у вас {xp}.",
+      "NewSkill": "Новый навык",
+      "NewSkillFor": "Новый навык за {cost} XP",
+      "NeedSpecialty": "Выберите технику для Gunnery или Piloting.",
+      "NeedSubject": "Навыку Knowledge нужна тема.",
+      "HasSkill": "Этот навык уже есть.",
+      "BuyTrait": "Купить положительную черту",
+      "BuyTraitFor": "Черта за {cost} XP",
+      "BuyTraitHint": "{cost} XP и Narration о том, как персонаж её получил. Equipped и Wealthy не покупаются.",
+      "BookTrait": "Черта из книги",
+      "CustomTrait": "Своя черта",
+      "TraitRequires": "Сначала нужна черта {name}.",
+      "RemoveTrait": "Убрать отрицательную черту",
+      "RemoveTraitFor": "Убрать за {cost} XP",
+      "RemoveTraitConfirm": "Убрать {name} за {cost} XP? Расскажите, как персонаж это преодолел.",
+      "NoNegativeTraits": "Отрицательных черт нет.",
+      "Weapons": "Модификация оружия",
+      "WeaponsHint": "По {cost} XP, каждое раз на оружие: Accuracy снимает один штраф –1, Lethality даёт +1 урона, Range улучшает одну дистанцию на 1.",
+      "CannotCustomize": "Это оружие нельзя так модифицировать.",
+      "RangeTitle": "Какую дистанцию улучшить?",
+      "RangeHint": "Штраф на этой дистанции уменьшится на 1.",
+      "AcquireHardware": "Приобрести машину",
+      "AcquireHint": "Трофей — машина, побеждённая в последней миссии; ремонт или восстановление оплачиваются отдельно.",
+      "Unit": "Машина",
+      "How": "Как",
+      "HowBuy": "Купить: Hardware Points в XP (+{mech} за меха)",
+      "HowSalvage": "Трофей: Hardware Points –{n} в XP",
+      "HowBanked": "Сохранёнными Hardware Points (осталось {n})",
+      "DispossessedDiscount": "— первый мех на 1 дешевле",
+      "HardwarePoints": "{n} HP",
+      "NotEnoughHardware": "Нужно {cost} Hardware Points, сохранено {banked}.",
+      "NoUnits": "Нет ваших машин для приобретения. ГМ создаёт машину и даёт права владельца.",
+      "Banked": "Сохранённые Hardware Points: {n}",
+      "RepairFor": "Ремонт за {cost} XP",
+      "RebuildFor": "Восстановить за {cost} XP",
+      "NotUnitOwner": "Эта машина вам не принадлежит.",
+      "NotDamaged": "Машина не повреждена.",
+      "Status": {
+        "intact": "цела",
+        "damaged": "повреждена",
+        "destroyed": "уничтожена"
+      },
+      "Award": "Выдать XP",
+      "AwardHint": "За цели миссии, плюс 1 за находчивую или дерзкую Narration (с. 77).",
+      "Reason": "За что",
+      "ReasonPlaceholder": "например: миссия 3, цели",
+      "AwardGmOnly": "Отменить выдачу XP может только ГМ.",
+      "Undo": "Отменить последнюю запись",
+      "UndoConfirm": "Отменить «{label}» и вернуть XP?",
+      "UndoRepairHint": "XP вернутся, но машина останется отремонтированной.",
+      "Log": {
+        "label": "Журнал XP",
+        "None": "Записей пока нет.",
+        "attribute": "{name} {from} → {to}",
+        "skill": "{name} {from} → {to}",
+        "newSkill": "Новый навык: {name}",
+        "buyTrait": "Новая черта: {name}",
+        "removeTrait": "Преодолено: {name}",
+        "weaponMod": "{name}: {mod}",
+        "repair": "Ремонт: {name}",
+        "rebuild": "Восстановлен: {name}",
+        "buy": "Куплен: {name}",
+        "salvage": "Трофей: {name}",
+        "banked": "Получен: {name}",
+        "award": "Получено {n} XP",
+        "awardFor": "Получено {n} XP: {reason}"
+      }
     }
   }
 }

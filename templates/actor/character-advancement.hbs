@@ -1,0 +1,141 @@
+<section class="tab mwd-tab {{tab.cssClass}}" data-group="primary" data-tab="advancement">
+  <section class="mwd-block">
+    <header class="mwd-block-header">
+      <h3>{{localize "MWD.Advance.label"}}</h3>
+      <span class="mwd-muted">{{localize "MWD.Advance.Available" n=advance.xp}}</span>
+      {{#if isGM}}
+      <button type="button" class="mwd-button" data-action="awardXp"><i class="fa-solid fa-star"></i> {{localize "MWD.Advance.Award"}}</button>
+      {{/if}}
+    </header>
+    <p class="mwd-small mwd-muted">{{localize "MWD.Advance.Hint"}}</p>
+  </section>
+
+  <div class="mwd-columns">
+    <div class="mwd-column">
+      <section class="mwd-block">
+        <header class="mwd-block-header"><h3>{{localize "MWD.Attribute.plural"}}</h3></header>
+        <ol class="mwd-list">
+          {{#each advance.attributes}}
+          <li class="mwd-list-row">
+            <span class="mwd-col-name">{{localize label}}</span>
+            <span class="mwd-col-num">{{value}}</span>
+            <span class="mwd-col-controls">
+              {{#if max}}<span class="mwd-muted">{{localize "MWD.Advance.Max"}}</span>
+              {{else}}<button type="button" class="mwd-button mwd-small" data-action="improveAttribute" data-attribute="{{key}}" {{disabled (not (and affordable @root.editable))}}>
+                {{localize "MWD.Advance.RaiseFor" n=next cost=cost}}</button>{{/if}}
+            </span>
+          </li>
+          {{/each}}
+        </ol>
+      </section>
+
+      <section class="mwd-block">
+        <header class="mwd-block-header">
+          <h3>{{localize "MWD.Skill.plural"}}</h3>
+          <button type="button" class="mwd-button mwd-small" data-action="buyNewSkill" {{disabled (not (and advance.newSkill.affordable editable))}}>
+            <i class="fa-solid fa-plus"></i> {{localize "MWD.Advance.NewSkillFor" cost=advance.newSkill.cost}}</button>
+        </header>
+        <ol class="mwd-list">
+          {{#each advance.skills}}
+          <li class="mwd-list-row" data-item-id="{{id}}">
+            <span class="mwd-col-name">{{name}}</span>
+            <span class="mwd-col-num">{{rank}}</span>
+            <span class="mwd-col-controls">
+              {{#if max}}<span class="mwd-muted">{{localize "MWD.Advance.Max"}}</span>
+              {{else}}<button type="button" class="mwd-button mwd-small" data-action="improveSkill" {{disabled (not (and affordable @root.editable))}}>
+                {{localize "MWD.Advance.RaiseFor" n=next cost=cost}}</button>{{/if}}
+            </span>
+          </li>
+          {{else}}
+          <li class="mwd-empty">{{localize "MWD.Skill.None"}}</li>
+          {{/each}}
+        </ol>
+      </section>
+    </div>
+
+    <div class="mwd-column">
+      <section class="mwd-block">
+        <header class="mwd-block-header">
+          <h3>{{localize "MWD.Trait.plural"}}</h3>
+          <button type="button" class="mwd-button mwd-small" data-action="buyTrait" {{disabled (not (and advance.trait.affordable editable))}}>
+            <i class="fa-solid fa-plus"></i> {{localize "MWD.Advance.BuyTraitFor" cost=advance.trait.cost}}</button>
+        </header>
+        <ol class="mwd-list">
+          {{#each advance.negativeTraits}}
+          <li class="mwd-list-row" data-item-id="{{id}}">
+            <span class="mwd-col-name">{{name}}</span>
+            <span class="mwd-col-controls">
+              <button type="button" class="mwd-button mwd-small" data-action="removeTrait" {{disabled (not (and @root.advance.trait.affordable @root.editable))}}>
+                {{localize "MWD.Advance.RemoveTraitFor" cost=@root.advance.trait.cost}}</button>
+            </span>
+          </li>
+          {{else}}
+          <li class="mwd-empty">{{localize "MWD.Advance.NoNegativeTraits"}}</li>
+          {{/each}}
+        </ol>
+      </section>
+
+      <section class="mwd-block">
+        <header class="mwd-block-header"><h3>{{localize "MWD.Advance.Weapons"}}</h3></header>
+        <p class="mwd-small mwd-muted">{{localize "MWD.Advance.WeaponsHint" cost=advance.weaponMod.cost}}</p>
+        <ol class="mwd-list">
+          {{#each advance.weapons}}
+          <li class="mwd-list-row" data-item-id="{{id}}">
+            <span class="mwd-col-name">{{name}}{{#if unique}} <span class="mwd-muted">({{localize "MWD.Weapon.Unique"}})</span>{{/if}}</span>
+            <span class="mwd-col-controls mwd-mod-buttons">
+              {{#each mods}}
+              {{#if taken}}<span class="mwd-badge">{{label}}</span>
+              {{else}}<button type="button" class="mwd-button mwd-small" data-action="customizeWeapon" data-mod="{{mod}}"
+                {{disabled (not (and available @root.advance.weaponMod.affordable @root.editable))}}>{{label}}</button>{{/if}}
+              {{/each}}
+            </span>
+          </li>
+          {{else}}
+          <li class="mwd-empty">{{localize "MWD.Weapon.None"}}</li>
+          {{/each}}
+        </ol>
+      </section>
+
+      <section class="mwd-block">
+        <header class="mwd-block-header">
+          <h3>{{localize "MWD.Hardware.label"}}</h3>
+          <button type="button" class="mwd-button mwd-small" data-action="acquireHardware" {{disabled (not editable)}}>
+            <i class="fa-solid fa-plus"></i> {{localize "MWD.Advance.AcquireHardware"}}</button>
+        </header>
+        {{#if advance.banked}}<p class="mwd-small">{{localize "MWD.Advance.Banked" n=advance.banked}}</p>{{/if}}
+        <ol class="mwd-list">
+          {{#each advance.hardware}}
+          <li class="mwd-list-row" data-uuid="{{uuid}}">
+            <span class="mwd-col-name">{{name}} <span class="mwd-muted">{{type}} · {{status}}</span></span>
+            <span class="mwd-col-controls">
+              {{#if canRepair}}
+              <button type="button" class="mwd-button mwd-small" data-action="repairHardware" {{disabled (not (and affordable owner @root.editable))}}>{{repairLabel}}</button>
+              {{/if}}
+            </span>
+          </li>
+          {{else}}
+          <li class="mwd-empty">{{localize "MWD.Hardware.None"}}</li>
+          {{/each}}
+        </ol>
+      </section>
+    </div>
+  </div>
+
+  <section class="mwd-block">
+    <header class="mwd-block-header"><h3>{{localize "MWD.Advance.Log.label"}}</h3></header>
+    <ol class="mwd-list mwd-advance-log">
+      {{#each advance.log}}
+      <li class="mwd-list-row">
+        <span class="mwd-col-num mwd-muted">{{date}}</span>
+        <span class="mwd-col-name">{{label}}</span>
+        <span class="mwd-col-num">{{costLabel}} XP</span>
+        <span class="mwd-col-controls">
+          {{#if (and latest @root.editable)}}<a data-action="undoAdvance" data-tooltip="MWD.Advance.Undo"><i class="fa-solid fa-rotate-left"></i></a>{{/if}}
+        </span>
+      </li>
+      {{else}}
+      <li class="mwd-empty">{{localize "MWD.Advance.Log.None"}}</li>
+      {{/each}}
+    </ol>
+  </section>
+</section>

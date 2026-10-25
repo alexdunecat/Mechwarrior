@@ -1,4 +1,5 @@
-import { ATTRIBUTES, SKILLS, SPECIALTIES, STAGGERED_CON_CHECK, SYSTEM_ID } from "../config.mjs";
+import { ATTRIBUTES, STAGGERED_CON_CHECK, SYSTEM_ID } from "../config.mjs";
+import { promptSkill } from "../documents/advancement.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 
@@ -74,7 +75,7 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         damage: item.system.damageLabel,
         damageType: item.system.damageType,
         ranges: ["close", "near", "far"].map(r => {
-          const mod = rangeModifier(item.system.ranges[r]);
+          const mod = rangeModifier(item.system.effectiveRanges[r]);
           return mod === null ? "—" : (mod === 0 ? "OK" : `–${Math.abs(mod)}`);
         }),
         special: item.system.special
@@ -178,34 +179,8 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   static async #onAddSkill() {
-    const skills = Object.entries(SKILLS).map(([key, cfg]) => ({
-      value: key,
-      label: `${game.i18n.localize(`MWD.Skill.${key}`)} (${game.i18n.localize(ATTRIBUTES[cfg.attribute].abbr)})`
-    })).sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang));
-    const content = await foundry.applications.handlebars.renderTemplate(`${TEMPLATES}/dialog/add-skill.hbs`, {
-      skills,
-      specialties: Object.entries(SPECIALTIES).map(([value, label]) => ({ value, label }))
-    });
-    const data = await foundry.applications.api.DialogV2.wait({
-      window: { title: "MWD.Skill.Add", icon: "fa-solid fa-plus" },
-      classes: [SYSTEM_ID, "mwd-dialog"],
-      content,
-      buttons: [{
-        action: "add",
-        label: "MWD.Skill.Add",
-        icon: "fa-solid fa-plus",
-        default: true,
-        callback: (_event, button) => new foundry.applications.ux.FormDataExtended(button.form).object
-      }],
-      rejectClose: false
-    });
-    if ( !data?.key ) return;
-    return this.document.addSkill({
-      key: data.key,
-      rank: Number(data.rank) || 1,
-      specialty: data.specialty,
-      subject: data.subject?.trim()
-    });
+    const choice = await promptSkill();
+    if ( choice ) return this.document.addSkill(choice);
   }
 
   static async #onCreateItem(_event, target) {

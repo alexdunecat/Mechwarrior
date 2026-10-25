@@ -1,0 +1,33 @@
+<p><strong>{{localize "MWD.Creation.TraitCounts" positive=traitCounts.positive negative=traitCounts.negative max=traitCounts.max}}</strong></p>
+<ol class="mwd-list">
+  {{#each traitRows}}
+  <li class="mwd-list-row">
+    <span class="mwd-col-name"><i class="fa-solid {{#if positive}}fa-circle-plus{{else}}fa-circle-minus{{/if}}"></i> {{name}}
+      {{#if hint}}<span class="mwd-muted">— {{hint}}</span>{{/if}}</span>
+    <span class="mwd-col-controls"><a data-action="removeTrait" data-index="{{index}}" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a></span>
+  </li>
+  {{else}}
+  <li class="mwd-empty">{{localize "MWD.Trait.None"}}</li>
+  {{/each}}
+</ol>
+<div class="mwd-columns">
+  <fieldset class="mwd-column mwd-creator-add">
+    <legend>{{localize "MWD.Trait.positive"}}</legend>
+    <select data-trait-choice="positive">{{#each positiveChoices}}<option value="{{value}}">{{label}}</option>{{/each}}</select>
+    <button type="button" class="mwd-button" data-action="addBookTrait" data-polarity="positive"><i class="fa-solid fa-plus"></i></button>
+  </fieldset>
+  <fieldset class="mwd-column mwd-creator-add">
+    <legend>{{localize "MWD.Trait.negative"}}</legend>
+    <select data-trait-choice="negative">{{#each negativeChoices}}<option value="{{value}}">{{label}}</option>{{/each}}</select>
+    <button type="button" class="mwd-button" data-action="addBookTrait" data-polarity="negative"><i class="fa-solid fa-plus"></i></button>
+  </fieldset>
+</div>
+<fieldset class="mwd-creator-add">
+  <legend>{{localize "MWD.Advance.CustomTrait"}}</legend>
+  <input type="text" name="pending.trait.name" value="{{pending.trait.name}}" placeholder="{{localize 'Name'}}">
+  <select name="pending.trait.polarity">{{selectOptions polarities selected=pending.trait.polarity}}</select>
+  <input type="number" name="pending.trait.modifier" value="{{pending.trait.modifier}}" min="0" max="1" data-tooltip="MWD.Creation.CustomTraitModifier">
+  <input type="text" name="pending.trait.appliesTo" value="{{pending.trait.appliesTo}}" placeholder="{{localize 'MWD.Trait.AppliesTo'}}">
+  <button type="button" class="mwd-button" data-action="addCustomTrait"><i class="fa-solid fa-plus"></i></button>
+</fieldset>
+<p class="mwd-small mwd-muted">{{localize "MWD.Creation.TraitsRules"}}</p>
