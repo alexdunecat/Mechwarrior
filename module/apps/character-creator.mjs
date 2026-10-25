@@ -13,9 +13,9 @@ import {
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const TEMPLATES = `systems/${SYSTEM_ID}/templates/creation`;
 
-/** The 13 steps of character creation (p. 68). */
+/** The 13 steps of character creation (p. 68); the Experience Level comes first so every budget is known from the start. */
 export const STEPS = [
-  "theme", "faction", "experience", "attributes", "skills", "traits", "lifeModules", "armor", "weapons", "inventory",
+  "experience", "theme", "faction", "attributes", "skills", "traits", "lifeModules", "armor", "weapons", "inventory",
   "hardware", "cues", "background"
 ];
 

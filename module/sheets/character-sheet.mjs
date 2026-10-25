@@ -75,6 +75,8 @@ export class CharacterSheet extends PersonSheet {
     context.advance = Advancement.advancementContext(this.document);
     context.isGM = game.user.isGM;
     context.creationComplete = system.creation.complete;
+    // Once the character is made only the GM keeps the wizard at hand.
+    context.showCreator = context.editable && (!system.creation.complete || context.isGM);
     return context;
   }
 

@@ -43,9 +43,6 @@
       <label class="checkbox"><input type="checkbox" name="system.details.jumpJets" {{checked system.details.jumpJets}}> {{localize "MWD.Mech.JumpJets"}}</label>
       <label class="checkbox"><input type="checkbox" name="system.details.punch" {{checked system.details.punch}}> {{localize "MWD.Mech.CanPunch"}}</label>
       {{/if}}
-      {{#if isVehicle}}{{#unless system.vtol}}
-      <label class="checkbox"><input type="checkbox" name="system.details.turret" {{checked system.details.turret}}> {{localize "MWD.Vehicle.HasTurret"}}</label>
-      {{/unless}}{{/if}}
       <span class="mwd-muted">{{localize "MWD.Mech.MaxMovement"}}: <strong>{{system.maxMovement}}</strong>
         {{#if isMech}} · {{localize "MWD.Mech.Physical.punch"}} {{system.physical.punch}} / {{localize "MWD.Mech.Physical.kick"}} {{system.physical.kick}}{{/if}}
         {{#if isVehicle}} · {{localize "MWD.Mech.Physical.ram"}} {{system.physical.ram}}{{#if system.immobile}} · <strong>{{localize "MWD.Vehicle.Immobile"}}</strong>{{/if}}{{/if}}

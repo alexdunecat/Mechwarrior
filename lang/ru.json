@@ -676,6 +676,7 @@
         "vtol": "VTOL"
       },
       "HasTurret": "Есть башня",
+      "HasTurretHint": "Без башни нет локации «Башня»: попадания 10–12 идут в «Перед».",
       "Immobile": "Обездвижена",
       "MovementLost": "Потеряно Movement",
       "MovementLostHint": "Повреждения ходовой (–2) и криты (–1 или –2).",
@@ -783,7 +784,7 @@
       "outworlds": "Альянс Внешних Миров",
       "taurian": "Таурианский Конкордат",
       "banditKingdom": "Пираты (бандитское королевство)",
-      "comstar": "ComStar",
+      "comstar": "Комстар",
       "mercenary": "Наёмники",
       "pirate": "Пираты (независимые)",
       "unaffiliated": "Без принадлежности"
@@ -818,7 +819,7 @@
         "agitator": "Agitator (агитатор)",
         "civilianJob": "Civilian Job (гражданская работа)",
         "combatCorrespondent": "Combat Correspondent (военкор)",
-        "comstarService": "ComStar Service (служба в ComStar)",
+        "comstarService": "ComStar Service (служба в Комстаре)",
         "covertOperations": "Covert Operations (тайные операции)",
         "explorer": "Explorer (исследователь)",
         "guerrilla": "Guerrilla Insurgent (партизан)",

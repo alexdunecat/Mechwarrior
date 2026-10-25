@@ -1201,3 +1201,10 @@
 
 .mechwarrior-destiny .mwd-tab[data-tab="advancement"] .mwd-col-controls,
 .mechwarrior-destiny .mwd-creator-step .mwd-col-controls { flex: 0 0 auto; }
+
+.mechwarrior-destiny .mwd-turret-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+}

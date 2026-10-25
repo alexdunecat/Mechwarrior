@@ -676,6 +676,7 @@
         "vtol": "VTOL"
       },
       "HasTurret": "Turret",
+      "HasTurretHint": "Without a turret there is no Turret location: hit rolls 10–12 go to the Front.",
       "Immobile": "Immobile",
       "MovementLost": "Movement lost",
       "MovementLostHint": "Motive damage (–2) and critical hits (–1 or –2).",
