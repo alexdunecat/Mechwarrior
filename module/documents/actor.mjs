@@ -469,15 +469,16 @@ export class MWDActor extends Actor {
   }
 
   /**
-   * Take the controls of a unit (a pilot can own several and switch between them). Leaves any
-   * other unit this person was piloting and records the machine in a character's Hardware list.
+   * Take the controls of a unit (a pilot can own several and switch between them). A character
+   * leaves any other unit they were piloting and records the machine in their Hardware list; an NPC
+   * is a stat line, so the same one may pilot any number of units at once.
    * @param {Actor} unit
    */
   async boardHardware(unit) {
     if ( !this.isPerson || !unit?.isUnit ) return;
-    for ( const other of game.actors.filter(a => a.isUnit && (a !== unit) && (a.system.pilot === this.uuid)) ) {
-      await other.update({ "system.pilot": "" });
-    }
+    const others = this.type === "npc" ? []
+      : game.actors.filter(a => a.isUnit && (a !== unit) && (a.system.pilot === this.uuid));
+    for ( const other of others ) await other.update({ "system.pilot": "" });
     await unit.update({ "system.pilot": this.uuid, "system.crew": unit.system.crew.filter(u => u !== this.uuid) });
     if ( (this.type === "character") && !this.system.hardware.includes(unit.uuid) ) {
       await this.update({ "system.hardware": [...this.system.hardware, unit.uuid] });
