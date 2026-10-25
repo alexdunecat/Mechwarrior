@@ -283,12 +283,14 @@
       "Equipped": "Надета",
       "Concealed": "Скрытая",
       "Type": {
-        "flak": "Flak Armor (противоосколочная)",
-        "ablative": "Ablative Armor (абляционная)",
-        "ballisticPlate": "Ballistic Plate Armor (бронепластины)",
-        "concealedFlak": "Concealed Flak Armor (скрытая противоосколочная)",
-        "concealedAblative": "Concealed Ablative Armor (скрытая абляционная)",
-        "infiltration": "Infiltration Suit (костюм проникновения)"
+        "flak": "Противоосколочная броня",
+        "ablative": "Абляционная броня",
+        "ballisticPlate": "Бронепластины",
+        "concealedFlak": "Скрытая противоосколочная броня",
+        "concealedAblative": "Скрытая абляционная броня",
+        "infiltration": "Костюм проникновения",
+        "ablativeFlak": "Абляционно-противоосколочная броня",
+        "natural": "Природная броня"
       },
       "Natural": "Природная",
       "NaturalHint": "Шкура или чешуя существа: пипсов нет, снижение урона действует всегда."
@@ -839,167 +841,167 @@
     },
     "BookTrait": {
       "alternateId": {
-        "name": "Alternate ID (вторая личность)",
+        "name": "Вторая личность",
         "hint": "Двойная жизнь: вы или ГМ можете ввести её в сюжет."
       },
       "animalEmpathy": {
-        "name": "Animal Empathy (друг животных)",
+        "name": "Друг животных",
         "hint": "+1 к тестам с животными."
       },
       "attractive": {
-        "name": "Attractive (привлекательность)",
+        "name": "Привлекательность",
         "hint": "+1 к тестам CHA, где важна внешность."
       },
       "citizenship": {
-        "name": "Citizenship (гражданство)",
+        "name": "Гражданство",
         "hint": "+1 к тестам CHA с гражданами своей фракции."
       },
       "combatSense": {
-        "name": "Combat Sense (чутьё боя)",
+        "name": "Чутьё боя",
         "hint": "Выбираете место в порядке ходов без Plot Point."
       },
       "connections": {
-        "name": "Connections (связи)",
+        "name": "Связи",
         "hint": "+1 к тестам CHA со своими связями."
       },
       "equipped": {
-        "name": "Equipped (снаряжён)",
+        "name": "Хорошо снаряжён",
         "hint": "При создании: +1 оружие или +2 предмета инвентаря. Не покупается за XP."
       },
       "gTolerance": {
-        "name": "G-Tolerance (переносимость перегрузок)",
+        "name": "Переносимость перегрузок",
         "hint": "Игнорирует модификаторы перегрузок и невесомости."
       },
       "goodHearing": {
-        "name": "Good Hearing (острый слух)",
+        "name": "Острый слух",
         "hint": "+1 к тестам Perception на слух."
       },
       "goodReputation": {
-        "name": "Good Reputation (добрая слава)",
+        "name": "Добрая слава",
         "hint": "+1 к тестам CHA с теми, кто вас знает."
       },
       "goodVision": {
-        "name": "Good Vision (острое зрение)",
+        "name": "Острое зрение",
         "hint": "+1 к тестам Perception на зрение."
       },
       "painResistance": {
-        "name": "Pain Resistance (терпение к боли)",
+        "name": "Терпение к боли",
         "hint": "Игнорирует первый штраф ранений на обоих треках."
       },
       "poisonResistance": {
-        "name": "Poison Resistance (стойкость к ядам)",
+        "name": "Стойкость к ядам",
         "hint": "Токсины наносят на 2 урона меньше."
       },
       "prosthetic": {
-        "name": "Prosthetic (протез)",
+        "name": "Протез",
         "hint": "Снимает Lost Limb, пока надет; требует Lost Limb."
       },
       "rank": {
-        "name": "Rank (звание)",
+        "name": "Звание",
         "hint": "Нужен для звания капитана и выше; командуете подразделением."
       },
       "sixthSense": {
-        "name": "Sixth Sense (шестое чувство)",
+        "name": "Шестое чувство",
         "hint": "+1 к тестам Perception против засад и внезапности."
       },
       "techEmpathy": {
-        "name": "Tech Empathy (чутьё техники)",
+        "name": "Чутьё техники",
         "hint": "+1 к небоевым тестам с техникой."
       },
       "thickSkinned": {
-        "name": "Thick-Skinned (толстокожий)",
+        "name": "Толстокожий",
         "hint": "Игнорирует модификаторы сильной жары и холода."
       },
       "toughness": {
-        "name": "Toughness (крепкий)",
+        "name": "Крепкое здоровье",
         "hint": "Каждое попадание наносит на 1 меньше Physical и Fatigue урона."
       },
       "wealthy": {
-        "name": "Wealthy (богатство)",
+        "name": "Богатство",
         "hint": "+1 Hardware Point при создании. Не покупается за XP."
       },
       "animalAntipathy": {
-        "name": "Animal Antipathy (нелюбовь животных)",
+        "name": "Нелюбовь животных",
         "hint": "–1 к тестам с животными."
       },
       "badReputation": {
-        "name": "Bad Reputation (дурная слава)",
+        "name": "Дурная слава",
         "hint": "–1 к тестам CHA с теми, кто вас знает."
       },
       "bloodmark": {
-        "name": "Bloodmark (награда за голову)",
+        "name": "Награда за голову",
         "hint": "За вашу голову назначена награда; ГМ может это использовать."
       },
       "combatParalysis": {
-        "name": "Combat Paralysis (ступор в бою)",
+        "name": "Ступор в бою",
         "hint": "Всегда последняя Narration в раунде."
       },
       "compulsion": {
-        "name": "Compulsion (зависимость)",
+        "name": "Зависимость",
         "hint": "–1 к тестам, чтобы устоять перед зависимостью."
       },
       "darkSecret": {
-        "name": "Dark Secret (тёмная тайна)",
+        "name": "Тёмная тайна",
         "hint": "–1 к тестам, чтобы сохранить тайну."
       },
       "dependents": {
-        "name": "Dependents (иждивенцы)",
+        "name": "Иждивенцы",
         "hint": "От вас кто-то зависит; ГМ может это использовать."
       },
       "enemy": {
-        "name": "Enemy (враг)",
+        "name": "Враг",
         "hint": "Заклятый враг может появиться в любой момент."
       },
       "glassJaw": {
-        "name": "Glass Jaw (стеклянная челюсть)",
+        "name": "Стеклянная челюсть",
         "hint": "Каждое попадание наносит на 1 больше Physical и Fatigue урона."
       },
       "gremlins": {
-        "name": "Gremlins (техника не любит)",
+        "name": "Техника не любит",
         "hint": "–1 к небоевым тестам с техникой."
       },
       "illiterate": {
-        "name": "Illiterate (неграмотность)",
+        "name": "Неграмотность",
         "hint": "–2 к тестам с письменными материалами."
       },
       "inForLife": {
-        "name": "In for Life (навсегда в организации)",
+        "name": "Навсегда в организации",
         "hint": "Вы состоите в тайной организации; ГМ может это использовать."
       },
       "introvert": {
-        "name": "Introvert (интроверт)",
+        "name": "Интроверт",
         "hint": "–1 к тестам CHA."
       },
       "lostLimb": {
-        "name": "Lost Limb (потеря конечности)",
+        "name": "Потеря конечности",
         "hint": "–4 к тестам, где нужна потерянная конечность."
       },
       "poor": {
-        "name": "Poor (бедность)",
+        "name": "Бедность",
         "hint": "При создании: 1 оружие, 2 предмета, половина Hardware Points (минимум 1)."
       },
       "poorHearing": {
-        "name": "Poor Hearing (плохой слух)",
+        "name": "Плохой слух",
         "hint": "–1 к тестам Perception на слух."
       },
       "poorVision": {
-        "name": "Poor Vision (плохое зрение)",
+        "name": "Плохое зрение",
         "hint": "–1 к тестам Perception на зрение."
       },
       "thinSkinned": {
-        "name": "Thin-Skinned (тонкокожий)",
+        "name": "Тонкокожий",
         "hint": "Модификаторы жары и холода удваиваются."
       },
       "tds": {
-        "name": "TDS (синдром дезориентации при прыжке)",
+        "name": "Синдром дезориентации при прыжке (TDS)",
         "hint": "–2 ко всем тестам 20 минут после гиперпрыжка."
       },
       "unattractive": {
-        "name": "Unattractive (непривлекательность)",
+        "name": "Непривлекательность",
         "hint": "–1 к тестам CHA, где важна внешность."
       },
       "unlucky": {
-        "name": "Unlucky (невезение)",
+        "name": "Невезение",
         "hint": "Шестёрки на своём переброске Edge считаются единицами."
       }
     },

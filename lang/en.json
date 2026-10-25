@@ -288,7 +288,9 @@
         "ballisticPlate": "Ballistic Plate Armor",
         "concealedFlak": "Concealed Flak Armor",
         "concealedAblative": "Concealed Ablative Armor",
-        "infiltration": "Infiltration Suit"
+        "infiltration": "Infiltration Suit",
+        "ablativeFlak": "Ablative/Flak Armor",
+        "natural": "Natural Armor"
       },
       "Natural": "Natural",
       "NaturalHint": "Hide or scales of a creature: no pips, the damage reduction always applies."

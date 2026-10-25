@@ -123,7 +123,7 @@ export const WEAPON_GROUPS = [
 /** Armor (p. 156): pips, damage reduction and RFL penalty. */
 export const ARMOR = [
   { name: "Ablative Armor", key: "ablative", pips: 10, reduceE: 2 },
-  { name: "Ablative/Flak Armor", pips: 10, reduceB: 1, reduceE: 1 },
+  { name: "Ablative/Flak Armor", key: "ablativeFlak", pips: 10, reduceB: 1, reduceE: 1 },
   { name: "Ballistic Plate Armor", key: "ballisticPlate", pips: 12, reduceB: 3, rflPenalty: 1 },
   { name: "Concealed Ablative Armor", key: "concealedAblative", pips: 8, reduceE: 1, concealed: true },
   { name: "Concealed Flak Armor", key: "concealedFlak", pips: 8, reduceB: 1, concealed: true },

@@ -141,7 +141,8 @@ export function armorData(entry) {
   if ( typeof entry === "object" ) {
     return {
       name: entry.name, type: "armor", img: "icons/svg/shield.svg",
-      system: { pips: 0, reduceB: entry.reduceB ?? 0, reduceE: entry.reduceE ?? 0, natural: true, equipped: true }
+      system: { pips: 0, reduceB: entry.reduceB ?? 0, reduceE: entry.reduceE ?? 0, natural: true, equipped: true },
+      flags: flag({ bookName: { armor: "natural" } })
     };
   }
   const armor = ARMOR.find(a => a.name === entry);

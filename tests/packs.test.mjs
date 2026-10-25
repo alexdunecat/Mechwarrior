@@ -137,3 +137,14 @@ test("sample characters point at units that exist", () => {
     assert.equal(pc.system.creation.complete, true);
   }
 });
+
+test("compendium lists show book items in the world's language, units keep their names", async () => {
+  globalThis.game = { i18n: { localize: key => `ru:${key}` } };
+  const { translateIndex } = await import("../module/documents/compendium.mjs");
+  const index = [...packs.armor, ...packs.traits].filter(d => !isFolder(d)).map(d => ({ name: d.name, flags: d.flags }));
+  const unit = { name: "Wasp WSP-1A", flags: {} };
+  translateIndex({ index: [...index, unit] });
+  assert.ok(index.every(e => e.name.startsWith("ru:MWD.")), index.find(e => !e.name.startsWith("ru:"))?.name);
+  assert.equal(unit.name, "Wasp WSP-1A");
+  delete globalThis.game;
+});

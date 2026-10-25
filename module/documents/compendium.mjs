@@ -63,21 +63,48 @@ async function onCreateActor(actor, _options, userId) {
   if ( unit ) await actor.boardHardware(unit);
 }
 
-/** Pack labels in system.json are English; show them in the world's language. */
+/** The system's own packs. */
+const systemPacks = () => game.packs.filter(pack => pack.metadata.packageName === SYSTEM_ID);
+
+/**
+ * Show book items under their translated names in a pack's index, which is what the compendium
+ * window lists and searches. 'Mechs, vehicles and other proper names keep their book names.
+ * @param {CompendiumCollection} pack
+ */
+export function translateIndex(pack) {
+  for ( const entry of pack.index ) {
+    const name = bookItemName(entry);
+    if ( name ) entry.name = name;
+  }
+}
+
+/** Pack labels in system.json are English; show them and book item names in the world's language. */
 function localizePacks() {
-  for ( const pack of game.packs ) {
-    if ( pack.metadata.packageName !== SYSTEM_ID ) continue;
+  for ( const pack of systemPacks() ) {
     const key = `MWD.Pack.${pack.metadata.name}`;
-    if ( !game.i18n.has(key) ) continue;
     try {
-      pack.metadata.label = t(key);
+      if ( game.i18n.has(key) ) pack.metadata.label = t(key);
     } catch(err) {
       console.warn(`${SYSTEM_ID} | Could not translate the label of ${pack.collection}`, err);
     }
+    if ( pack.documentName !== "Item" ) continue;
+    // The index is loaded again whenever it needs more fields, so translate every load.
+    const getIndex = pack.getIndex.bind(pack);
+    pack.getIndex = async (...args) => {
+      const index = await getIndex(...args);
+      translateIndex(pack);
+      return index;
+    };
+    translateIndex(pack);
   }
 }
 
 export function registerCompendiumHooks() {
+  Hooks.once("init", () => {
+    // Index entries need the flags that name book items.
+    CONFIG.Item.compendiumIndexFields = [...new Set([...CONFIG.Item.compendiumIndexFields, `flags.${SYSTEM_ID}`])];
+  });
+  Hooks.once("ready", () => systemPacks().filter(p => p.documentName === "Item").forEach(translateIndex));
   Hooks.on("preCreateActor", onPreCreateActor);
   Hooks.on("preCreateItem", onPreCreateItem);
   Hooks.on("createActor", onCreateActor);
