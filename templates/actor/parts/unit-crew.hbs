@@ -1,0 +1,52 @@
+<div class="mwd-builtin-crew {{#if crew.seated}}seated{{/if}}">
+  <div class="mwd-header-row">
+    <label class="checkbox" data-tooltip="MWD.Crew.Hint">
+      <input type="checkbox" name="system.builtInCrew.active" {{checked system.builtInCrew.active}} {{disabled (not editable)}}>
+      <strong>{{localize "MWD.Crew.label"}}</strong>
+    </label>
+    {{#if crew.standby}}<span class="mwd-muted">{{localize "MWD.Crew.Standby"}}</span>{{/if}}
+    {{#if crew.unconscious}}<span class="mwd-badge negative">{{localize "MWD.Mech.Pilot.Unconscious"}}</span>{{/if}}
+    {{#if crew.conCheck}}
+    <button type="button" class="mwd-button" data-action="conCheck" data-tooltip="MWD.Con.Hint"><i class="fa-solid fa-dice"></i> {{localize "MWD.Con.Label" n=crew.conCheck}}</button>
+    {{/if}}
+  </div>
+  {{#if system.builtInCrew.active}}
+  <div class="mwd-header-row">
+    <label class="mwd-field mwd-field-sm">
+      <span data-tooltip="MWD.Crew.LevelHint">{{localize "MWD.Crew.experience"}}</span>
+      <select name="system.builtInCrew.experience" {{disabled (not editable)}}>{{selectOptions crew.levels selected=system.builtInCrew.experience}}</select>
+    </label>
+    <label class="mwd-field mwd-field-xs">
+      <span data-tooltip="MWD.Crew.BonusHint">{{localize "MWD.Crew.gunnery"}}</span>
+      <input type="number" name="system.builtInCrew.gunnery" value="{{system.builtInCrew.gunnery}}" min="0" {{disabled (not editable)}}>
+    </label>
+    <label class="mwd-field mwd-field-xs">
+      <span data-tooltip="MWD.Crew.BonusHint">{{localize "MWD.Crew.piloting"}}</span>
+      <input type="number" name="system.builtInCrew.piloting" value="{{system.builtInCrew.piloting}}" min="0" {{disabled (not editable)}}>
+    </label>
+    <label class="mwd-field mwd-field-xs">
+      <span>{{localize "MWD.Crew.initiative"}}</span>
+      <input type="number" name="system.builtInCrew.initiative" value="{{system.builtInCrew.initiative}}" min="-3" max="3" {{disabled (not editable)}}>
+    </label>
+    <label class="mwd-field mwd-field-xs">
+      <span data-tooltip="MWD.Crew.StrHint">{{localize "MWD.Attribute.str.abbr"}}</span>
+      <input type="number" name="system.builtInCrew.str" value="{{system.builtInCrew.str}}" min="1" {{disabled (not editable)}}>
+    </label>
+    <label class="mwd-field mwd-field-xs">
+      <span data-tooltip="MWD.Crew.WilHint">{{localize "MWD.Attribute.wil.abbr"}}</span>
+      <input type="number" name="system.builtInCrew.wil" value="{{system.builtInCrew.wil}}" min="1" {{disabled (not editable)}}>
+    </label>
+  </div>
+  <div class="mwd-header-row">
+    <label class="mwd-field mwd-field-sm">
+      <span>{{localize "MWD.Condition.physical"}} ({{crew.physicalCapacity}})</span>
+      <input type="number" name="system.condition.physical.value" value="{{system.condition.physical.value}}" min="0" {{disabled (not editable)}}>
+    </label>
+    <label class="mwd-field mwd-field-sm">
+      <span>{{localize "MWD.Condition.fatigue"}} ({{crew.fatigueCapacity}})</span>
+      <input type="number" name="system.condition.fatigue.value" value="{{system.condition.fatigue.value}}" min="0" {{disabled (not editable)}}>
+    </label>
+    {{#if crew.wounds}}<span class="mwd-muted">{{localize "MWD.Condition.Wounds"}} {{mwdSigned crew.wounds}}</span>{{/if}}
+  </div>
+  {{/if}}
+</div>

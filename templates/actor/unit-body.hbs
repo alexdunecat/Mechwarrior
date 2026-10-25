@@ -8,9 +8,10 @@
     </header>
     {{#if pilot}}
     {{> "systems/mechwarrior-destiny/templates/actor/parts/unit-person.hbs" person=pilot isPilot=true editable=editable}}
-    {{else}}
+    {{else unless builtInCrew.seated}}
     <p class="mwd-empty">{{localize "MWD.Mech.Pilot.None"}}</p>
     {{/if}}
+    {{> "systems/mechwarrior-destiny/templates/actor/parts/unit-crew.hbs" crew=builtInCrew system=system editable=editable}}
     {{#unless isMech}}
     <header class="mwd-block-header">
       <h3>{{localize "MWD.Unit.Crew.label"}}</h3>

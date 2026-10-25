@@ -2,7 +2,7 @@
   "id": "mechwarrior-destiny",
   "title": "MechWarrior: Destiny",
   "description": "Unofficial game system for MechWarrior: Destiny (Cue System) by Catalyst Game Labs.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -34,6 +34,31 @@
       "mechEquipment": { "htmlFields": ["description"] }
     }
   },
+  "packs": [
+    { "name": "weapons", "label": "Personal Weapons", "path": "packs/weapons", "type": "Item", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "armor", "label": "Armor", "path": "packs/armor", "type": "Item", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "inventory", "label": "Inventory", "path": "packs/inventory", "type": "Item", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "skills", "label": "Skills", "path": "packs/skills", "type": "Item", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "traits", "label": "Traits", "path": "packs/traits", "type": "Item", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "mechs", "label": "BattleMechs", "path": "packs/mechs", "type": "Actor", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "vehicles", "label": "Combat Vehicles", "path": "packs/vehicles", "type": "Actor", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "fighters", "label": "Aerospace Fighters", "path": "packs/fighters", "type": "Actor", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "npcs", "label": "NPCs", "path": "packs/npcs", "type": "Actor", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } },
+    { "name": "characters", "label": "Sample Characters", "path": "packs/characters", "type": "Actor", "system": "mechwarrior-destiny",
+      "ownership": { "PLAYER": "OBSERVER", "ASSISTANT": "OWNER" } }
+  ],
+  "packFolders": [
+    { "name": "MechWarrior: Destiny", "sorting": "m", "color": "#3a4a5c", "packs": ["weapons", "armor", "inventory", "skills", "traits", "mechs", "vehicles", "fighters", "npcs", "characters"] }
+  ],
   "grid": {
     "type": 1,
     "distance": 1,
@@ -43,7 +68,7 @@
   "socket": true,
   "url": "https://github.com/alexdunecat/Mechwarrior",
   "manifest": "https://github.com/alexdunecat/Mechwarrior/releases/latest/download/system.json",
-  "download": "https://github.com/alexdunecat/Mechwarrior/releases/download/v0.4.0/system.zip",
+  "download": "https://github.com/alexdunecat/Mechwarrior/releases/download/v0.5.0/system.zip",
   "flags": {
     "hotReload": {
       "extensions": ["css", "hbs", "json"],

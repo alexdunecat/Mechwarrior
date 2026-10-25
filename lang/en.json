@@ -288,8 +288,12 @@
         "ballisticPlate": "Ballistic Plate Armor",
         "concealedFlak": "Concealed Flak Armor",
         "concealedAblative": "Concealed Ablative Armor",
-        "infiltration": "Infiltration Suit"
-      }
+        "infiltration": "Infiltration Suit",
+        "ablativeFlak": "Ablative/Flak Armor",
+        "natural": "Natural Armor"
+      },
+      "Natural": "Natural",
+      "NaturalHint": "Hide or scales of a creature: no pips, the damage reduction always applies."
     },
     "Gear": {
       "plural": "Inventory",
@@ -1201,6 +1205,32 @@
         "award": "Awarded {n} XP",
         "awardFor": "Awarded {n} XP: {reason}"
       }
+    },
+    "Pack": {
+      "weapons": "Personal Weapons",
+      "armor": "Armor",
+      "inventory": "Inventory",
+      "skills": "Skills",
+      "traits": "Traits",
+      "mechs": "BattleMechs",
+      "vehicles": "Combat Vehicles",
+      "fighters": "Aerospace Fighters",
+      "npcs": "NPCs",
+      "characters": "Sample Characters"
+    },
+    "Crew": {
+      "label": "Built-in crew",
+      "Hint": "For NPC units: the crew lives in the unit itself, so every token has its own. It flies or drives whenever nobody is in the pilot's seat.",
+      "Standby": "Stands by while the pilot is aboard.",
+      "experience": "Level",
+      "LevelHint": "Choosing a level fills in Gunnery, Piloting and Initiative; you can change them afterwards.",
+      "gunnery": "Gunnery",
+      "piloting": "Piloting",
+      "initiative": "Init.",
+      "BonusHint": "Full bonus, RFL included.",
+      "StrHint": "Sets the Physical track of the crew's Condition Monitor.",
+      "WilHint": "Sets the Fatigue track of the crew's Condition Monitor.",
+      "NameOf": "Crew of {name}"
     }
   }
 }

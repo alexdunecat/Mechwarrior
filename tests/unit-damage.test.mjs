@@ -174,3 +174,35 @@ test("people wear a unit down 20 damage at a time", async () => {
   assert.equal(tank.system.smallArms, 1);
   assert.equal(tank.system.locations.front.armorDamage, 1);
 });
+
+test("a unit with its built-in crew pilots itself and the GM can edit the crew", async () => {
+  const { getPilot, pilotParts, usesBuiltInCrew } = await import("../module/documents/unit.mjs");
+  const { crewPreset } = await import("../module/data/actor-unit.mjs");
+  const mech = makeUnit("mech", {
+    details: { tonnage: 20, movement: 4 },
+    locations: { head: loc(1, 1), torso: loc(2, 2), rightArm: loc(1, 1), leftArm: loc(1, 1), rightLeg: loc(2, 1), leftLeg: loc(2, 1) }
+  });
+  mech.isUnit = true;
+  assert.equal(getPilot(mech), null);
+
+  await mech.update({ "system.builtInCrew": { active: true, experience: "regular", gunnery: 5, piloting: 6 } });
+  assert.equal(getPilot(mech), mech);
+  assert.equal(usesBuiltInCrew(mech), true);
+  assert.deepEqual(pilotParts(mech, "gunnery").parts, [{ label: "MWD.Crew.gunnery", value: 5 }]);
+  assert.equal(pilotParts(mech, "piloting").parts[0].value, 6);
+
+  // Wounds on the crew's Condition Monitor count against both bonuses.
+  await mech.update({ "system.condition.physical.value": 6 });
+  assert.ok(mech.system.woundModifier < 0);
+  const parts = pilotParts(mech, "gunnery").parts;
+  assert.deepEqual(parts.at(-1), { label: "MWD.Condition.Wounds", value: mech.system.woundModifier });
+
+  // Picking an Experience Level fills in the bonuses, unless the GM sets them in the same change.
+  const changes = { system: { builtInCrew: { experience: "elite" } } };
+  await mech.system._preUpdate(changes, {}, null);
+  assert.deepEqual(changes.system.builtInCrew, { experience: "elite", ...crewPreset("elite") });
+  assert.deepEqual(crewPreset("elite"), { gunnery: 7, piloting: 7, initiative: 2 });
+  const manual = { system: { builtInCrew: { experience: "green", gunnery: 6 } } };
+  await mech.system._preUpdate(manual, {}, null);
+  assert.deepEqual(manual.system.builtInCrew, { experience: "green", gunnery: 6 });
+});

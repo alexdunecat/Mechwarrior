@@ -130,7 +130,8 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
 /* -------------------------------------------- */
 
 /**
- * Personal armor: pips absorb damage first; some types reduce B or E damage (p. 36, 156).
+ * Personal armor: pips absorb damage first; some types reduce B or E damage (p. 36, 156). Natural
+ * armor (hides and scales of creatures, p. 137) has no pips and always reduces damage.
  */
 export class ArmorData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -141,6 +142,7 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
       reduceE: counter(0),
       rflPenalty: counter(0),
       concealed: new fields.BooleanField({ initial: false }),
+      natural: new fields.BooleanField({ initial: false }),
       equipped: new fields.BooleanField({ initial: true }),
       description: description()
     };

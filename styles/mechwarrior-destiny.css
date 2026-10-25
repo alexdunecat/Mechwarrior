@@ -1208,3 +1208,16 @@
   gap: 4px;
   font-weight: bold;
 }
+
+.mechwarrior-destiny .mwd-builtin-crew {
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--mwd-steel);
+}
+
+.mechwarrior-destiny .mwd-builtin-crew .mwd-header-row {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mechwarrior-destiny .mwd-builtin-crew .mwd-field-sm { flex: 0 0 130px; }

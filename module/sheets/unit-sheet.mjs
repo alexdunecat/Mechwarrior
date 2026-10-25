@@ -1,7 +1,9 @@
-import { HEAT_LEVELS, MECH_RANGES, SYSTEM_ID, UNIT_LOCATIONS, VEHICLE_MOTIVE, WEIGHT_CLASSES } from "../config.mjs";
+import {
+  EXPERIENCE_LEVELS, HEAT_LEVELS, MECH_RANGES, SYSTEM_ID, UNIT_LOCATIONS, VEHICLE_MOTIVE, WEIGHT_CLASSES
+} from "../config.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
-import { getCrew, getPilot, pilotParts, pilotUnconscious } from "../documents/unit.mjs";
+import { getCrew, getPilot, pilotParts, pilotUnconscious, usesBuiltInCrew } from "../documents/unit.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -68,7 +70,8 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     const actor = this.document;
     const system = actor.system;
     const type = actor.type;
-    const pilot = getPilot(actor);
+    const builtIn = usesBuiltInCrew(actor);
+    const pilot = builtIn ? null : getPilot(actor);
     const localize = key => game.i18n.localize(key);
     const specialty = system.unitConfig.specialty;
 
@@ -86,7 +89,8 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       motives: Object.fromEntries(Object.entries(VEHICLE_MOTIVE).map(([k, v]) => [k, localize(v)])),
       pilot: pilot ? this.#personContext(pilot, specialty) : null,
       pilotChoices: this.#pilotChoices(pilot),
-      crew: getCrew(actor).filter(p => p !== pilot).map(p => this.#personContext(p, specialty)),
+      crew: getCrew(actor).filter(p => (p !== pilot) && (p !== actor)).map(p => this.#personContext(p, specialty)),
+      builtInCrew: this.#builtInCrewContext(builtIn),
       crewChoices: this.#crewChoices(),
       locations: this.#locations(),
       heatPips: system.usesHeat ? Array.from({ length: Math.max(6, system.heat.value) }, (_v, i) => ({
@@ -168,6 +172,22 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       conCheck: physical.track.conCheck,
       unconscious: pilotUnconscious(person),
       owner: person.isOwner
+    };
+  }
+
+  /** The unit's built-in crew: its settings, and its state when it is in the seat. */
+  #builtInCrewContext(seated) {
+    const system = this.document.system;
+    const { physical, fatigue } = system.condition;
+    return {
+      seated,
+      standby: system.builtInCrew.active && !seated,
+      levels: Object.fromEntries(Object.entries(EXPERIENCE_LEVELS).map(([k, v]) => [k, game.i18n.localize(v.label)])),
+      physicalCapacity: physical.track.capacity,
+      fatigueCapacity: fatigue.track.capacity,
+      wounds: system.woundModifier,
+      conCheck: seated ? physical.track.conCheck : 0,
+      unconscious: seated && pilotUnconscious(this.document)
     };
   }
 

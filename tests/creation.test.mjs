@@ -177,6 +177,7 @@ test("weapon customization (p. 78)", () => {
   assert.equal(improveRange("-1"), "0");
   assert.equal(improveRange("-2"), "-1");
   assert.equal(improveRange("0"), "0");
+  assert.equal(improveRange("+2"), "+2");
   assert.equal(improveRange("x"), "x");
   const rifle = { ranges: { close: "0", near: "0", far: "-2" }, mods: { accuracy: false, lethality: false, range: "" } };
   assert.equal(canCustomize(rifle, "range"), true);

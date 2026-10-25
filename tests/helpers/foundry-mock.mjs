@@ -54,6 +54,8 @@ class TypeDataModel {
     Object.defineProperty(this, "parent", { value: parent, enumerable: false });
   }
 
+  async _preUpdate() {}
+
   prepareDerivedData() {}
 }
 

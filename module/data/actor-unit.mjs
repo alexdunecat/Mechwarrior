@@ -1,7 +1,8 @@
-import { UNIT_TYPES, WEIGHT_CLASSES } from "../config.mjs";
+import { CREW_PRESETS, EXPERIENCE_LEVELS, INITIATIVE_BY_EXPERIENCE, UNIT_TYPES, WEIGHT_CLASSES } from "../config.mjs";
+import { buildTrack, woundModifier } from "../rules/condition.mjs";
 import { hardwareCost } from "../rules/creation.mjs";
 import { locationState } from "../rules/mech.mjs";
-import { counter } from "./actor-base.mjs";
+import { counter, trackField } from "./actor-base.mjs";
 
 const { fields } = foundry.data;
 
@@ -18,6 +19,8 @@ export function locationField() {
 /**
  * Shared data of 'Mech-Scale units ('Mechs, combat vehicles, aerospace fighters). The pilot and
  * any other crew are separate person actors linked by UUID, so they can move between machines.
+ * An NPC unit can instead carry a built-in crew: Gunnery and Piloting bonuses and a Condition
+ * Monitor stored on the unit itself, used whenever nobody is in the pilot's seat.
  * @abstract
  */
 export class UnitData extends foundry.abstract.TypeDataModel {
@@ -32,6 +35,20 @@ export class UnitData extends foundry.abstract.TypeDataModel {
       pilot: new fields.StringField({ required: true, blank: true, initial: "" }),
       crew: new fields.ArrayField(new fields.StringField({ required: true, blank: false })),
       smallArms: counter(0),
+      builtInCrew: new fields.SchemaField({
+        active: new fields.BooleanField({ initial: false }),
+        experience: new fields.StringField({ required: true, initial: "regular",
+          choices: () => Object.fromEntries(Object.entries(EXPERIENCE_LEVELS).map(([k, v]) => [k, v.label])) }),
+        gunnery: counter(CREW_PRESETS.regular.gunnery, { max: 20 }),
+        piloting: counter(CREW_PRESETS.regular.piloting, { max: 20 }),
+        initiative: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: -3, max: 3 }),
+        str: counter(2, { min: 1, max: 10 }),
+        wil: counter(2, { min: 1, max: 10 })
+      }),
+      condition: new fields.SchemaField({
+        physical: trackField(),
+        fatigue: trackField()
+      }),
       notes: new fields.HTMLField({ required: true, initial: "" })
     };
   }
@@ -89,9 +106,40 @@ export class UnitData extends foundry.abstract.TypeDataModel {
     this.structureTotal = { value: structure, max: structureMax };
   }
 
+  /** Choosing the built-in crew's Experience Level fills in its bonuses, unless they are set too. */
+  async _preUpdate(changes, options, user) {
+    const allowed = await super._preUpdate(changes, options, user);
+    if ( allowed === false ) return false;
+    const crew = changes.system?.builtInCrew;
+    const level = crew?.experience;
+    if ( level && (level !== this.builtInCrew.experience) && !("gunnery" in crew) && !("piloting" in crew) ) {
+      Object.assign(crew, crewPreset(level));
+    }
+  }
+
   prepareDerivedData() {
     // Hardware Points follow from type and weight class (p. 76).
     this.hardwarePoints = hardwareCost(this.constructor.unitType, this.details.weightClass);
     this.tagList = this.details.tags.split(/[,;\n]/).map(t => t.trim()).filter(Boolean);
+
+    // The built-in crew's Condition Monitor works like a person's (p. 36).
+    const crew = this.builtInCrew;
+    const { physical, fatigue } = this.condition;
+    physical.track = buildTrack({ rating: crew.str, damage: physical.value, lost: physical.lost });
+    fatigue.track = buildTrack({ rating: crew.wil, damage: fatigue.value, lost: fatigue.lost });
+    this.woundModifier = woundModifier(physical.track, fatigue.track);
+    this.initiativeBonus = crew.initiative;
+    this.traitEffects = new Set();
+    this.armor = null;
   }
+}
+
+/**
+ * Built-in crew values for an Experience Level: Gunnery, Piloting and Initiative.
+ * @param {string} level  Key of EXPERIENCE_LEVELS.
+ * @returns {{gunnery: number, piloting: number, initiative: number}}
+ */
+export function crewPreset(level) {
+  const preset = CREW_PRESETS[level] ?? CREW_PRESETS.regular;
+  return { ...preset, initiative: INITIATIVE_BY_EXPERIENCE[level] ?? 0 };
 }
