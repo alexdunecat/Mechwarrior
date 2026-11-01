@@ -1,5 +1,5 @@
 /*
- * The sample characters (p. 84–127), as printed. Skills are [key, rating, Hardware specialty or
+ * The sample characters (p. 84–127) and the Clan characters (p. 200–215), as printed. Skills are [key, rating, Hardware specialty or
  * Knowledge subject]; a Trait with a key is one of the book's Traits. Weapons name a Warrior's
  * Catalog entry, copy one under another name ({ name, from }), or give a row like the catalog's.
  * Hardware names an entry of the 'Mechs, vehicles or fighters compendium; personal vehicles are
@@ -446,5 +446,166 @@ export const CHARACTERS = [
     personality: "Regan is bold, clever, and determined. She is a winner and won't stand for anything short of getting her way. She's used to the privilege her wealth provides but works very hard to get what she wants. She expects excellence from everyone she works with and won't back down when things get rough.",
     disposition: ["Knows she is the best of the best.", "Never passes up a chance to prove herself.", "No retreat, no surrender.", "Expects others to keep up and won't wait to see if they can."],
     cues: ["Let's do this!", "The only things standing between me and the championship are time and scrap metal.", "Stay out of my way.", "I'm not here to hold your hand.", "Keep up or stay home.", "No guts, no galaxy!", "Oh, it's on!", "What do you mean, “no”?", "Good thing you brought me along.", "One way or another, we aren't leaving until we get what we're here for.", "Eject buttons are for cowards.", "The “odds” don't apply to me.", "There's more than one way to win a match.", "Watch and learn.", "This is going to be the best match you've ever seen...until my next bout.", "What were you thinking?!", "I thought you were supposed to be professionals.", "Time to level the playing field."]
+  },
+  // Clan Invasion appendix (p. 200–215).
+  {
+    name: "Sasha Kerensky", page: 200,
+    details: { faction: "Clan Wolf", factionKey: "wolf", rank: "Star Captain", age: "28", height: "1.8m", weight: "61kg", experience: "elite" },
+    tags: " Political  Warden  Tip of the Spear  Optimistic  Proud",
+    attributes: [3, 5, 4, 2, 3, 1],
+    skills: [["gunnery", 5, "mech"], ["piloting", 4, "mech"], ["leadership", 3], ["negotiation", 2], ["protocol", 3], ["tactics", 4], ["knowledge", 2, "Kerensky Bloodname History"]],
+    lifeModules: {"faction": "Clan Wolf", "childhood": "Trueborn Sibko", "education": "MechWarrior Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "rank", "name": "Rank", "text": "Star Captain."},
+      {"polarity": "negative", "key": "enemy", "name": "Enemy", "text": "Sasha's greatest rival within her Clan is a Wolf who espouses Crusader beliefs."}
+    ],
+    weapons: ["Martial Arts", "Stunstick", "Vibrodagger", "Auto-Pistol (B)"],
+    armor: "Ablative Armor",
+    inventory: ["Clan Watch Reports", "First Aid Kit", "Collected Writings of Kerlin Ward", "Portable Chess Set"],
+    hardware: "Timber Wolf",
+    history: "Not all Clan warriors who hunger for a return to the Inner Sphere are Crusaders, and Sasha exemplifies the fervor and deeply held convictions present within the Warden stronghold of Clan Wolf. A proud bearer of the Kerensky Bloodname, she rejects the invasion's goal of conquering the Inner Sphere and reestablishing the Star League. Instead, she views it as a chance to demonstrate the superiority of Clan culture so that the Clans will be accepted as the protectors that she believes the Great Father, Aleksandr Kerensky, always intended to them to be. Though a capable warrior, she understands that political victories will also be necessary to achieve this end. At the age of twenty-eight and now a Star Captain, Sasha is nearing the end of her time as a ristar within her Clan. She is transitioning to a place of respect and, one day, possibly leadership among the Wolves—an outcome she has prepared for all her life.",
+    personality: "Star Captain Kerensky will never back down from a fight but understands the role that politics plays in determining when and how warriors take to the field. A committed Warden, she will not dishonor herself in the coming invasion and will protect civilians and property from needless destruction.",
+    disposition: ["Eager to begin the invasion and show the Inner Sphere the wisdom of Kerensky.", "Favors one-on-one duels and marksmanship in combat.", "A bit too quick to seek the political solution.", "Expects to be Khan one day."],
+    cues: ["The way of the warrior is not limited to the battlefield.", "Our Clan is destined for glory.", "I am a true daughter of the Founder.", "We are not here to conquer.", "Form up on me!", "You will help me find a way to win.", "Do not break zellbrigen.", "Launching missiles at the lead 'Mech.", "I will challenge their commander to an honor duel.", "Are you my enemy, or my ally?", "Our Khans' vision is clear.", "Strength of purpose is more important than strength of arms.", "Wheel right and turn their flank.", "Technician!", "Make my Timber Wolf your priority.", "These Spheroid warriors are not without honor, misguided though they are.", "Do you understand the purpose for which the Founder created the Clans?", "There is no better time to be a Wolf.", "I will defend my beliefs."]
+  },
+  {
+    name: "Lee", page: 202,
+    details: { faction: "Clan Wolf", factionKey: "wolf", rank: "MechWarrior", age: "26", height: "1.8m", weight: "84kg", experience: "veteran" },
+    tags: " Dreamer  Stubborn  Driven  Freebirth  Quiet",
+    attributes: [3, 2, 2, 3, 2, 1],
+    skills: [["gunnery", 3, "mech"], ["piloting", 4, "mech"], ["meleeCombat", 3], ["perception", 2], ["survival", 2], ["athletics", 2], ["leadership", 2], ["knowledge", 1, "Star League History"]],
+    lifeModules: {"faction": "Clan Wolf", "childhood": "Freeborn Sibko", "education": "MechWarrior Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "toughness", "name": "Toughness", "text": "Subtract 1 from all Physical and Fatigue Damage you receive. (Damage to Armor pips is not reduced.)"},
+      {"polarity": "negative", "key": "introvert", "name": "Introvert", "text": "–1 to CHA-related tests."}
+    ],
+    weapons: ["Martial Arts", { name: "Knife", from: "Knife/Dagger/Bayonet" }, "Needler Pistol (Hold-Out)", "Gyrojet Pistol"],
+    armor: "Concealed Ablative Armor",
+    inventory: ["Digital Copy of The Phantom Tollbooth", "Photo of Parents", "Journal", "Sketchbook and Pencils"],
+    hardware: "Nova",
+    history: "MechWarrior Lee was raised on tales of the heroic exploits of his great-uncles Jaime and Joshua, freebirths like him, in the wilds of the Inner Sphere. As he got older, he understood that his mother probably fabricated most of those stories, but they nonetheless fueled young Lee's dream to one day become a MechWarrior and seek out his kin among the faraway stars. His first few brutal years in a freeborn sibko taught Lee to keep these dreams to himself and hide them away deep inside. But he never allowed the physical and verbal abuse rained down on him by his trueborn tormentors to discourage him, thus developing a reputation as a taciturn but effective warrior. One of the rare freebirths to earn a place in Clan Wolf's frontline forces and in an OmniMech, Lee is ready to make his long-held dream a reality and prove his worth to his Clan.",
+    personality: "Lee has learned through hard experience that few of his fellow warriors are interested in his opinion, so he keeps to himself outside the cockpit. In battle, however, he is unafraid to take charge and direct his comrades—even trueborns. Lee has managed to avoid Trials of Grievance for these actions only because he is usually right.",
+    disposition: ["Keeps his cards close to his vest.", "Slow to anger, but a fierce opponent.", "Desperate to live up to his legendary family members.", "Never satisfied with his own performance."],
+    cues: ["I have a lot to live up to.", "Don't underestimate me.", "I would rather not talk about it.", "Yeah. Hilarious.", "I am ready to go.", "What makes you think you will win?", "Follow me, I know what to do.", "Is this simulator open?", "Just give me that chance.", "A vat does not make you better.", "Something does not seem right here.", "The blood of Kerensky runs through me too.", "I serve the Wolf.", "That wasn't my best effort.", "Practice makes perfect.", "Watch that flank!", "The wonders of the Inner Sphere await.", "Those who cannot do, talk."]
+  },
+  {
+    name: "Johan Helmer", page: 204,
+    details: { faction: "Clan Jade Falcon", factionKey: "jadeFalcon", rank: "Star Commander", age: "29", height: "1.9m", weight: "125kg", experience: "elite" },
+    tags: " Conqueror  Cruel  Focused  Fearless  Haughty",
+    attributes: [3, 4, 2, 3, 2, 1],
+    skills: [["gunnery", 5, "mech"], ["piloting", 5, "mech"], ["intimidation", 3], ["tactics", 2], ["communications", 1], ["meleeCombat", 2], ["knowledge", 1, "Jade Falcon Remembrance"]],
+    lifeModules: {"faction": "Clan Jade Falcon", "childhood": "Trueborn Sibko", "education": "MechWarrior Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "combatSense", "name": "Combat Sense", "text": "Choose when you take your Narration in the turn order without needing to spend a plot point."},
+      {"polarity": "negative", "key": "enemy", "name": "Enemy", "text": "The GM may make your nemesis appear at any time to complicate your life."}
+    ],
+    weapons: ["Martial Arts", "Needler Pistol", "Vibrodagger", "Hold-Out Pistol (B)", "Neural Whip"],
+    armor: "Flak Armor",
+    inventory: ["Communications Kit", "Medical Kit", "Emergency Rations", "Noteputer"],
+    hardware: "Hellbringer",
+    history: "Decanted into a sibko noted for its competitive and fierce nature, Johan learned from an early age that his best bet was on himself. He made no close associations with any of his sibkin, beyond the bare minimum required to function as an effective unit. During his Trial of Position, Johan maneuvered his opponents to surround his partner, and then fired on one of her targets, initiating general melee. His sibkin was crippled in the ensuing onslaught, but Johan succeeded in downing two 'Mechs and achieving command. Faced with the opportunity to compete for the Helmer Bloodname, Johan's independent nature again came to the fore. Rather than accept an offered sponsorship slot for the Trial of Bloodright, Johan chose to enter the Grand Melee. He believed that the sponsorship would make him politically beholden to his sponsor and preferred to trust his own abilities instead. The aftermath of the Grand Melee and several brutal rounds of competition that followed proved that Johan Helmer's trust was well placed.",
+    personality: "Johan believes the Founder's brilliance came from understanding that humanity has always needed a strong hand to guide it, and that warriors must be the rulers of their society. He views the Inner Sphere's warring nations with equal parts contempt and pity—what they view as violence, he sees as claiming his rightful place.",
+    disposition: ["Trusts himself and his abilities before all others.", "Sees little use for allies, politics, or personal attachments.", "Employs violence to make a point.", "Truly believes in the Way of the Clans and the supremacy of the Jade Falcons."],
+    cues: ["Why would I need your assistance?", "The Way of the Clans guides me.", "I will see to it on my own.", "Your legacy will be forgotten.", "Come forth and die!", "Strength comes from standing on your own.", "You knew this challenge would fail, quiaff?", "Honor is an individual privilege.", "The invasion must succeed.", "The opinion of lesser warriors holds no weight.", "You are not worthy of a Trial of Grievance.", "Only the weak detest violence.", "I am Bloodnamed—I hold no fear of death.", "I do not play politics.", "We were born to rule.", "I know who I am.", "You have no hope of defeating me.", "The Jade Falcons will soar over the skies of the Inner Sphere."]
+  },
+  {
+    name: "Lachlan", page: 206,
+    details: { faction: "Clan Jade Falcon", factionKey: "jadeFalcon", rank: "Senior Technician", age: "33", height: "1.4m", weight: "49kg", experience: "veteran" },
+    tags: " Jury-Rigger  Gifted  Washout  Restless  Subservient",
+    attributes: [2, 1, 4, 3, 2, 1],
+    skills: [["technician", 6], ["computers", 3], ["piloting", 3, "mech"], ["communications", 3], ["leadership", 3], ["knowledge", 1, "'Mech Trivia"]],
+    lifeModules: {"faction": "Clan Jade Falcon", "childhood": "Trueborn Sibko", "education": "MechWarrior Training", "realLife": "Technician Caste: Service"},
+    traits: [
+      {"polarity": "positive", "key": "techEmpathy", "name": "Tech Empathy", "text": "+1 bonus for any Tests directly involving technology."},
+      {"polarity": "negative", "key": "thinSkinned", "name": "Thin-Skinned", "text": "Double any modifiers related to performing actions in extreme heat or extreme cold."}
+    ],
+    weapons: ["Martial Arts", { name: "Shiv", from: "Knife/Dagger/Bayonet" }, "Hold-Out Pistol (B)", ["Wrench", "2", "OK", "—", "—"]],
+    armor: "Ablative Armor",
+    inventory: ["Toolkit with Diagnostic Computer", "Noteputer", "Lucky Wrench", "Box of Spare Bits"],
+    hardware: "Salvage Vehicle (Clan)",
+    history: "Lachlan's Falconers were surprised that such a small and undersized warrior survived her sibko experience at all, let alone made it to her Trial of Position. Lachlan's swift failure in that combat trial came as no surprise to them, however. Long commended for the pristine condition and careful maintenance of her assigned equipment, Lachlan was assigned to the technician caste, where her smaller size and keen problem-solving mind became valuable assets. Lachlan's reputation for effective, fast repairs of frontline OmniMechs earned her a promotion to the Third Falcon Talon Cluster, which took a central role in the trials that determined which Clans would participate in Operation REVIVAL. During a routine final check of a Star Captain's Thor before one of those trials, she noticed a fault which could have triggered his ejection seat without opening the 'Mech's cockpit hatch. Her sharp eye and speedy repair of the potentially fatal malfunction ensured her a place among the Falcons' invading forces.",
+    personality: "Though dedicated to her work and ensuring the machines under her care are in the best possible working order, Lachlan quietly chafes at the demeaning treatment she and her fellow technicians suffer at the hands of the Falcon warriors. She feels the warriors do not realize that their lives are often in her hands.",
+    disposition: ["Loves having a problem to solve.", "Has an eye for detail that others often miss.", "Dislikes the warrior caste but sees little opportunity for change or escape.", "Asks much of those assigned to work under her."],
+    cues: ["I can fix this.", "Your 'Mech will be ready before the end of the day.", "There may be a workaround for this.", "Let me show you how this works.", "You have not worked on this type of 'Mech before, quineg?", "This is not working.", "The warriors do not even know which end is up.", "I serve the Clan in the best way I can.", "I was better at fixing 'Mechs than shooting them.", "If you work for me, you must listen to me.", "As you wish, Star Captain.", "Try it my way.", "I think this should hold.", "We need to move faster.", "Inner Sphere technicians enjoy a place of honor.", "Move fast, but think slow.", "I cannot wait to see the worlds of the Inner Sphere.", "An accident…could be arranged."]
+  },
+  {
+    name: "Esau", page: 208,
+    details: { faction: "Clan Smoke Jaguar", factionKey: "smokeJaguar", rank: "Point Commander", age: "23", height: "2.3m", weight: "139kg", experience: "elite" },
+    tags: " Mountainous  Fearsome  Aggressive",
+    attributes: [4, 4, 2, 2, 2, 1],
+    skills: [["athletics", 3], ["supportWeapons", 6], ["meleeCombat", 4], ["smallArms", 3], ["intimidation", 3], ["leadership", 2], ["knowledge", 2, "Smoke Jaguar Remembrance"]],
+    lifeModules: {"faction": "Clan Smoke Jaguar", "childhood": "Trueborn Sibko", "education": "Elemental Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "painResistance", "name": "Pain Resistance", "text": "Ignore the first wound modifier on both Damage Tracks."},
+      {"polarity": "negative", "key": "unattractive", "name": "Unattractive", "text": "–1 penalty for CHA-based Tests where physical appearance matters."}
+    ],
+    weapons: ["Martial Arts", "Sonic Stunner", "Laser Pistol (E)", "Combat Shotgun (B)", "Grenade Launcher (High-Explosive)", "Grenade Launcher (Anti-Personnel)"],
+    armor: "Ballistic Plate Armor",
+    inventory: ["Smoke Jaguar Remembrance (Hardcopy)", "Battle Armor Maintenance Kit", "Bondcords", "Field Kit"],
+    hardware: "Elemental Battle Armor",
+    history: "Nearly from the moment he was decanted, Esau was raised with the understanding that his generation of warriors would be the ones to return to the Inner Sphere, cast down the Successor States, and reclaim the lost glory of the Star League. His road to that lofty goal turned out to be far grimmer. Esau's sibko experienced a high number of fatalities, some through accidents but many through duels and combat trials, and he alone among his sibkin succeeded in his Trial of Position to become a warrior. The horrors and loss he grew up with made Esau both highly protective of his Pointmates and extremely intolerant of any perceived weakness among them. He will not allow a weak link to threaten his squad's lives but is fiercely loyal and supportive once a warrior has proven themselves. Esau hopes to show his fellow warriors that the BattleMech is far from the king of the battlefield.",
+    personality: "Point Commander Esau does not believe there is such a thing as an excess of force, only victory and defeat. He respects strength alone, as is the Way of the Clans. He will acquit himself with honor, offering his opponents no quarter and expecting none in return.",
+    disposition: ["Unintimidated by BattleMechs—or MechWarriors.", "Dedicated to the troopers under his command.", "Abides by his own definition of honor.", "Trains relentlessly and hopes to achieve perfection on the battlefields of the Inner Sphere."],
+    cues: ["A weak Jaguar threatens us all.", "Prove yourself to me.", "MechWarriors are far from the kings of the battlefield.", "Nothing will happen to you under my command.", "I know what loss is.", "For the glory of the Jaguar!", "We will swat these barbarians like flies.", "I will never yield.", "What will you do to claim victory?", "Strength is all that matters.", "Delta Point, on me!", "The size of a warrior's heart cannot be measured.", "Hah! Barely even a flesh wound!", "Our history is written in the blood of our enemies.", "Neg! Fall back!", "The Inner Sphere surats cannot stand against us.", "Work together!", "I will earn a place in the Remembrance."]
+  },
+  {
+    name: "Mila", page: 210,
+    details: { faction: "Clan Smoke Jaguar", factionKey: "smokeJaguar", rank: "Star Commander", age: "30", height: "1.7m", weight: "57kg", experience: "elite" },
+    tags: " Brawler  Vicious  Devil-May-Care  Superior  Damaged",
+    attributes: [3, 4, 2, 3, 2, 1],
+    skills: [["gunnery", 3, "mech"], ["piloting", 6, "mech"], ["intimidation", 2], ["meleeCombat", 5], ["medtech", 2], ["stealth", 3], ["projectileWeapons", 1], ["knowledge", 1, "Martial Arts Theory"]],
+    lifeModules: {"faction": "Clan Smoke Jaguar", "childhood": "Trueborn Sibko", "education": "MechWarrior Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "toughness", "name": "Toughness", "text": "Subtract 1 from all Physical and Fatigue Damage you receive. (Damage to Armor pips is not reduced.)"},
+      {"polarity": "negative", "key": "badReputation", "name": "Bad Reputation", "text": "–1 to CHA-based Tests involving someone who knows your character."}
+    ],
+    weapons: ["Martial Arts", "Vibrodagger", "Neural Whip", "Vibrosword", "Needler Pistol"],
+    armor: "Concealed Ablative Armor",
+    inventory: ["Medical Kit", "Resistance Bands", "Sharpening Tools"],
+    hardware: "Gargoyle",
+    history: "Mila killed her first opponent in a Trial of Grievance when she was fourteen years old, snapping the larger youth's neck between her legs after he made a disparaging remark about her body, and she has not relented in the years since. While her commanders appreciate her aggressiveness in the cockpit, she has killed a number of her fellow warriors in Trials of Grievance fought during her downtime. This toll on her unit has forced her superiors to officially bar her from participating in such trials in the future. Originally thought to be a borderline psychopath, Mila has shown through repeated testing that she possesses no such mental disorder—though psychological screening also failed to identify the source of her bloodlust. Mila's fellow warriors do not trust her and have learned to give her a wide berth, lest they end up facing her inside a Circle of Equals.",
+    personality: "It would be easy to mistake Mila for having a short-fused temper, but her eagerness to settle differences in a Circle of Equals is not rooted in hotheadedness. Rather, she genuinely enjoys the thwack of a fist into flesh, the wet snap of bones giving way, and the cries of her injured opponents.",
+    disposition: ["Does not walk away from a fight—or allow her opponents to do so.", "Always goes for the kill.", "Constantly injured, cut, and bruised.", "Unrelenting with her fists and her 'Mech."],
+    cues: ["I challenge you to a Trial of Grievance!", "It is only a scratch.", "*SNAP!* Now you see the folly of challenging me.", "Can you stand? Then our trial continues.", "Move in and show them the fury of the Jaguar!", "That will heal.", "I have killed as many warriors out of the cockpit as in it.", "We will decide this by the Way of the Clans.", "I take what I want.", "Our commanders do not understand.", "Patch me up and get me back out there.", "First blood is mine.", "Get up! Get up!", "I do not miss.", "Only the weak rely on others.", "That insult will not stand!", "Is this all there is?"]
+  },
+  {
+    name: "Kael", page: 212,
+    details: { faction: "Clan Ghost Bear", factionKey: "ghostBear", rank: "Star Captain", age: "26", height: "1.67m", weight: "77kg", experience: "veteran" },
+    tags: " Risk-Taker  Fatalist  Speedster  Daredevil  Unreliable",
+    attributes: [2, 2, 2, 3, 1, 2],
+    skills: [["piloting", 6, "mech"], ["gunnery", 4, "mech"], ["intimidation", 3], ["navigation", 3], ["tracking", 2], ["knowledge", 1, "Aerofighter Piloting"]],
+    lifeModules: {"faction": "Clan Ghost Bear", "childhood": "Trueborn Sibko", "education": "MechWarrior Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "prosthetic", "name": "Prosthetic", "text": "When the prosthetic is worn, it cancels the effect of Lost Limb."},
+      {"polarity": "negative", "key": "lostLimb", "name": "Lost Limb", "text": "–4 penalty for tests involving the affected appendage."}
+    ],
+    weapons: ["Martial Arts", "Vibrodagger", "Gyrojet Rifle", "Combat Shotgun (B)"],
+    armor: "Concealed Ablative Armor",
+    inventory: ["Wood carving of a Sulla OmniFighter", "Storage Chip of Crash Recording and Investigation", "Personal Communicator", "Basic Toolkit"],
+    hardware: "Fire Moth",
+    history: "Kael's first solo flight in an OmniFighter proved to be his last. Late into his sibko years, the headstrong young warrior chose a Sulla for his flight but pushed the fighter too hard and too fast, causing a mechanical breakdown. The resulting crash nearly killed Kael, costing him a leg and any chance to fly again. Instead, Kael's sibko trainers noted his relatively competent BattleMech simulator scores and paved the way for him to test into MechWarrior training. Kael has found a new home at the controls of his Fire Moth, a perfect match for the damaged warrior's fragile physical nature, obsession with speed, and expectation for a short life. Though he has personally excelled in his new role, warriors under Kael's command frequently request transfers to other units, not wishing to serve with someone who does not appear to value his own life.",
+    personality: "Kael believes his career in the skies was cut short by a random mechanical failure, despite reports showing his own recklessness possibly caused, or at least exacerbated, the breakdown. The bitterness he harbors toward the hand fate dealt him shows through in a dangerous lack of regard for his own safety.",
+    disposition: ["Does not expect—or want—to grow old.", "Believes he was robbed of his rightful destiny in the skies.", "Holds a grudge against most members of the technician caste.", "Hopes his death will achieve more meaning than his life."],
+    cues: ["All warriors must die.", "I know what was taken from me.", "Advance and seize that checkpoint.", "The skies have been denied to me, but not the chance to serve.", "I do not care what you think the odds are.", "The crash was not my fault.", "Waste is not the Way of the Clans.", "I will give my life to the Clan—will you?", "Speed is my armor.", "If I must die, I will choose the manner.", "If you will not follow me, get out of my way.", "Push forward and turn their flank.", "This 'Mech and I are one.", "Hah! Another miss!", "No one will ever slow me down again.", "Fall in behind me and try to keep up.", "It seems the Ghost Bear is not done with me yet.", "The only thing that matters now is the ending."]
+  },
+  {
+    name: "Arden", page: 214,
+    details: { faction: "Clan Ghost Bear", factionKey: "ghostBear", rank: "Point Commander", age: "23", height: "1.62m", weight: "55kg", experience: "veteran" },
+    tags: " Somber  Patient  Assured  Serene  Confident",
+    attributes: [2, 3, 2, 3, 2, 1],
+    skills: [["gunnery", 6, "aero"], ["piloting", 5, "aero"], ["meleeCombat", 2], ["leadership", 3], ["navigation", 1], ["tactics", 1], ["knowledge", 1, "Ghost Bear Rituals"]],
+    lifeModules: {"faction": "Clan Ghost Bear", "childhood": "Trueborn Sibko", "education": "Aerospace Pilot Training", "realLife": "Warrior Caste: Tour of Duty"},
+    traits: [
+      {"polarity": "positive", "key": "goodReputation", "name": "Good Reputation", "text": "+1 bonus to CHA-based Tests involving someone who knows your character."},
+      {"polarity": "negative", "key": "glassJaw", "name": "Glass Jaw", "text": "Add 1 to all Physical and Fatigue Damage you receive."}
+    ],
+    weapons: ["Martial Arts", "Stunstick", "Auto-Pistol (B)", "Laser Pistol (Hold-Out) (E)"],
+    armor: "Flak Armor",
+    inventory: ["Pilot's Logbook", "Navigational instruments", "Handwritten Passages from the Ghost Bear Remembrance"],
+    hardware: "Visigoth",
+    history: "Arden's youth was particularly rough, even by Clan standards. A bit undersized among her aerospace sibkin, she was quickly singled out for bullying and abuse. As the physical and mental stress placed on her grew through her early teen years, Arden took solace in the simulator and in developing her abilities in the cockpit. One by one, her tormentors washed out of their sibko or failed their Trial of Position, and Arden's confidence grew as each washout was assigned to a lower caste. When she shot her greatest antagonizer out of the sky during her own Trial of Position, Arden cemented her belief in her skills as a warrior, and in the value of patience and stoicism. She is eager to share these traits of the Ghost Bear with the Inner Sphere pilots she will face, and greatly anticipates the new challenges they will present.",
+    personality: "Arden is completely assured of her skills as a pilot and a warrior but is not boastful or prideful of them. She is quick to support other pilots who may be struggling, especially those she perceives as not getting a fair shake, and often acts as a mentor and coach despite her own young age.",
+    disposition: ["Does not doubt her own abilities—or allow others to doubt theirs.", "Believes in running the slow, consistent race.", "Looks out for those in need or who are targeted by others.", "Implicitly trusts those who fly with her."],
+    cues: ["When you are long gone, I will still be here.", "I will not give you the satisfaction.", "You can fly with me.", "Here, let me show you a better way.", "No one can take this away from me.", "Contacts, closing fast.", "True warriors do not need to boast.", "I wonder what challenges the Inner Sphere holds.", "You think you can anger me?", "I have watched my enemies fall by the wayside.", "None can stand against us if we stand together.", "Weapons lock—firing!", "Our Clan is a family.", "Close tight on my wing.", "Let me show you what I can do.", "None have trained as hard as I.", "Patience is the key virtue of the hunter.", "I believe in you."]
   }
 ];

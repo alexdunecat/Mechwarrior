@@ -1,6 +1,7 @@
 import * as MWD from "./config.mjs";
 import { CharacterData } from "./data/actor-character.mjs";
 import { NpcData } from "./data/actor-npc.mjs";
+import { BattleArmorData } from "./data/actor-battle-armor.mjs";
 import { FighterData } from "./data/actor-fighter.mjs";
 import { MechData } from "./data/actor-mech.mjs";
 import { VehicleData } from "./data/actor-vehicle.mjs";
@@ -15,6 +16,7 @@ import { MWDItemSheet } from "./sheets/item-sheet.mjs";
 import { MWDCombat, INITIATIVE_FORMULA } from "./documents/combat.mjs";
 import { onRenderChatMessage } from "./dice/test-roll.mjs";
 import { onRenderMechCard } from "./documents/mech.mjs";
+import { onRenderAPodCard } from "./documents/apod.mjs";
 import { registerSettings } from "./settings.mjs";
 import { registerSocket } from "./socket.mjs";
 import { CharacterCreator } from "./apps/character-creator.mjs";
@@ -45,7 +47,8 @@ Hooks.once("init", () => {
   CONFIG.Combat.documentClass = MWDCombat;
   CONFIG.Combat.initiative = { formula: INITIATIVE_FORMULA, decimals: 0 };
   Object.assign(CONFIG.Actor.dataModels, {
-    character: CharacterData, npc: NpcData, mech: MechData, vehicle: VehicleData, fighter: FighterData
+    character: CharacterData, npc: NpcData, mech: MechData, vehicle: VehicleData, fighter: FighterData,
+    battleArmor: BattleArmorData
   });
   Object.assign(CONFIG.Item.dataModels, {
     skill: SkillData, trait: TraitData, weapon: WeaponData, armor: ArmorData, gear: GearData,
@@ -56,7 +59,8 @@ Hooks.once("init", () => {
     npc: { bar: [], value: ["condition.physical.value", "condition.fatigue.value"] },
     mech: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] },
     vehicle: { bar: ["armorTotal", "structureTotal"], value: [] },
-    fighter: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] }
+    fighter: { bar: ["armorTotal", "structureTotal"], value: ["heat.value"] },
+    battleArmor: { bar: ["armorTotal"], value: ["armor.segments"] }
   };
 
   const sheets = foundry.applications.apps.DocumentSheetConfig;
@@ -67,7 +71,7 @@ Hooks.once("init", () => {
     types: ["npc"], makeDefault: true, label: "MWD.Sheet.Npc"
   });
   sheets.registerSheet(Actor, SYSTEM_ID, UnitSheet, {
-    types: ["mech", "vehicle", "fighter"], makeDefault: true, label: "MWD.Sheet.Unit"
+    types: ["mech", "vehicle", "fighter", "battleArmor"], makeDefault: true, label: "MWD.Sheet.Unit"
   });
   sheets.registerSheet(Item, SYSTEM_ID, MWDItemSheet, { makeDefault: true, label: "MWD.Sheet.Item" });
 
@@ -81,6 +85,8 @@ Hooks.once("init", () => {
     `systems/${SYSTEM_ID}/templates/actor/parts/item-list.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/unit-person.hbs`,
     `systems/${SYSTEM_ID}/templates/actor/parts/unit-crew.hbs`,
+    `systems/${SYSTEM_ID}/templates/actor/parts/battle-armor-diagram.hbs`,
+    `systems/${SYSTEM_ID}/templates/actor/parts/battle-armor-weapons.hbs`,
     `systems/${SYSTEM_ID}/templates/item/description.hbs`,
     ...CharacterCreator.partials
   ]);
@@ -90,18 +96,21 @@ Hooks.once("ready", () => {
   registerSocket();
   game.mwd.plotPoints = new PlotPointsPanel();
   if ( game.settings.get(SYSTEM_ID, "showPlotPoints") ) game.mwd.plotPoints.render({ force: true });
+  // People prepared before the suits they wear existed: refresh their wound modifier and armor.
+  for ( const suit of game.actors.filter(a => a.type === "battleArmor") ) refreshWearer(suit.system.pilot);
 });
 
 registerCompendiumHooks();
 
 Hooks.on("renderChatMessageHTML", onRenderChatMessage);
 Hooks.on("renderChatMessageHTML", onRenderMechCard);
+Hooks.on("renderChatMessageHTML", onRenderAPodCard);
 
 // A 'Mech that jumped stays harder to hit until its next Narration starts (p. 40).
 Hooks.on("combatTurnChange", (combat, _prior, current) => {
   if ( game.user !== game.users.activeGM ) return;
   const actor = combat.combatants.get(current?.combatantId)?.actor;
-  if ( (actor?.type === "mech") && actor.system.status.jumped ) actor.update({ "system.status.jumped": false });
+  if ( ["mech", "battleArmor"].includes(actor?.type) && actor.system.status.jumped ) actor.update({ "system.status.jumped": false });
 });
 
 // A button next to the token tools opens the Plot Points panel.
@@ -120,8 +129,16 @@ Hooks.on("getSceneControlButtons", controls => {
 });
 
 // Keep the Plot Points panel in step with characters' sheets.
-Hooks.on("updateActor", actor => {
+Hooks.on("updateActor", (actor, _changes, options) => {
   if ( actor.type === "character" ) game.mwd.plotPoints?.render();
+  // A suit of battle armor changes how its wearer takes damage (p. 217).
+  if ( actor.type === "battleArmor" ) {
+    refreshWearer(actor.system.pilot);
+    if ( options.mwdFormerWearer !== actor.system.pilot ) refreshWearer(options.mwdFormerWearer);
+  }
+});
+Hooks.on("preUpdateActor", (actor, _changes, options) => {
+  if ( actor.type === "battleArmor" ) options.mwdFormerWearer = actor.system.pilot;
 });
 
 /* -------------------------------------------- */
@@ -129,6 +146,14 @@ Hooks.on("updateActor", actor => {
 function openPlotPoints() {
   game.mwd.plotPoints ??= new PlotPointsPanel();
   game.mwd.plotPoints.render({ force: true });
+}
+
+/** Re-prepare a person whose battle armor changed, and redraw their sheet. */
+function refreshWearer(uuid) {
+  const person = uuid ? fromUuidSync(uuid) : null;
+  if ( !person?.isPerson ) return;
+  person.reset();
+  person.sheet?.rendered && person.sheet.render();
 }
 
 function registerHandlebarsHelpers() {

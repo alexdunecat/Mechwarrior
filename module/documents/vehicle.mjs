@@ -45,7 +45,7 @@ export async function applyVehicleHit(vehicle, damage) {
     }
   }
   else {
-    const groups = await damageGroups(damage, lines, rolls);
+    const groups = await damageGroups(damage, lines, rolls, vehicle);
     for ( const amount of groups ) {
       const r = await roll("2d6");
       rolls.push(r.roll);

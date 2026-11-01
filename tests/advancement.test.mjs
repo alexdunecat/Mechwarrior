@@ -35,7 +35,8 @@ function makeCharacter({ xp = 0, attributes = {}, items = [] } = {}) {
       attributes: Object.fromEntries(["str", "rfl", "int", "wil", "cha", "edg"].map(k => [k, { value: attributes[k] ?? 1 }])),
       advancement: [],
       hardware: [],
-      creation: { bankedHardware: 0, dispossessed: false }
+      creation: { bankedHardware: 0, dispossessed: false },
+      details: { factionKey: "" }
     },
     items: new Map()
   };

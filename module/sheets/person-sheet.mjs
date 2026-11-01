@@ -68,7 +68,9 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         bonus: item.system.bonus
       })),
       traits: [...actor.itemTypes.trait].sort(byName),
-      weapons: [...actor.itemTypes.weapon].sort(byName).map(item => ({
+      // Inside battle armor the wearer fights with the suit's weapons (p. 217).
+      suit: system.suit,
+      weapons: [...(actor.wornSuit ?? actor).itemTypes.weapon].sort(byName).map(item => ({
         item,
         id: item.id,
         name: item.name,
@@ -157,7 +159,8 @@ export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /* -------------------------------------------- */
 
   static #itemFrom(target) {
-    return this.document.items.get(target.closest("[data-item-id]")?.dataset.itemId);
+    const id = target.closest("[data-item-id]")?.dataset.itemId;
+    return this.document.items.get(id) ?? this.document.wornSuit?.items.get(id);
   }
 
   static async #onRollAttribute(_event, target) {

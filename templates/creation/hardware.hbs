@@ -8,6 +8,7 @@
     </a>
     {{#if tooExpensive}}<span class="mwd-badge warn">{{localize "MWD.Creation.TooExpensive"}}</span>{{/if}}
     {{#unless skillsOk}}<span class="mwd-badge warn">{{localize "MWD.Creation.MissingSkills"}}</span>{{/unless}}
+    {{#if clanOnly}}<span class="mwd-badge warn">{{localize "MWD.Creation.ClanOnly"}}</span>{{/if}}
     {{#if pilotName}}<span class="mwd-muted">{{localize "MWD.Hardware.PilotedBy" name=pilotName}}</span>{{/if}}
   </li>
   {{else}}
@@ -17,6 +18,7 @@
 <ul class="mwd-small mwd-muted">
   {{#each requirements}}<li>{{type}}: {{text}}</li>{{/each}}
 </ul>
+{{#if clan}}<p class="mwd-small mwd-muted">{{localize "MWD.Creation.ClanHardware"}}</p>{{/if}}
 <label class="checkbox"><input type="checkbox" name="dispossessed" {{checked draft.dispossessed}}> {{localize "MWD.Creation.Dispossessed"}}</label>
 <p class="mwd-small mwd-muted">{{localize "MWD.Creation.DispossessedHint"}}</p>
 <label class="checkbox"><input type="checkbox" name="hardwarePool" {{checked draft.hardwarePool}}> {{localize "MWD.Creation.HardwarePool"}}</label>

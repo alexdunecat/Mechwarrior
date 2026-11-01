@@ -1,0 +1,19 @@
+<div class="mwd-card mwd-damage-card mwd-apod-card {{#if damage}}success{{else}}failure{{/if}}">
+  <header class="mwd-card-header">
+    <h3>{{localize "MWD.Clan.APod.Title"}}</h3>
+  </header>
+  <p class="mwd-card-caption">{{source}}</p>
+  <p>{{result}}</p>
+  {{#if damage}}
+  <ul class="mwd-apod-targets">
+    {{#each targets}}
+    <li>
+      {{#if applied}}<span class="mwd-muted">{{name}} · {{localize "MWD.Clan.APod.Applied"}}</span>
+      {{else}}<button type="button" data-apod-target="{{uuid}}"><i class="fa-solid fa-burst"></i> {{localize "MWD.Damage.Apply" name=name}}</button>{{/if}}
+    </li>
+    {{else}}
+    <li class="mwd-muted">{{localize "MWD.Clan.APod.NoTargets"}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>

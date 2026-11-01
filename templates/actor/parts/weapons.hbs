@@ -1,7 +1,7 @@
 <section class="mwd-block">
   <header class="mwd-block-header">
     <h3>{{localize "MWD.Weapon.plural"}}</h3>
-    {{#if editable}}
+    {{#if suit}}<span class="mwd-muted" data-tooltip="MWD.BattleArmor.WornHint"><i class="fa-solid fa-shield-halved"></i> {{suit.name}}</span>{{else if editable}}
     <a class="mwd-icon-button" data-action="createItem" data-type="weapon" data-tooltip="MWD.Weapon.Add"><i class="fa-solid fa-plus"></i></a>
     {{/if}}
   </header>

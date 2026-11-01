@@ -5,7 +5,8 @@
       "npc": "NPC",
       "mech": "BattleMech",
       "vehicle": "Combat Vehicle",
-      "fighter": "Aerospace Fighter"
+      "fighter": "Aerospace Fighter",
+      "battleArmor": "Battle Armor"
     },
     "Item": {
       "skill": "Skill",
@@ -398,6 +399,10 @@
       "showPlotPoints": {
         "name": "Show Plot Points panel on start",
         "hint": "You can always open it with Shift+P or the star button in the token controls."
+      },
+      "era": {
+        "name": "Campaign era",
+        "hint": "3050 adds the Clans and the factions of the Clan Invasion to character creation (p. 198)."
       }
     },
     "Initiative": {
@@ -522,7 +527,13 @@
         "jumpJets": "Jump Jets",
         "other": "Other",
         "Location": "Location",
-        "LocationHint": "Ammo in a location can explode on a critical hit there (p. 45)."
+        "LocationHint": "Ammo in a location can explode on a critical hit there (p. 45).",
+        "ams": "Anti-Missile System",
+        "apod": "A-Pod",
+        "masc": "MASC",
+        "Inert": "does not explode",
+        "Shot": "Shot: click to mark it off",
+        "ShotsLeft": "{n} shots"
       },
       "Attack": {
         "Gunnery": "Gunnery",
@@ -636,7 +647,8 @@
         "Shutdown": "The engine is shut down.",
         "Unconscious": "The pilot is unconscious.",
         "WeaponDestroyed": "That weapon is destroyed.",
-        "NoJumpJets": "This 'Mech has no Jump Jets."
+        "NoJumpJets": "This 'Mech has no Jump Jets.",
+        "NoAmmo": "This weapon is out of ammunition."
       }
     },
     "Unit": {
@@ -777,7 +789,9 @@
       "Group": {
         "successor": "The Successor States",
         "periphery": "The Periphery",
-        "other": "Other"
+        "other": "Other",
+        "clan": "Clans",
+        "minor": "Minor states"
       },
       "capellan": "Capellan Confederation (House Liao)",
       "draconis": "Draconis Combine (House Kurita)",
@@ -791,7 +805,18 @@
       "comstar": "ComStar",
       "mercenary": "Mercenary",
       "pirate": "Pirate (Independent)",
-      "unaffiliated": "Unaffiliated"
+      "unaffiliated": "Unaffiliated",
+      "ghostBear": "Clan Ghost Bear",
+      "jadeFalcon": "Clan Jade Falcon",
+      "smokeJaguar": "Clan Smoke Jaguar",
+      "wolf": "Clan Wolf",
+      "diamondShark": "Clan Diamond Shark",
+      "novaCat": "Clan Nova Cat",
+      "steelViper": "Clan Steel Viper",
+      "fedcomDavion": "Federated Commonwealth (Davion)",
+      "fedcomSteiner": "Federated Commonwealth (Steiner)",
+      "rasalhague": "Free Rasalhague Republic",
+      "stIves": "St. Ives Compact"
     },
     "LifeModules": {
       "childhood": {
@@ -805,7 +830,10 @@
         "spacerFamily": "Spacer Family",
         "street": "Street",
         "warOrphan": "War Orphan",
-        "whiteCollar": "White Collar"
+        "whiteCollar": "White Collar",
+        "clanApprenticeship": "Clan Apprenticeship",
+        "freebornSibko": "Freeborn Sibko",
+        "truebornSibko": "Trueborn Sibko"
       },
       "education": {
         "technicalCollege": "Technical College",
@@ -817,7 +845,11 @@
         "militaryAcademy": "Military Academy",
         "militaryEnlistment": "Military Enlistment",
         "familyTraining": "Family Training",
-        "officerCandidate": "Officer Candidate School"
+        "officerCandidate": "Officer Candidate School",
+        "mechwarriorTrainingClan": "MechWarrior Training (Clan)",
+        "elementalTrainingClan": "Elemental Training (Clan)",
+        "aerospaceTrainingClan": "Aerospace Pilot Training (Clan)",
+        "infantryTrainingClan": "Infantry Training (Clan)"
       },
       "realLife": {
         "agitator": "Agitator",
@@ -836,7 +868,15 @@
         "thinkTank": "Think Tank",
         "tourOfDuty": "Tour of Duty",
         "toServeAndProtect": "To Serve and Protect",
-        "travel": "Travel"
+        "travel": "Travel",
+        "darkCaste": "Dark Caste",
+        "laborerCaste": "Laborer Caste Service",
+        "merchantCaste": "Merchant Caste Service",
+        "scientistCaste": "Scientist Caste Service",
+        "technicianCaste": "Technician Caste Service",
+        "clanWatch": "Warrior Caste: Clan Watch Operative",
+        "tourOfDutyClan": "Warrior Caste: Tour of Duty (Clan)",
+        "warriorWashout": "Warrior Caste Washout"
       }
     },
     "BookTrait": {
@@ -1087,7 +1127,8 @@
       "HardwareSkills": {
         "mech": "Gunnery and Piloting (BattleMech)",
         "vehicle": "Gunnery or Piloting (Combat Vehicle)",
-        "fighter": "Gunnery and Piloting (Aerospace Fighter)"
+        "fighter": "Gunnery and Piloting (Aerospace Fighter)",
+        "battleArmor": "Support Weapons (Battle Armor)"
       },
       "Dispossessed": "Dispossessed: start without a 'Mech",
       "DispossessedHint": "All Hardware Points are kept for later; the first 'Mech bought with them costs 1 less (p. 76).",
@@ -1127,8 +1168,15 @@
         "inventoryOver": "{n} Inventory items, only {max} allowed.",
         "hardwareOver": "The unit costs {cost} Hardware Points, you have {budget}.",
         "hardwareSkills": "A {type} needs the right Gunnery and Piloting.",
-        "conversion": "{unspent} unspent Hardware Points, {converted} converted: convert them all."
-      }
+        "conversion": "{unspent} unspent Hardware Points, {converted} converted: convert them all.",
+        "clanExperience": "Clan characters begin at the Veteran experience level.",
+        "lifeModuleClan": "{module} is open only to Clan characters.",
+        "clanDispossessed": "Clan characters cannot be Dispossessed.",
+        "hardwareClan": "Only Clan characters may start with Clan Hardware."
+      },
+      "ClanRules": "Clan characters start as Veterans, get +1 Hardware Point and cannot be Dispossessed; only Clan Life Modules are open to them (p. 198–199).",
+      "ClanOnly": "Clan tech",
+      "ClanHardware": "Clan 'Mechs and fighters cost +1 Hardware Point, OmniMechs and OmniFighters +2 (p. 199). Only Clan characters may start with them."
     },
     "Advance": {
       "label": "Character Advancement",
@@ -1216,7 +1264,9 @@
       "vehicles": "Combat Vehicles",
       "fighters": "Aerospace Fighters",
       "npcs": "NPCs",
-      "characters": "Sample Characters"
+      "characters": "Sample Characters",
+      "battleArmor": "Battle Armor",
+      "mechWeapons": "'Mech Weapons"
     },
     "Crew": {
       "label": "Built-in crew",
@@ -1231,6 +1281,112 @@
       "StrHint": "Sets the Physical track of the crew's Condition Monitor.",
       "WilHint": "Sets the Fatigue track of the crew's Condition Monitor.",
       "NameOf": "Crew of {name}"
+    },
+    "Era": {
+      "3025": "3025: Succession Wars",
+      "3050": "3050: Clan Invasion"
+    },
+    "Clan": {
+      "Tech": "Clan",
+      "TechHint": "Clan technology: +1 Hardware Point for 'Mechs and fighters (p. 199).",
+      "Omni": "Omni",
+      "OmniHint": "OmniMech or OmniFighter: +2 Hardware Points instead of +1, repairs cost double XP for Inner Sphere owners; OmniMechs can carry battle armor (p. 199, 218).",
+      "MascActive": "MASC +1",
+      "FireCluster": "Fire cluster rounds (C{n})",
+      "ClusterHint": "LB-X: the cluster value splits off as 1-point hits, each with its own hit location (p. 216).",
+      "ClusterRounds": "Cluster rounds: {n} hits of 1 point.",
+      "StreakHint": "Streak: on a miss the group does not fire and gains no Heat.",
+      "AmsStopped": "Anti-Missile System ({roll}): damage reduced by {roll}.",
+      "AmsMissed": "Anti-Missile System ({roll}): no effect.",
+      "GaussAmmo": "{ammo} does not explode, but the feed is wrecked: {weapons} can no longer fire.",
+      "CaseEngine": "CASE vents the ammo explosion: engine critical hit, +2 Heat at the end of each Narration.",
+      "CaseEngineDestroyed": "CASE vents the ammo explosion, but the second engine hit destroys the 'Mech.",
+      "CaseLimb": "CASE vents the ammo explosion: {location} is destroyed.",
+      "NoExplosiveAmmo": "Only Gauss ammo aboard: nothing explodes.",
+      "APod": {
+        "Title": "A-Pod",
+        "Fire": "Trigger the A-Pod against the targeted characters",
+        "Hit": "1D6 = {roll}: {n} Personal Combat damage to each character nearby.",
+        "Miss": "1D6 = {roll}: no damage.",
+        "NoTargets": "No targets: apply the damage by hand.",
+        "Applied": "applied",
+        "Empty": "This A-Pod has been fired.",
+        "Destroyed": "This A-Pod is destroyed."
+      }
+    },
+    "BattleArmor": {
+      "Location": {
+        "body": "Body",
+        "bodyAbbr": "B"
+      },
+      "Attached": {
+        "none": "—",
+        "mounted": "Riding",
+        "swarming": "Swarming",
+        "mountedOn": "Riding {mech}",
+        "swarmingOn": "Swarming {mech}: weapon attacks on it hit automatically"
+      },
+      "Move": {
+        "pointblankShort": "Pointblank ↔ Short",
+        "shortMedium": "Short ↔ Medium",
+        "mediumLong": "Medium ↔ Long",
+        "leg": "Leg attack",
+        "swarm": "Swarm attack",
+        "mount": "Mount or dismount an OmniMech"
+      },
+      "Mass": "Mass (kg)",
+      "DiagramHint": "Each Armor pip has six segments: Personal Combat damage fills one segment per point, 'Mech-Scale damage a whole pip. The Structure pip is the wearer: any damage to it fills their Physical track.",
+      "PipHint": "Fill or clear the whole pip",
+      "StructureHint": "The wearer",
+      "Segments": "Segments filled",
+      "PersonalWeapons": "Personal Combat weapons",
+      "PersonalHint": "Fired by the wearer in Personal Combat; they cannot be used in 'Mech-Scale Combat (p. 218).",
+      "FirePersonal": "Attack with this weapon (rolled by the wearer)",
+      "Wearing": "Wearing {name}: worn armor is off and wound modifiers are ignored (p. 218).",
+      "WornHint": "Weapons of the battle armor this character is wearing",
+      "LegAttack": "Leg attack",
+      "SwarmAttack": "Swarm attack",
+      "legHint": "At Pointblank range, 1 Movement: Support Weapons Test. A hit deals 1 damage to a leg (kick table) and always checks for a critical hit, twice if Structure was damaged (p. 218).",
+      "swarmHint": "At Pointblank range, 1 Movement: Support Weapons Test. Success puts the suit on the 'Mech; from the next Narration its single-weapon attacks hit automatically on the punch table and always check for a critical hit (p. 218–219).",
+      "SwarmApply": "Climb onto the 'Mech",
+      "Swarmed": "{name} has scaled {mech}.",
+      "SwarmFire": "{weapon} ({name}, swarming)",
+      "SwarmedBy": "Swarmed by {names}",
+      "Dislodge": "Dislodge battle armor",
+      "DislodgeSuccess": "Throw the suits off",
+      "DislodgeFailure": "The 'Mech hits itself",
+      "Dislodged": "{name} throws off the battle armor: the suits are back at Pointblank range.",
+      "DislodgeFailed": "Failed to dislodge battle armor",
+      "Mount": "Ride OmniMech",
+      "MountHint": "Target an OmniMech: 1 Movement, up to five suits per 'Mech (p. 218).",
+      "Release": "Climb down",
+      "Carrying": "Carrying {names}",
+      "CarryingHint": "Weapon Groups with a torso-mounted weapon cannot fire; torso hits strike a suit on 1D6 5–6 (p. 218).",
+      "SmallTarget": "Single individual",
+      "Damage": {
+        "Segments": "{n} Armor segments filled.",
+        "Pips": "{n} 'Mech-Scale damage: one Armor pip per point.",
+        "NoHeat": "Battle armor does not track Heat: no effect.",
+        "Destroyed": "The suit is destroyed.",
+        "WearerKilled": "The Structure pip is hit: the wearer's Physical track fills in.",
+        "WearerKia": "{name} is Killed in Action inside {suit} unless the player uses a Character Death option (p. 37).",
+        "BackToCarrier": "{n} damage passes on to the OmniMech's torso.",
+        "CarrierHit": "Torso hit, 1D6 = {roll}: the OmniMech takes it.",
+        "SuitShields": "Torso hit, 1D6 = {roll}: {name} riding there takes {n} damage."
+      },
+      "Warn": {
+        "TargetOneMech": "Target exactly one 'Mech.",
+        "NotOmni": "Battle armor can ride only OmniMechs.",
+        "Full": "This OmniMech already carries five suits.",
+        "Attached": "Climb down first.",
+        "CannotAttack": "This suit cannot make that attack.",
+        "NoSwarm": "No battle armor is swarming this 'Mech.",
+        "SingleWeapon": "Only single weapons can fire while swarming.",
+        "SwarmLost": "The swarmed 'Mech is gone; the suit is back on the ground.",
+        "TorsoBlocked": "This OmniMech carries battle armor: weapon groups with a torso weapon cannot fire.",
+        "NoPhysical": "Battle armor makes no physical attacks; use a leg or swarm attack.",
+        "NoPiloting": "Battle armor never makes Piloting Tests (p. 218)."
+      }
     }
   }
 }

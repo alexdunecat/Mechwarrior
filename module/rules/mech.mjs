@@ -59,6 +59,37 @@ export function clusters(total, size = 2) {
   return out;
 }
 
+/**
+ * Damage groups of a Weapon Group firing LB-X cluster rounds (p. 216): the damage minus the cluster
+ * value lands as one group, then one 1-point group per point of the cluster value.
+ * @param {number} base     The group's Damage value.
+ * @param {number} cluster  The "(C[X])" value.
+ * @returns {number[]}
+ */
+export function lbxGroups(base, cluster) {
+  const x = Math.min(Math.max(0, cluster), Math.max(0, base));
+  const rest = Math.max(0, base) - x;
+  return [...(rest > 0 ? [rest] : []), ...Array(x).fill(1)];
+}
+
+/**
+ * Take damage off a list of damage groups, from the last group back (an Anti-Missile System, p. 216).
+ * Groups reduced to zero are dropped.
+ * @param {number[]} groups
+ * @param {number} amount
+ * @returns {number[]}
+ */
+export function reduceGroups(groups, amount) {
+  const out = [...groups];
+  let left = Math.max(0, amount);
+  for ( let i = out.length - 1; (i >= 0) && (left > 0); i-- ) {
+    const cut = Math.min(out[i], left);
+    out[i] -= cut;
+    left -= cut;
+  }
+  return out.filter(g => g > 0);
+}
+
 /* -------------------------------------------- */
 /*  Armor and Structure                         */
 /* -------------------------------------------- */
@@ -121,6 +152,19 @@ export function damageLocation(locations, location, amount) {
     }
   }
   return { locations: locs, steps, structureHit: [...new Set(structureHit)], destroyed, mechDestroyed };
+}
+
+/**
+ * Critical hit checks for an attack that always checks (a battle armor leg attack or swarm fire,
+ * p. 218–219): one check, or two if the attack damaged Structure pips.
+ * @param {string} location  Location hit.
+ * @param {{location: string, structure: number}[]} steps  Steps from damageLocation.
+ * @returns {string[]}  Locations to check, one entry per check.
+ */
+export function forcedCritChecks(location, steps) {
+  const structure = steps.find(s => s.structure > 0);
+  if ( structure ) return [structure.location, structure.location];
+  return [steps[0]?.location ?? location];
 }
 
 /* -------------------------------------------- */

@@ -1,9 +1,9 @@
 import {
-  ATTRIBUTES, BOOK_TRAITS, CREATION, EXPERIENCE_LEVELS, FACTIONS, FREE_WEAPONS, HARDWARE_CONVERSION, LIFE_MODULES,
+  ATTRIBUTES, BOOK_TRAITS, CLAN_CREATION, CREATION, EXPERIENCE_LEVELS, FACTION_GROUPS, FACTIONS, FREE_WEAPONS, HARDWARE_CONVERSION, LIFE_MODULES,
   LIFE_MODULE_SLOTS, OPTIONAL_LIFE_MODULES, SKILLS, SPECIALTIES, STARTING_ARMOR, SYSTEM_ID, UNIT_TYPES, WEIGHT_CLASSES
 } from "../config.mjs";
 import {
-  attributePointsSpent, creationBudget, finalSkills, hardwareCost, hasHardwareSkills, itemLimits, lifeModuleAllowed,
+  attributePointsSpent, creationBudget, finalSkills, hasHardwareSkills, isClanFaction, itemLimits, lifeModuleAllowed,
   lifeModuleSkills, unspentHardware, validateCreation
 } from "../rules/creation.mjs";
 import {
@@ -211,13 +211,20 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const draft = this.draft;
     const budget = creationBudget(draft);
     switch ( step ) {
-      case "faction": return {
-        factionGroups: ["successor", "periphery", "other"].map(group => ({
-          label: t(`MWD.Faction.Group.${group}`),
-          options: Object.entries(FACTIONS).filter(([, v]) => v.group === group)
-            .map(([key]) => ({ value: key, label: t(`MWD.Faction.${key}`), selected: draft.faction === key }))
-        }))
-      };
+      case "faction": {
+        // Factions of the Clan Invasion era (p. 198) appear once the world plays in 3050.
+        const era = Number(game.settings.get(SYSTEM_ID, "era"));
+        const available = ([key, v]) => !v.era || (Number(v.era) <= era) || (draft.faction === key);
+        return {
+          factionGroups: FACTION_GROUPS.map(group => ({
+            label: t(`MWD.Faction.Group.${group}`),
+            options: Object.entries(FACTIONS).filter(entry => (entry[1].group === group) && available(entry))
+              .map(([key]) => ({ value: key, label: t(`MWD.Faction.${key}`), selected: draft.faction === key }))
+          })).filter(g => g.options.length),
+          clan: isClanFaction(draft.faction),
+          clanExperience: t(EXPERIENCE_LEVELS[CLAN_CREATION.experience].label)
+        };
+      }
       case "experience": return {
         levels: Object.entries(EXPERIENCE_LEVELS).map(([key, v]) => ({
           key, label: t(v.label), selected: draft.experience === key,
@@ -315,6 +322,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   #lifeModulesContext() {
     const draft = this.draft;
+    const clan = isClanFaction(draft.faction);
     const subjects = [...new Set(draft.skills.filter(s => SKILLS[s.key]?.subject && s.subject).map(s => s.subject))];
     return {
       factionLabel: draft.faction ? t(`MWD.Faction.${draft.faction}`) : t("MWD.Creation.NoFaction"),
@@ -329,7 +337,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           label: t(`MWD.LifeModule.${slot}`),
           optional: OPTIONAL_LIFE_MODULES.includes(slot),
           key: choice?.key ?? "",
-          modules: Object.keys(LIFE_MODULES[slot]).map(key => ({
+          // Clan-only modules (p. 199) are offered to Clan characters.
+          modules: Object.keys(LIFE_MODULES[slot]).filter(key => !LIFE_MODULES[slot][key].clan || clan || (choice?.key === key)).map(key => ({
             value: key,
             label: `${t(`MWD.LifeModules.${slot}.${key}`)} — ${this.#moduleSkillsLabel(slot, key)}`,
             selected: choice?.key === key,
@@ -385,7 +394,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const units = game.actors.filter(a => a.isUnit && a.isOwner)
       .sort((a, b) => a.name.localeCompare(b.name, game.i18n.lang))
       .map(unit => {
-        const cost = hardwareCost(unit.type, unit.system.details.weightClass);
+        const cost = unit.system.hardwarePoints;
         return {
           uuid: unit.uuid,
           name: unit.name,
@@ -394,6 +403,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           cost,
           tooExpensive: cost > budget.hardware,
           skillsOk: hasHardwareSkills(unit.type, skills),
+          clanOnly: unit.system.tech.clan && !isClanFaction(draft.faction),
           selected: draft.hardware?.uuid === unit.uuid,
           pilotName: (unit.system.pilot && (unit.system.pilot !== this.actor.uuid)) ? fromUuidSync(unit.system.pilot)?.name : null
         };
@@ -403,6 +413,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       unspent: draft.dispossessed ? 0 : unspentHardware(draft),
       hardwareBudget: budget.hardware,
       conversionRates: HARDWARE_CONVERSION,
+      clan: isClanFaction(draft.faction),
       requirements: Object.keys(UNIT_TYPES).map(type => ({
         type: t(`TYPES.Actor.${type}`), text: t(`MWD.Creation.HardwareSkills.${type}`)
       }))
@@ -611,7 +622,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const draft = this.draft;
     if ( !unit || (draft.hardware?.uuid === uuid) ) draft.hardware = null;
     else {
-      draft.hardware = { uuid, name: unit.name, type: unit.type, weightClass: unit.system.details.weightClass };
+      draft.hardware = {
+        uuid, name: unit.name, type: unit.type, weightClass: unit.system.details.weightClass,
+        cost: unit.system.hardwarePoints, clan: unit.system.tech.clan
+      };
       draft.dispossessed = false;
     }
     this.#clampConversion();

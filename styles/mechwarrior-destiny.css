@@ -1221,3 +1221,31 @@
 }
 
 .mechwarrior-destiny .mwd-builtin-crew .mwd-field-sm { flex: 0 0 130px; }
+
+/* Battle armor: Armor pips of six segments (Clan Invasion appendix, p. 217). */
+.mechwarrior-destiny .mwd-suit-pips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.mechwarrior-destiny .mwd-suit-pip {
+  display: grid;
+  grid-template-columns: repeat(3, 8px);
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--mwd-steel);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.mechwarrior-destiny .mwd-segment {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--mwd-armor);
+}
+.mechwarrior-destiny .mwd-segment.filled { background: #9aa7b8; }
+.mechwarrior-destiny .mwd-suit-pip.filled { opacity: 0.6; }
+.mechwarrior-destiny .mwd-shots { margin-left: auto; margin-right: 6px; }
+.mechwarrior-destiny .mwd-apod-targets { list-style: none; padding: 0; margin: 4px 0 0; }
+.mechwarrior-destiny .mwd-apod-targets li { margin: 2px 0; }

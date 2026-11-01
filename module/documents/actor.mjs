@@ -5,6 +5,7 @@ import { kiaDice } from "../rules/condition.mjs";
 import { resolvePersonalDamage } from "../rules/damage.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
+import * as BattleArmor from "./battle-armor.mjs";
 import * as Fighter from "./fighter.mjs";
 import { skillItemData } from "./item-data.mjs";
 import * as Mech from "./mech.mjs";
@@ -281,15 +282,21 @@ export class MWDActor extends Actor {
    * @returns {Promise<ChatMessage[]>}
    */
   async rollAttack(weapon) {
-    const targeted = Array.from(game.user.targets).map(t => t.actor).filter(a => a && (a !== this));
-    const targets = targeted.filter(a => a.isPerson);
+    // A suit of battle armor is attacked through its wearer: personal weapons fill its Armor
+    // segments, and the wearer defends (p. 217).
+    const targeted = Array.from(game.user.targets).map(t => t.actor)
+      .map(a => ((a?.type === "battleArmor") ? a.pilot : a))
+      .filter(a => a && (a !== this));
+    const targets = [...new Set(targeted.filter(a => a.isPerson))];
     const units = targeted.filter(a => a.isUnit);
     const unitDefense = (unit, mod = 0) => {
       const parts = Unit.unitParts(unit, "piloting").parts;
       if ( mod ) parts.push({ label: game.i18n.localize("MWD.Test.Modifier"), value: mod });
       return parts;
     };
-    const skillKey = weapon.system.skill;
+    // Inside battle armor, ranged attacks use Support Weapons; melee keeps Melee Combat (p. 217).
+    const ranged = weapon.system.skill !== "meleeCombat";
+    const skillKey = (this.wornSuit && ranged) ? "supportWeapons" : weapon.system.skill;
     const skill = this.findSkill(skillKey);
     const ranges = Object.fromEntries(["close", "near", "far"].map(r => [r, rangeModifier(weapon.system.effectiveRanges[r])]));
     const context = {
@@ -419,18 +426,26 @@ export class MWDActor extends Actor {
    * @param {boolean} [options.mechScale=false]  Damage taken in 'Mech-Scale Combat (head hits, ammo
    *   explosions): rolls the CON Check the book requires after any such damage (p. 47).
    * @param {boolean} [options.ignoreArmor=false]  Cockpit injuries ignore personal armor (p. 47).
+   * @param {boolean} [options.throughSuit=false]  Damage that already went through the person's
+   *   battle armor.
    * @returns {Promise<object>}  The damage split.
    */
-  async applyPersonalDamage(damage, { source, mechScale = false, ignoreArmor = false } = {}) {
+  async applyPersonalDamage(damage, { source, mechScale = false, ignoreArmor = false, throughSuit = false } = {}) {
+    // Battle armor soaks Personal Combat damage in its Armor segments first (p. 217).
+    if ( (this.type === "battleArmor") && !throughSuit ) return BattleArmor.applySuitPersonalDamage(this, damage, { source });
+    const suit = (!throughSuit && !mechScale) ? this.wornSuit : null;
+    if ( suit ) return BattleArmor.applySuitPersonalDamage(suit, damage, { source });
     if ( !this.canBeInjured ) return null;
     const system = this.system;
     const wasStaggered = { physical: system.condition.physical.track.staggered, fatigue: system.condition.fatigue.track.staggered };
     const toughness = system.traitEffects.has("toughness") ? 1 : 0;
     const glassJaw = system.traitEffects.has("glassJaw") ? 1 : 0;
+    // A suit's built-in crew has no personal armor: the suit's own pips are already spent.
+    const armor = (ignoreArmor || (this.type === "battleArmor")) ? null : system.armor;
     const split = resolvePersonalDamage({ damage: damage.value, type: damage.type, fatigue: damage.fatigue },
-      ignoreArmor ? null : system.armor, { toughness, glassJaw });
+      armor, { toughness, glassJaw });
 
-    if ( split.armor && system.armor ) {
+    if ( split.armor && armor ) {
       const armorItem = this.items.get(system.armor.id);
       await armorItem.update({ "system.damage": armorItem.system.damage + split.armor });
     }
@@ -464,6 +479,14 @@ export class MWDActor extends Actor {
   /** Whether this actor is a 'Mech-Scale unit ('Mech, combat vehicle or aerospace fighter). */
   get isUnit() {
     return Unit.isUnit(this);
+  }
+
+  /**
+   * The suit of battle armor this person is wearing, if any.
+   * @type {Actor|null}
+   */
+  get wornSuit() {
+    return BattleArmor.wornSuit(this);
   }
 
   /**
@@ -552,6 +575,7 @@ export class MWDActor extends Actor {
       case "mech": return Mech.applyMechHit(this, damage);
       case "vehicle": return Vehicle.applyVehicleHit(this, damage);
       case "fighter": return Fighter.applyFighterHit(this, damage);
+      case "battleArmor": return (await BattleArmor.applyBattleArmorHit(this, damage)).message;
       default: return null;
     }
   }
@@ -615,6 +639,7 @@ export class MWDActor extends Actor {
       case "mech": return Mech.endNarration(this);
       case "vehicle": return Vehicle.endVehicleNarration(this);
       case "fighter": return Fighter.endFighterNarration(this);
+      case "battleArmor": return Unit.crewConChecks(this);
       default: return null;
     }
   }

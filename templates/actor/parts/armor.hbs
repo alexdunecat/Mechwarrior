@@ -5,6 +5,9 @@
     <a class="mwd-icon-button" data-action="createItem" data-type="armor" data-tooltip="MWD.Armor.Add"><i class="fa-solid fa-plus"></i></a>
     {{/if}}
   </header>
+  {{#if system.suit}}
+  <p class="mwd-small"><i class="fa-solid fa-shield-halved"></i> {{localize "MWD.BattleArmor.Wearing" name=system.suit.name}}</p>
+  {{/if}}
   {{#if system.armor}}
   <div class="mwd-armor-worn">
     <span class="mwd-pips mwd-armor-pips">

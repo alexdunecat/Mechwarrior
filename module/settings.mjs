@@ -1,4 +1,4 @@
-import { INITIATIVE_MODES, PLOT_POINTS, SYSTEM_ID } from "./config.mjs";
+import { ERAS, INITIATIVE_MODES, PLOT_POINTS, SYSTEM_ID } from "./config.mjs";
 
 export function registerSettings() {
   game.settings.register(SYSTEM_ID, "gmPlotPoints", {
@@ -18,6 +18,16 @@ export function registerSettings() {
     type: String,
     choices: INITIATIVE_MODES,
     default: "narrative"
+  });
+
+  game.settings.register(SYSTEM_ID, "era", {
+    name: "MWD.Settings.era.name",
+    hint: "MWD.Settings.era.hint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: ERAS,
+    default: "3025"
   });
 
   game.settings.register(SYSTEM_ID, "showPlotPoints", {

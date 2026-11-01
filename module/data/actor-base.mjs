@@ -40,8 +40,12 @@ export class PersonData extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     const items = this.parent.items;
 
+    // Inside battle armor, worn armor comes off and wounds are numbed (p. 218).
+    const suit = this.parent.wornSuit ?? null;
+    this.suit = suit ? { uuid: suit.uuid, name: suit.name } : null;
+
     // Worn armor: the first equipped armor item counts.
-    const armor = items.find(i => (i.type === "armor") && i.system.equipped) ?? null;
+    const armor = suit ? null : (items.find(i => (i.type === "armor") && i.system.equipped) ?? null);
     this.armor = armor ? {
       id: armor.id,
       name: armor.name,
@@ -63,7 +67,7 @@ export class PersonData extends foundry.abstract.TypeDataModel {
     const { physical, fatigue } = this.condition;
     physical.track = buildTrack({ rating: this.attributes.str.value, damage: physical.value, lost: physical.lost, ignoreFirst });
     fatigue.track = buildTrack({ rating: this.attributes.wil.value, damage: fatigue.value, lost: fatigue.lost, ignoreFirst });
-    this.woundModifier = woundModifier(physical.track, fatigue.track);
+    this.woundModifier = suit ? 0 : woundModifier(physical.track, fatigue.track);
 
     this.initiativeBonus = traits.reduce((total, t) => total + t.system.initiative, 0);
     this.tagList = this.tags.split(/[,;\n]/).map(t => t.trim()).filter(Boolean);

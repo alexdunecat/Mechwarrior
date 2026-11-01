@@ -5,7 +5,7 @@ import {
   attributeXpCost, canCustomize, dispossessedCost, hardwareXpCost, improveRange, repairUpdate, repairXpCost, skillXpCost,
   unitCondition
 } from "../rules/advancement.mjs";
-import { hardwareCost } from "../rules/creation.mjs";
+import { isClanFaction } from "../rules/creation.mjs";
 import { bookTraitData, customTraitData, skillItemData } from "./item-data.mjs";
 
 /**
@@ -260,6 +260,11 @@ export async function customizeWeapon(actor, weapon, mod) {
 /*  Hardware                                    */
 /* -------------------------------------------- */
 
+/** XP to repair or rebuild a unit for this character (p. 78, 199). */
+function repairCost(actor, unit, destroyed) {
+  return repairXpCost(destroyed, { omni: !!unit.system.tech?.omni, clanOwner: isClanFaction(actor.system.details.factionKey) });
+}
+
 /**
  * Repair or rebuild a unit (p. 78): 1 XP for functional Hardware, 2 XP when destroyed. Restores all
  * Armor and Structure and clears critical hits and destroyed Weapon Groups and Equipment.
@@ -274,7 +279,7 @@ export async function repairHardware(actor, unit) {
   return purchase(actor, {
     kind: destroyed ? "rebuild" : "repair",
     label: f(destroyed ? "MWD.Advance.Log.rebuild" : "MWD.Advance.Log.repair", { name: unit.name }),
-    cost: repairXpCost(destroyed)
+    cost: repairCost(actor, unit, destroyed)
   }, async () => {
     await unit.update(repairUpdate(unit.type, unit.system._source));
     if ( broken.length ) await unit.updateEmbeddedDocuments("Item", broken.map(i => ({ _id: i.id, "system.destroyed": false })));
@@ -301,7 +306,7 @@ export async function acquireHardware(actor) {
       units: units.map(u => ({
         uuid: u.uuid,
         label: `${u.name} (${t(`TYPES.Actor.${u.type}`)}, ${t(WEIGHT_CLASSES[u.system.details.weightClass]?.label ?? "")}, `
-          + `${f("MWD.Advance.HardwarePoints", { n: hardwareCost(u.type, u.system.details.weightClass) })})`
+          + `${f("MWD.Advance.HardwarePoints", { n: u.system.hardwarePoints })})`
       })),
       banked: bankedHardware,
       dispossessed,
@@ -317,7 +322,7 @@ export async function acquireHardware(actor) {
   const undo = { update: { "system.hardware": actor.system.hardware } };
 
   if ( data.how === "banked" ) {
-    const cost = (dispossessed && (unit.type === "mech")) ? dispossessedCost(weightClass) : hardwareCost(unit.type, weightClass);
+    const cost = (dispossessed && (unit.type === "mech")) ? dispossessedCost(weightClass) : unit.system.hardwarePoints;
     if ( cost > bankedHardware ) return ui.notifications.warn(f("MWD.Advance.NotEnoughHardware", { cost, banked: bankedHardware }));
     undo.update["system.creation.bankedHardware"] = bankedHardware;
     undo.update["system.creation.dispossessed"] = dispossessed;
@@ -328,7 +333,7 @@ export async function acquireHardware(actor) {
         "system.creation.dispossessed": dispossessed && (unit.type !== "mech")
       }));
   }
-  const cost = hardwareXpCost(data.how === "salvage" ? "salvage" : "buy", unit.type, weightClass);
+  const cost = hardwareXpCost(data.how === "salvage" ? "salvage" : "buy", unit.type, weightClass, unit.system.tech);
   return purchase(actor, { kind: "hardware", label, cost, undo }, () => actor.update({ "system.hardware": hardware }));
 }
 
@@ -408,7 +413,7 @@ export function advancementContext(actor) {
   const hardware = system.hardware.map(uuid => fromUuidSync(uuid)).filter(u => u?.isUnit).map(unit => {
     const { damaged, destroyed } = unitCondition(unit.type, unit.system);
     const broken = unit.items.some(i => i.system.destroyed);
-    const cost = repairXpCost(destroyed);
+    const cost = repairCost(actor, unit, destroyed);
     return {
       uuid: unit.uuid,
       name: unit.name,

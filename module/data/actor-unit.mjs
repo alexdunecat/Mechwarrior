@@ -61,7 +61,9 @@ export class UnitData extends foundry.abstract.TypeDataModel {
         choices: () => Object.fromEntries(Object.entries(WEIGHT_CLASSES).map(([k, v]) => [k, v.label])) }),
       tonnage: counter(50, { max: 200 }),
       movement: counter(3),
-      tags: new fields.StringField({ required: true, initial: "" })
+      tags: new fields.StringField({ required: true, initial: "" }),
+      clan: new fields.BooleanField({ initial: false }),
+      omni: new fields.BooleanField({ initial: false })
     };
   }
 
@@ -78,6 +80,14 @@ export class UnitData extends foundry.abstract.TypeDataModel {
    */
   get locationKeys() {
     return this.unitConfig.locations;
+  }
+
+  /**
+   * Clan technology of the unit, which changes its Hardware Point and repair costs (p. 199).
+   * @type {{clan: boolean, omni: boolean}}
+   */
+  get tech() {
+    return { clan: this.details.clan || this.details.omni, omni: this.details.omni };
   }
 
   /** Whether the unit tracks Heat (combat vehicles ignore it, p. 47). */
@@ -118,8 +128,8 @@ export class UnitData extends foundry.abstract.TypeDataModel {
   }
 
   prepareDerivedData() {
-    // Hardware Points follow from type and weight class (p. 76).
-    this.hardwarePoints = hardwareCost(this.constructor.unitType, this.details.weightClass);
+    // Hardware Points follow from type, weight class and Clan technology (p. 76, 199).
+    this.hardwarePoints = hardwareCost(this.constructor.unitType, this.details.weightClass, this.tech);
     this.tagList = this.details.tags.split(/[,;\n]/).map(t => t.trim()).filter(Boolean);
 
     // The built-in crew's Condition Monitor works like a person's (p. 36).

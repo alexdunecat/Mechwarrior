@@ -29,6 +29,10 @@
     <p class="hint">{{localize "MWD.Mech.Attack.JumpTargetHint"}}</p>
   </div>
   {{/if}}
+  {{#if cluster}}
+  <label class="checkbox" data-tooltip="MWD.Clan.ClusterHint"><input type="checkbox" name="clusterRounds"> {{localize "MWD.Clan.FireCluster" n=cluster}}</label>
+  {{/if}}
+  {{#if streak}}<p class="hint">{{localize "MWD.Clan.StreakHint"}}</p>{{/if}}
   {{#if weapon.system.heatAlternative}}
   <label class="checkbox"><input type="checkbox" name="heatInstead"> {{localize "MWD.Mech.Attack.HeatInstead"}}</label>
   {{/if}}

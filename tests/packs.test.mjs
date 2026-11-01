@@ -14,9 +14,12 @@ const { NpcData } = await import("../module/data/actor-npc.mjs");
 const { MechData } = await import("../module/data/actor-mech.mjs");
 const { VehicleData } = await import("../module/data/actor-vehicle.mjs");
 const { FighterData } = await import("../module/data/actor-fighter.mjs");
+const { BattleArmorData } = await import("../module/data/actor-battle-armor.mjs");
 const items = await import("../module/data/items.mjs");
 
-const ACTOR_MODELS = { character: CharacterData, npc: NpcData, mech: MechData, vehicle: VehicleData, fighter: FighterData };
+const ACTOR_MODELS = {
+  character: CharacterData, npc: NpcData, mech: MechData, vehicle: VehicleData, fighter: FighterData, battleArmor: BattleArmorData
+};
 const ITEM_MODELS = {
   skill: items.SkillData, trait: items.TraitData, weapon: items.WeaponData, armor: items.ArmorData, gear: items.GearData,
   mechWeapon: items.MechWeaponData, mechEquipment: items.MechEquipmentData
@@ -63,11 +66,13 @@ test("system.json declares every pack the builder makes", () => {
 
 test("the packs hold the book's content", () => {
   const count = (pack, type) => documents(pack).filter(d => !type || (d.type === type)).length;
-  assert.equal(count("mechs", "mech"), 18);
-  assert.equal(count("vehicles", "vehicle"), 8);
-  assert.equal(count("fighters", "fighter"), 6);
-  assert.equal(count("npcs", "npc"), 29);
-  assert.equal(count("characters", "character"), 22);
+  assert.equal(count("mechs", "mech"), 18 + 16);
+  assert.equal(count("vehicles", "vehicle"), 8 + 1);
+  assert.equal(count("fighters", "fighter"), 6 + 6);
+  assert.equal(count("battleArmor", "battleArmor"), 1);
+  assert.equal(count("mechWeapons", "mechWeapon"), 28);
+  assert.equal(count("npcs", "npc"), 29 + 6);
+  assert.equal(count("characters", "character"), 22 + 8);
   assert.ok(count("weapons") > 50);
   assert.equal(count("armor"), 7);
 });
@@ -119,15 +124,17 @@ test("compendium units prepare with their armor and a regular crew", () => {
   assert.ok(actor.system.structureTotal.max > 0);
   assert.equal(actor.system.builtInCrew.active, true);
   assert.equal(actor.system.builtInCrew.gunnery, 5);
-  for ( const pack of ["mechs", "vehicles", "fighters"] ) {
+  for ( const pack of ["mechs", "vehicles", "fighters", "battleArmor"] ) {
     for ( const doc of documents(pack) ) {
+      // Lachlan's salvage vehicle is unarmed (p. 207).
+      if ( doc.system.details.tags.includes("No Armament") ) continue;
       assert.ok(doc.items.some(i => i.type === "mechWeapon"), `${doc.name} has no weapons`);
     }
   }
 });
 
 test("sample characters point at units that exist", () => {
-  const units = new Set(["mechs", "vehicles", "fighters"].flatMap(pack => documents(pack)
+  const units = new Set(["mechs", "vehicles", "fighters", "battleArmor"].flatMap(pack => documents(pack)
     .map(d => `Compendium.mechwarrior-destiny.${pack}.Actor.${d._id}`)));
   const linked = packs.characters.map(pc => pc.flags["mechwarrior-destiny"]?.sampleHardware).filter(Boolean);
   assert.ok(linked.length > 10);
@@ -147,4 +154,60 @@ test("compendium lists show book items in the world's language, units keep their
   assert.ok(index.every(e => e.name.startsWith("ru:MWD.")), index.find(e => !e.name.startsWith("ru:"))?.name);
   assert.equal(unit.name, "Wasp WSP-1A");
   delete globalThis.game;
+});
+
+test("Clan units carry their technology as printed (p. 216–234)", () => {
+  const unit = (pack, name) => documents(pack).find(d => d.name === name);
+  const item = (doc, name) => doc.items.find(i => i.name === name);
+  const prepare = (doc, Model, type) => {
+    const actor = { type, items: doc.items.map(i => ({ ...i, system: { ...i.system } })) };
+    actor.items.find = Array.prototype.find;
+    actor.system = new Model(structuredClone(doc.system), { parent: actor });
+    actor.system.prepareDerivedData();
+    return actor.system;
+  };
+
+  const timberWolf = unit("mechs", "Timber Wolf Prime");
+  assert.equal(timberWolf.system.details.omni, true);
+  assert.equal(prepare(timberWolf, MechData, "mech").hardwarePoints, 5);
+  assert.equal(item(timberWolf, "Ammo: LRM").system.case, true);
+
+  const summoner = unit("mechs", "Summoner Prime");
+  assert.equal(item(summoner, "LB 10-X AC").system.cluster, 4);
+  const lynx = unit("mechs", "Mist Lynx Prime");
+  assert.equal(item(lynx, "Streak SRM 4").system.streak, true);
+
+  const executioner = unit("mechs", "Executioner Prime");
+  assert.equal(item(executioner, "Ammo: Gauss Rifle").system.explosive, false);
+  assert.ok(executioner.items.some(i => i.system.kind === "masc"));
+  const direWolf = unit("mechs", "Dire Wolf Prime");
+  assert.deepEqual(direWolf.items.filter(i => i.name === "Ammo: Autocannon").map(i => i.system.location), ["rightArm", "leftArm"]);
+  const hellbringer = unit("mechs", "Hellbringer Prime");
+  assert.deepEqual(item(hellbringer, "A-Pods").system.shots, { spent: 0, max: 4 });
+  assert.ok(hellbringer.items.some(i => i.system.kind === "ams"));
+
+  assert.equal(prepare(unit("fighters", "Visigoth Prime"), FighterData, "fighter").hardwarePoints, 5);
+  assert.equal(prepare(unit("vehicles", "Salvage Vehicle (Clan)"), VehicleData, "vehicle").hardwarePoints, 3);
+
+  const elemental = unit("battleArmor", "Elemental Battle Armor");
+  const suit = prepare(elemental, BattleArmorData, "battleArmor");
+  assert.equal(suit.hardwarePoints, 1);
+  assert.deepEqual(suit.armorTotal, { value: 24, max: 24 });
+  assert.equal(suit.maxMovement, 2);
+  assert.deepEqual(item(elemental, "Ammo: SRM").system.shots, { spent: 0, max: 2 });
+  assert.equal(item(elemental, "Battle Claw").system.skill, "meleeCombat");
+  assert.equal(item(elemental, "SRM 2").system.mounts.body, true);
+
+  const weapons = documents("mechWeapons");
+  assert.ok(weapons.every(w => Object.values(w.system.mounts).every(m => !m)));
+  assert.equal(weapons.find(w => w.name === "LB 20-X Autocannon").system.cluster, 7);
+});
+
+test("Clan sample characters are Veterans or better of a Clan faction", () => {
+  const clans = packs.characters.filter(pc => ["wolf", "jadeFalcon", "smokeJaguar", "ghostBear"]
+    .includes(pc.system.details.factionKey));
+  assert.equal(clans.length, 8);
+  for ( const pc of clans ) assert.ok(["veteran", "elite"].includes(pc.system.details.experience), pc.name);
+  const esau = clans.find(pc => pc.name === "Esau");
+  assert.match(esau.flags["mechwarrior-destiny"].sampleHardware, /\.battleArmor\.Actor\./);
 });

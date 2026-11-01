@@ -12,7 +12,7 @@
     <p class="mwd-empty">{{localize "MWD.Mech.Pilot.None"}}</p>
     {{/if}}
     {{> "systems/mechwarrior-destiny/templates/actor/parts/unit-crew.hbs" crew=builtInCrew system=system editable=editable}}
-    {{#unless isMech}}
+    {{#if hasCrew}}
     <header class="mwd-block-header">
       <h3>{{localize "MWD.Unit.Crew.label"}}</h3>
       {{#if editable}}<select data-crew-select>{{selectOptions crewChoices}}</select>{{/if}}
@@ -22,16 +22,27 @@
     {{else}}
     <p class="mwd-empty">{{localize "MWD.Unit.Crew.None"}}</p>
     {{/each}}
-    {{/unless}}
+    {{/if}}
   </section>
 
   <section class="mwd-block mwd-mech-actions">
     <div class="mwd-header-row">
+      {{#if isBattleArmor}}
+      {{#if system.details.legAttack}}<button type="button" class="mwd-button" data-action="legAttack" data-tooltip="MWD.BattleArmor.legHint"><i class="fa-solid fa-shoe-prints"></i> {{localize "MWD.BattleArmor.LegAttack"}}</button>{{/if}}
+      {{#if system.details.swarmAttack}}<button type="button" class="mwd-button" data-action="swarmAttack" data-tooltip="MWD.BattleArmor.swarmHint"><i class="fa-solid fa-hand-back-fist"></i> {{localize "MWD.BattleArmor.SwarmAttack"}}</button>{{/if}}
+      {{#if system.attached.mode}}
+      <button type="button" class="mwd-button" data-action="releaseSuit"><i class="fa-solid fa-person-arrow-down-to-line"></i> {{localize "MWD.BattleArmor.Release"}}</button>
+      {{else}}
+      <button type="button" class="mwd-button" data-action="mountSuit" data-tooltip="MWD.BattleArmor.MountHint"><i class="fa-solid fa-person-arrow-up-from-line"></i> {{localize "MWD.BattleArmor.Mount"}}</button>
+      {{/if}}
+      {{else}}
       {{#unless isFighter}}<button type="button" class="mwd-button" data-action="physical"><i class="fa-solid fa-hand-fist"></i> {{localize physicalLabel}}</button>{{/unless}}
       {{#if isMech}}{{#if system.details.jumpJets}}<button type="button" class="mwd-button" data-action="jump"><i class="fa-solid fa-jet-fighter-up"></i> {{localize "MWD.Mech.Jump"}}</button>{{/if}}{{/if}}
       <button type="button" class="mwd-button" data-action="piloting"><i class="fa-solid fa-person-falling"></i> {{localize "MWD.Mech.Piloting.Title"}}</button>
       {{#if isMech}}<button type="button" class="mwd-button" data-action="fall"><i class="fa-solid fa-person-falling-burst"></i> {{localize "MWD.Mech.Fall.Resolve"}}</button>{{/if}}
+      {{#if swarmingSuits}}<button type="button" class="mwd-button" data-action="dislodge"><i class="fa-solid fa-hands-bubbles"></i> {{localize "MWD.BattleArmor.Dislodge"}}</button>{{/if}}
       {{#unless isMech}}<button type="button" class="mwd-button" data-action="crash"><i class="fa-solid fa-car-burst"></i> {{localize "MWD.Vehicle.Crash.Resolve"}}</button>{{/unless}}
+      {{/if}}
       <button type="button" class="mwd-button mwd-roll-test" data-action="endNarration" data-tooltip="MWD.Mech.EndNarration.Hint"><i class="fa-solid fa-hourglass-end"></i> {{localize "MWD.Mech.EndNarration.Button"}}</button>
     </div>
     <div class="mwd-header-row mwd-statuses">
@@ -39,6 +50,9 @@
       <a class="mwd-tag {{#if active}}active{{/if}}" data-action="toggleStatus" data-status="{{key}}">{{label}}</a>
       {{/each}}
     </div>
+    {{#if attachedLabel}}<p class="mwd-small"><i class="fa-solid fa-link"></i> {{attachedLabel}}</p>{{/if}}
+    {{#if mountedSuits}}<p class="mwd-small" data-tooltip="MWD.BattleArmor.CarryingHint"><i class="fa-solid fa-people-group"></i> {{localize "MWD.BattleArmor.Carrying" names=mountedSuits}}</p>{{/if}}
+    {{#if swarmingSuits}}<p class="mwd-small mwd-wounds"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "MWD.BattleArmor.SwarmedBy" names=swarmingSuits}}</p>{{/if}}
   </section>
 
   <div class="mwd-columns">
@@ -81,7 +95,7 @@
                 <a class="mwd-rollable" data-action="fire" data-tooltip="MWD.Mech.Weapon.Fire"><i class="fa-solid fa-crosshairs"></i>
                 {{#if primary}}<strong>{{localize "MWD.Mech.Weapon.PrimaryShort"}}:</strong> {{/if}}{{name}}</a>
               </td>
-              <td>{{damage}}</td>
+              <td>{{damage}}{{#if ammo}} <span class="mwd-muted">· {{ammo}}</span>{{/if}}</td>
               <td>{{types}}</td>
               {{#if @root.usesHeat}}<td>{{heat}}</td>{{/if}}
               <td>{{locations}}</td>
@@ -107,7 +121,11 @@
         <ol class="mwd-list">
           {{#each equipment}}
           <li class="mwd-list-row {{#if destroyed}}mwd-destroyed{{/if}}" data-item-id="{{id}}">
-            <span class="mwd-col-name">{{name}}{{#if location}} <span class="mwd-muted">({{location}})</span>{{/if}}</span>
+            <span class="mwd-col-name">
+              {{#if apod}}<a class="mwd-rollable" data-action="fireAPod" data-tooltip="MWD.Clan.APod.Fire"><i class="fa-solid fa-burst"></i> {{name}}</a>{{else}}{{name}}{{/if}}
+              {{#if location}} <span class="mwd-muted">({{location}}{{#if flags}}, {{flags}}{{/if}})</span>{{else if flags}} <span class="mwd-muted">({{flags}})</span>{{/if}}
+            </span>
+            {{#if shots.length}}<span class="mwd-pips mwd-shots">{{#each shots}}<a class="mwd-pip {{#if filled}}filled{{/if}}" data-action="shotPip" data-index="{{index}}" data-tooltip="MWD.Mech.Equipment.Shot"></a>{{/each}}</span>{{/if}}
             <span class="mwd-col-controls">
               <a data-action="toggleDestroyed" data-tooltip="MWD.Mech.Weapon.Destroyed"><i class="fa-solid fa-{{#if destroyed}}burst{{else}}circle-check{{/if}}"></i></a>
               <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
@@ -119,6 +137,10 @@
           {{/each}}
         </ol>
       </section>
+
+      {{#if isBattleArmor}}
+      {{> "systems/mechwarrior-destiny/templates/actor/parts/battle-armor-weapons.hbs"}}
+      {{/if}}
 
       <section class="mwd-block">
         <header class="mwd-block-header"><h3>{{localize "MWD.Notes"}}</h3></header>
@@ -150,6 +172,9 @@
           </label>
           {{/unless}}{{/if}}
         </header>
+        {{#if isBattleArmor}}
+        {{> "systems/mechwarrior-destiny/templates/actor/parts/battle-armor-diagram.hbs"}}
+        {{/if}}
         <div class="mwd-diagram mwd-diagram-{{actor.type}}">
           {{#each locations}}
           <div class="mwd-location mwd-location-{{key}} {{#if destroyed}}mwd-destroyed{{/if}}">
@@ -188,6 +213,7 @@
         <p class="mwd-small mwd-muted">{{localize diagramHint}}</p>
       </section>
 
+      {{#if hasCrits}}
       <section class="mwd-block">
         <header class="mwd-block-header"><h3>{{localize "MWD.Mech.Crit.label"}}</h3></header>
         {{#each critPips}}
@@ -209,6 +235,7 @@
         </div>
         {{/if}}
       </section>
+      {{/if}}
     </div>
   </div>
 </div>

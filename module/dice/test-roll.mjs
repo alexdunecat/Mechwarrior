@@ -2,6 +2,7 @@ import { DIFFICULTIES, SYSTEM_ID } from "../config.mjs";
 import { executeAsGM } from "../socket.mjs";
 import { canSpendEdge, edgeRerollIndices, opposingDice, replaceDice, resolveTest } from "../rules/tests.mjs";
 import { applyHitType, hitTypeContext, rollHitType, spendOnHit } from "../documents/mixed.mjs";
+import { resolveDislodge, startSwarm } from "../documents/battle-armor.mjs";
 
 const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
 
@@ -21,7 +22,8 @@ const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
  * @property {object|null} [damage]           Damage dealt: personal {value, type, fatigue, source},
  *   'Mech-scale {kind: "mech", ...}, a 'Mech-Scale weapon against a person {kind: "mixed"} and its
  *   hit type roll {kind: "hitType"}, or a Piloting consequence {kind: "fall"|"crash"|"control"|
- *   "regainControl", mechUuid}. `applyOn: "failure"` offers it when the Test fails instead of when
+ *   "regainControl", mechUuid}, a battle armor swarm attack {kind: "swarm", suitUuid, mechUuid} or a
+ *   'Mech dislodging swarming suits {kind: "dislodge", mechUuid}. `applyOn: "failure"` offers it when the Test fails instead of when
  *   it succeeds, `applyOn: "always"` either way.
  * @property {boolean} [untrained=false]
  * @property {string} [kind="test"]           "test", "attack", "kia" or "con".
@@ -146,7 +148,7 @@ export function cardContext(state) {
     isAttack: state.kind === "attack",
     damageLabel: damageLabel(damage),
     applyLabel: applyLabel(state),
-    canApply: !!damage && ((damage.applyOn === "failure") ? !result.success : result.success) && !state.applied
+    canApply: !!damage && appliesOn(damage, result.success) && !state.applied
   };
 }
 
@@ -158,7 +160,7 @@ function appliesOn(damage, success) {
 
 /** Damage line on a card: "3 B F" for personal weapons, "4+M (Max 6)" for 'Mech weapons. */
 function damageLabel(damage) {
-  if ( !damage || ["fall", "crash", "control", "regainControl", "hitType"].includes(damage.kind) ) return null;
+  if ( !damage || ["fall", "crash", "control", "regainControl", "hitType", "swarm", "dislodge"].includes(damage.kind) ) return null;
   if ( ["mech", "mixed"].includes(damage.kind) ) {
     if ( damage.heatInstead ) return `${damage.base} H`;
     let label = String(damage.base);
@@ -179,6 +181,9 @@ function applyLabel(state, success) {
     case "control": return localize("MWD.Fighter.LoseControl");
     case "regainControl": return localize("MWD.Fighter.RegainControl");
     case "mixed": return localize("MWD.Mixed.RollHitType");
+    case "swarm": return localize("MWD.BattleArmor.SwarmApply");
+    case "dislodge": return localize(resolveState(state).success ? "MWD.BattleArmor.DislodgeSuccess"
+      : "MWD.BattleArmor.DislodgeFailure");
     case "hitType": {
       const ctx = hitTypeContext(state, success);
       return game.i18n.format(`MWD.Mixed.Apply.${ctx.hitType}`, { n: ctx.indirectDamage, name: state.targetName ?? "" });
@@ -350,6 +355,8 @@ function damageRecipient(state) {
   if ( !damage ) return null;
   if ( ["fall", "crash", "control", "regainControl"].includes(damage.kind) ) return fromUuidSync(damage.mechUuid);
   if ( damage.kind === "mixed" ) return fromUuidSync(state.actorUuid);
+  if ( damage.kind === "swarm" ) return fromUuidSync(damage.suitUuid);
+  if ( damage.kind === "dislodge" ) return fromUuidSync(damage.mechUuid);
   if ( damage.applyOn === "failure" ) return fromUuidSync(state.actorUuid);
   return fromUuidSync(state.applyToUuid ?? state.targetUuid);
 }
@@ -385,6 +392,10 @@ export async function applyCardDamage(message) {
     }
     case "smallArms":
       return recipient.applySmallArms(damage);
+    case "swarm":
+      return startSwarm(recipient, damage.mechUuid);
+    case "dislodge":
+      return resolveDislodge(recipient, resolveState(state).success);
   }
   return recipient.applyPersonalDamage(damage, {
     source: damage.source ?? state.label, mechScale: !!damage.mechScale, ignoreArmor: !!damage.ignoreArmor

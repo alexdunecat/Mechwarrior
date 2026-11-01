@@ -177,7 +177,9 @@ export class GearData extends foundry.abstract.TypeDataModel {
 
 /**
  * A Primary Weapon or Weapon Group on a 'Mech (p. 41–44): weapons in a group fire together and
- * hit or miss together. Damage code "4+M (Max 6)" is base 4, one Missile die, Max 6.
+ * hit or miss together. Damage code "4+M (Max 6)" is base 4, one Missile die, Max 6. Clan weapons
+ * (p. 216): "(C4)" is the cluster damage of an LB-X autocannon; a Streak SRM group that misses
+ * does not fire and makes no Heat.
  */
 export class MechWeaponData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -191,6 +193,8 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
       heat: counter(0, { max: 6 }),
       count: counter(1, { min: 1 }),
       bomb: new fields.BooleanField({ initial: false }),
+      cluster: counter(0),
+      streak: new fields.BooleanField({ initial: false }),
       mounts: new fields.SchemaField(Object.fromEntries(Object.keys(UNIT_LOCATIONS).map(k => [k,
         new fields.BooleanField({ initial: k === "torso" })]))),
       ranges: new fields.SchemaField(Object.fromEntries(Object.keys(MECH_RANGES).map(k => [k,
@@ -231,6 +235,7 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
     if ( this.missiles ) label += `+${"M".repeat(this.missiles)}`;
     if ( this.missiles && this.maxDamage ) label += ` (Max ${this.maxDamage})`;
     if ( this.heatAlternative ) label += " (or H)";
+    if ( this.cluster ) label += ` (C${this.cluster})`;
     return label;
   }
 
@@ -249,7 +254,8 @@ export class MechWeaponData extends foundry.abstract.TypeDataModel {
 
 /**
  * 'Mech-Scale equipment (p. 158): ammo bins matter for ammo explosion critical hits; jump jets allow
- * jumping. Vehicles and fighters list ammo without a location.
+ * jumping. Vehicles and fighters list ammo without a location. Clan ammo bins have CASE, Gauss
+ * rifle ammo does not explode, and battle armor and A-Pods count their shots (p. 216–218).
  */
 export class MechEquipmentData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -257,8 +263,34 @@ export class MechEquipmentData extends foundry.abstract.TypeDataModel {
       kind: new fields.StringField({ required: true, initial: "ammo", choices: () => ({ ...MECH_EQUIPMENT_KINDS }) }),
       location: new fields.StringField({ required: true, blank: true, initial: "torso",
         choices: () => ({ "": "MWD.Mech.Location.none", ...labels(UNIT_LOCATIONS) }) }),
+      case: new fields.BooleanField({ initial: false }),
+      explosive: new fields.BooleanField({ initial: true }),
+      shots: new fields.SchemaField({
+        spent: counter(0),
+        max: counter(0)
+      }),
       destroyed: new fields.BooleanField({ initial: false }),
       description: description()
     };
+  }
+
+  /** Whether this bin or launcher counts its shots. */
+  get tracksShots() {
+    return this.shots.max > 0;
+  }
+
+  /** What the ammo feeds: "SRM" for "Ammo: SRM". */
+  get ammoFor() {
+    return this.parent?.name?.replace(/^Ammo:\s*/i, "").trim() ?? "";
+  }
+
+  /**
+   * Whether this ammo feeds a weapon: the ammo name appears in the weapon's name.
+   * @param {Item} weapon
+   * @returns {boolean}
+   */
+  feeds(weapon) {
+    const what = this.ammoFor.toLowerCase();
+    return !!what && weapon.name.toLowerCase().includes(what);
   }
 }

@@ -20,8 +20,13 @@
       </label>
       {{/if}}
       <label class="mwd-field mwd-field-xs">
+        {{#if isBattleArmor}}
+        <span>{{localize "MWD.BattleArmor.Mass"}}</span>
+        <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="5000" step="50">
+        {{else}}
         <span>{{localize "MWD.Mech.Tonnage"}}</span>
         <input type="number" name="system.details.tonnage" value="{{system.details.tonnage}}" min="0" max="200">
+        {{/if}}
       </label>
       <div class="mwd-field mwd-field-xs">
         <span data-tooltip="MWD.Mech.HardwarePointsHint">{{localize "MWD.Mech.HardwarePoints"}}</span>
@@ -43,9 +48,18 @@
       <label class="checkbox"><input type="checkbox" name="system.details.jumpJets" {{checked system.details.jumpJets}}> {{localize "MWD.Mech.JumpJets"}}</label>
       <label class="checkbox"><input type="checkbox" name="system.details.punch" {{checked system.details.punch}}> {{localize "MWD.Mech.CanPunch"}}</label>
       {{/if}}
+      {{#if isBattleArmor}}
+      <label class="checkbox"><input type="checkbox" name="system.details.jumpJets" {{checked system.details.jumpJets}}> {{localize "MWD.Mech.JumpJets"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.details.legAttack" {{checked system.details.legAttack}}> {{localize "MWD.BattleArmor.LegAttack"}}</label>
+      <label class="checkbox"><input type="checkbox" name="system.details.swarmAttack" {{checked system.details.swarmAttack}}> {{localize "MWD.BattleArmor.SwarmAttack"}}</label>
+      {{/if}}
+      <label class="checkbox" data-tooltip="MWD.Clan.TechHint"><input type="checkbox" name="system.details.clan" {{checked system.details.clan}}> {{localize "MWD.Clan.Tech"}}</label>
+      {{#if isMech}}<label class="checkbox" data-tooltip="MWD.Clan.OmniHint"><input type="checkbox" name="system.details.omni" {{checked system.details.omni}}> {{localize "MWD.Clan.Omni"}}</label>{{/if}}
+      {{#if isFighter}}<label class="checkbox" data-tooltip="MWD.Clan.OmniHint"><input type="checkbox" name="system.details.omni" {{checked system.details.omni}}> {{localize "MWD.Clan.Omni"}}</label>{{/if}}
       <span class="mwd-muted">{{localize "MWD.Mech.MaxMovement"}}: <strong>{{system.maxMovement}}</strong>
         {{#if isMech}} · {{localize "MWD.Mech.Physical.punch"}} {{system.physical.punch}} / {{localize "MWD.Mech.Physical.kick"}} {{system.physical.kick}}{{/if}}
         {{#if isVehicle}} · {{localize "MWD.Mech.Physical.ram"}} {{system.physical.ram}}{{#if system.immobile}} · <strong>{{localize "MWD.Vehicle.Immobile"}}</strong>{{/if}}{{/if}}
+        {{#if system.masc}} · {{localize "MWD.Clan.MascActive"}}{{/if}}
         {{#if system.smallArms}} · {{localize "MWD.Mixed.SmallArmsShort" n=system.smallArms}}{{/if}}
       </span>
     </div>
