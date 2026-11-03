@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   clusters, coolDown, critCandidates, damageLocation, heatEffects, hitLocation, maxMovement,
-  missileDamage, physicalDamage, resolveCrit, restartCheck, speedModifier
+  ejectionCost, missileDamage, physicalDamage, rerollsLegs, resolveCrit, restartCheck, speedModifier
 } from "../module/rules/mech.mjs";
 import { resolveTest } from "../module/rules/tests.mjs";
 
@@ -149,4 +149,17 @@ test("a Disengaged target is only hit on a natural 11+ (p. 41)", () => {
   const roll = dice => resolveTest({ dice, bonus: 6, opposingDice: [1, 1], minNatural: 11 });
   assert.equal(roll([5, 5]).autoFail, "disengaged");
   assert.equal(roll([5, 6]).success, true);
+});
+
+test("a hatchet deals Tonnage/15 and rerolls leg hits (p. 43)", () => {
+  assert.equal(physicalDamage("hatchet", { tonnage: 50 }).damage, 4);
+  assert.equal(rerollsLegs("hatchet", "rightLeg"), true);
+  assert.equal(rerollsLegs("hatchet", "rightArm"), false);
+  assert.equal(rerollsLegs("standard", "leftLeg"), false);
+});
+
+test("ejecting costs all Plot Points, or an Average Piloting Test without any (p. 47)", () => {
+  assert.deepEqual(ejectionCost(3), { plotPoints: 3, test: null });
+  assert.deepEqual(ejectionCost(1), { plotPoints: 1, test: null });
+  assert.deepEqual(ejectionCost(0), { plotPoints: 0, test: "average" });
 });

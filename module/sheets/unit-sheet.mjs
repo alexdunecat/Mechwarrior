@@ -1,5 +1,5 @@
 import {
-  EXPERIENCE_LEVELS, HEAT_LEVELS, MECH_RANGES, SYSTEM_ID, UNIT_LOCATIONS, VEHICLE_MOTIVE, WEIGHT_CLASSES
+  CSS_CLASS, EXPERIENCE_LEVELS, HEAT_LEVELS, MECH_RANGES, UNIT_LOCATIONS, VEHICLE_MOTIVE, WEIGHT_CLASSES
 } from "../config.mjs";
 import { suitPips } from "../rules/battle-armor.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
@@ -36,7 +36,7 @@ const CRIT_PIPS = {
  */
 export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: [SYSTEM_ID, "mwd-sheet", "actor", "unit"],
+    classes: [CSS_CLASS, "mwd-sheet", "actor", "unit"],
     position: { width: 860, height: 880 },
     window: { resizable: true },
     form: { submitOnChange: true },
@@ -44,6 +44,7 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       fire: UnitSheet.#onFire,
       physical: UnitSheet.#onPhysical,
       piloting: UnitSheet.#onPiloting,
+      eject: UnitSheet.#onEject,
       fall: UnitSheet.#onFall,
       crash: UnitSheet.#onCrash,
       jump: UnitSheet.#onJump,
@@ -103,6 +104,7 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       hasCrits: type !== "battleArmor",
       usesHeat: system.usesHeat,
       physicalLabel: (type === "mech") ? "MWD.Mech.Physical.Button" : "MWD.Mech.Physical.ram",
+      ejectLabel: (type === "vehicle") ? "MWD.Eject.Abandon" : "MWD.Eject.Button",
       diagramHint: {
         mech: "MWD.Mech.DiagramHint", vehicle: "MWD.Vehicle.DiagramHint", fighter: "MWD.Fighter.DiagramHint",
         battleArmor: "MWD.BattleArmor.DiagramHint"
@@ -325,6 +327,10 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static async #onPiloting() {
     return this.document.rollPilotingTest();
+  }
+
+  static async #onEject() {
+    return this.document.eject();
   }
 
   static async #onFall() {

@@ -1,4 +1,4 @@
-import { ATTRIBUTES, STAGGERED_CON_CHECK, SYSTEM_ID } from "../config.mjs";
+import { ATTRIBUTES, CSS_CLASS, STAGGERED_CON_CHECK, SYSTEM_ID } from "../config.mjs";
 import { promptSkill } from "../documents/advancement.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
@@ -13,7 +13,7 @@ export const TEMPLATES = `systems/${SYSTEM_ID}/templates`;
  */
 export class PersonSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: [SYSTEM_ID, "mwd-sheet", "actor"],
+    classes: [CSS_CLASS, "mwd-sheet", "actor"],
     window: { resizable: true },
     form: { submitOnChange: true },
     actions: {

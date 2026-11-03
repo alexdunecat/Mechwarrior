@@ -457,7 +457,8 @@ export function characterData(pc) {
     type: "character",
     system: {
       attributes: attributes(pc.attributes),
-      tags: pc.tags,
+      // The book separates Tags with a bullet glyph; the sheet lists them comma-separated.
+      tags: pc.tags.split(/[\uF0C3,]/).map(tag => tag.trim()).filter(Boolean).join(", "),
       notes,
       details: { ...pc.details },
       lifeModules: { faction: "", childhood: "", education: "", realLife: "", ...pc.lifeModules },
@@ -497,14 +498,13 @@ export function characterData(pc) {
 function finalize(pack, data, { folder = null, sort = 0 } = {}) {
   const collection = PACKS.find(p => p.name === pack).type === "Actor" ? "actors" : "items";
   const _id = stableId(pack, data.name);
-  const doc = { _id, _key: `!${collection}!${_id}`, folder, sort, flags: {}, ownership: { default: 0 }, _stats: STATS, ...data };
-  doc.flags = data.flags ?? {};
+  const doc = { _id, _key: `!${collection}!${_id}`, folder, sort, ownership: { default: 0 }, _stats: STATS, ...data, flags: data.flags ?? {} };
   if ( collection === "actors" ) {
     doc.img ??= "icons/svg/mystery-man.svg";
     doc.effects = [];
     doc.items = (data.items ?? []).map((item, i) => {
       const itemId = stableId(pack, data.name, String(i), item.name);
-      return { _id: itemId, _key: `!actors.items!${_id}.${itemId}`, sort: (i + 1) * 100000, flags: {}, effects: [],
+      return { _id: itemId, _key: `!actors.items!${_id}.${itemId}`, sort: (i + 1) * 100000, effects: [],
         ownership: { default: 0 }, _stats: STATS, ...item, flags: item.flags ?? {} };
     });
   } else doc.effects = [];

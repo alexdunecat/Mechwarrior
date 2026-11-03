@@ -85,15 +85,15 @@
       "total": "Всего получено XP"
     },
     "Tags": {
-      "label": "Tags",
+      "label": "Теги (Tags)",
       "placeholder": "Через запятую, например: Разведчик, Быстрая, Внимательная"
     },
     "Cues": {
-      "label": "Cues",
+      "label": "Реплики (Cues)",
       "placeholder": "Одна реплика-подсказка на строку"
     },
     "LifeModule": {
-      "plural": "Life Modules",
+      "plural": "Модули жизни (Life Modules)",
       "faction": "Фракция",
       "childhood": "Детство",
       "education": "Образование",
@@ -102,7 +102,7 @@
     "Bio": {
       "history": "История",
       "personality": "Характер",
-      "disposition": "Disposition",
+      "disposition": "Характер (Disposition)",
       "dispositionPlaceholder": "Короткие фразы, по одной на строку"
     },
     "PlotPoints": {
@@ -121,7 +121,7 @@
         "pushIt": "Бесплатная смена дистанции",
         "fightThrough": "+WIL к проверке сознания",
         "downgrade": "Ослабить попадание оружия меха по человеку",
-        "support": "Battlefield Support",
+        "support": "Поддержка на поле боя",
         "other": "Другое"
       },
       "NoneLeft": "Plot Points закончились.",
@@ -136,7 +136,7 @@
       "GmPool": "Пул ГМа"
     },
     "Edge": {
-      "label": "Edge",
+      "label": "Удача (Edge)",
       "hint": "Потраченный за сессию Edge. Щелчок по кружку отмечает его; за сессию можно потратить не больше EDG.",
       "remaining": "осталось {n}",
       "Spend": "Потратить Edge",
@@ -210,9 +210,9 @@
     },
     "Specialty": {
       "none": "—",
-      "mech": "BattleMech",
-      "vehicle": "Combat Vehicle",
-      "aero": "Aerospace Fighter"
+      "mech": "Боевой мех (BattleMech)",
+      "vehicle": "Боевая машина",
+      "aero": "Аэрокосмический истребитель"
     },
     "Trait": {
       "plural": "Черты",
@@ -226,12 +226,12 @@
       "AppliesTo": "Когда действует",
       "Effect": {
         "label": "Эффект по правилам",
-        "hint": "Применяется автоматически: Toughness снижает каждое попадание в Condition Monitor на 1, Glass Jaw добавляет 1, Pain Resistance игнорирует штраф ранений –1, Unlucky превращает шестёрки на своём переброске Edge в единицы.",
+        "hint": "Применяется автоматически: «Крепкое здоровье» снижает каждое попадание в монитор состояния на 1, «Стеклянная челюсть» добавляет 1, «Терпение к боли» игнорирует штраф ранений –1, «Невезение» превращает шестёрки на своих перебросах Edge в единицы.",
         "none": "Нет",
-        "toughness": "Toughness",
-        "painResistance": "Pain Resistance",
-        "glassJaw": "Glass Jaw",
-        "unlucky": "Unlucky"
+        "toughness": "Крепкое здоровье",
+        "painResistance": "Терпение к боли",
+        "glassJaw": "Стеклянная челюсть",
+        "unlucky": "Невезение"
       },
       "Initiative": "Модификатор инициативы",
       "InitiativeHint": "Только для броска инициативы, например Combat Sense +1."
@@ -268,9 +268,9 @@
       "E": "Энергетическое (E)"
     },
     "Range": {
-      "close": "Close",
-      "near": "Near",
-      "far": "Far"
+      "close": "Вблизи",
+      "near": "Неподалёку",
+      "far": "Далеко"
     },
     "Armor": {
       "label": "Броня",
@@ -303,7 +303,7 @@
       "Hint": "У предметов инвентаря нет характеристик: это подсказки (Cues) для ваших Narration."
     },
     "Condition": {
-      "label": "Condition Monitor",
+      "label": "Монитор состояния",
       "physical": "Физический",
       "fatigue": "Усталость",
       "Blocked": "Вычеркнуто из-за низкой STR/WIL",
@@ -421,7 +421,7 @@
       "Conscious": "В сознании",
       "Unconscious": "Без сознания: пропускает следующую Narration, затем проверяет снова",
       "FightThrough": "WIL (Plot Point)",
-      "FightThroughButton": "Fight through it: Plot Point, +WIL",
+      "FightThroughButton": "Перетерпеть: Plot Point, +WIL",
       "FoughtThrough": "Fight through it: потрачен Plot Point, добавлен WIL"
     },
     "Hardware": {
@@ -474,10 +474,10 @@
         "none": "—"
       },
       "Range": {
-        "pointblank": "Pointblank",
-        "short": "Short",
-        "medium": "Medium",
-        "long": "Long"
+        "pointblank": "Вплотную",
+        "short": "Ближняя",
+        "medium": "Средняя",
+        "long": "Дальняя"
       },
       "Terrain": {
         "label": "Местность цели",
@@ -492,7 +492,7 @@
         "label": "Пилот",
         "None": "Пилота нет. Выберите его выше или перетащите персонажа на лист.",
         "Leave": "Выйти из кабины",
-        "Piloting": "Piloting",
+        "Piloting": "Piloting (пилотирование)",
         "Unconscious": "Без сознания"
       },
       "Weapon": {
@@ -501,7 +501,7 @@
         "None": "Оружия нет.",
         "Fire": "Огонь",
         "Primary": "Основное оружие (Primary)",
-        "PrimaryShort": "Primary",
+        "PrimaryShort": "Основное",
         "PrimaryHint": "Основное оружие персонажа игрока наносит полный урон в голову без траты Plot Point (с. 45).",
         "Base": "Базовый урон",
         "Missiles": "Ракетные кубы (M)",
@@ -536,7 +536,7 @@
         "ShotsLeft": "выстрелов: {n}"
       },
       "Attack": {
-        "Gunnery": "Gunnery",
+        "Gunnery": "Gunnery (стрельба)",
         "DefenseOf": "{name}: 2D6 + Piloting + RFL",
         "ManualDefense": "Бонус защиты (Piloting + RFL)",
         "NoTarget": "Мех-цель не выбрана: введите бонус защиты вручную или выделите токен как цель (T) и откройте снова.",
@@ -559,7 +559,7 @@
         "push": "Толчок",
         "charge": "Таран",
         "dfa": "Смерть сверху",
-        "Hint": "Только Pointblank. Удар рукой: в эту Narration не стреляли из рук. Смерть сверху: нужен прыжок.",
+        "Hint": "Только вплотную. Удар рукой и топором: в эту Narration не стреляли из рук. Смерть сверху: нужен прыжок.",
         "Movement": "Потрачено движения",
         "MovementHint": "Таран и смерть сверху наносят (тоннаж / 30) × движение.",
         "Note": {
@@ -568,9 +568,11 @@
           "push": "Цель проходит Piloting Test, чтобы устоять.",
           "charge": "Оба меха проходят Piloting Test, чтобы устоять.",
           "dfa": "Оба меха проходят Piloting Test, чтобы устоять.",
-          "ram": "Таранящий получает тоннаж цели/30 кластерами по 2."
+          "ram": "Таранящий получает тоннаж цели/30 кластерами по 2.",
+          "hatchet": ""
         },
-        "ram": "Таран"
+        "ram": "Таран",
+        "hatchet": "Топор (Hatchet)"
       },
       "Damage": {
         "Self": "{n} атакующему",
@@ -585,7 +587,8 @@
         "Falls": "Мех падает.",
         "PilotingTest": "Нужен Piloting Test, чтобы устоять.",
         "BuyHead": "Plot Point: полный урон в голову (+{n})",
-        "FullHead": "{source}: полный урон в голову"
+        "FullHead": "{source}: полный урон в голову",
+        "LegRerolled": "Попадание {roll}: {location}, переброс (топор)"
       },
       "Crit": {
         "label": "Критические попадания",
@@ -632,7 +635,7 @@
         "Hint": "Проверка CON, если пилот без сознания, охлаждение, проверки отключения и боеприпасов, перезапуск двигателя (с. 38, 47–48)."
       },
       "Piloting": {
-        "Title": "Piloting Test",
+        "Title": "Тест Piloting",
         "AutoFail": "Автоматический провал: {reason}"
       },
       "Fall": {
@@ -649,7 +652,9 @@
         "WeaponDestroyed": "Это оружие уничтожено.",
         "NoJumpJets": "У этого меха нет прыжковых двигателей.",
         "NoAmmo": "У этого оружия кончились боеприпасы."
-      }
+      },
+      "HasHatchet": "Есть топор (Hatchet)",
+      "HatchetHint": "Удар топором (с. 43): урон Tonnage/15; в эту Narration не стреляли группы оружия в руках; попадания в ноги перебрасываются."
     },
     "Unit": {
       "Status": {
@@ -689,7 +694,7 @@
         "tracked": "Гусеничная",
         "wheeled": "Колёсная",
         "hover": "Ховер",
-        "vtol": "VTOL"
+        "vtol": "VTOL (винтокрыл)"
       },
       "HasTurret": "Есть башня",
       "HasTurretHint": "Без башни нет локации «Башня»: попадания 10–12 идут в «Перед».",
@@ -1070,12 +1075,12 @@
         "attributes": "Атрибуты",
         "skills": "Навыки",
         "traits": "Черты",
-        "lifeModules": "Life Modules",
+        "lifeModules": "Модули жизни",
         "armor": "Броня",
         "weapons": "Оружие",
         "inventory": "Инвентарь",
         "hardware": "Техника",
-        "cues": "Cues",
+        "cues": "Реплики",
         "background": "Предыстория"
       },
       "Hint": {
@@ -1100,7 +1105,7 @@
       "LevelBudget": "{attributes} очков атрибутов, {skills} очков навыков, оружия: {weapons}, Hardware Points: {hardware}",
       "LevelGroupRule": "Хотя бы половина группы играет выбранный уровень, и никто не отличается от него больше чем на два (с. 69).",
       "EdgeCost": "по 2 очка",
-      "ConditionHint": "STR и WIL ниже 5 вычёркивают пипсы Condition Monitor; лист делает это сам.",
+      "ConditionHint": "STR и WIL ниже 5 вычёркивают ячейки монитора состояния; лист делает это сам.",
       "LifeModuleBonus": "Модули",
       "FromLifeModule": "от модуля жизни",
       "SkillsFromHardware": "в том числе от неистраченных Hardware Points: {n}",
@@ -1120,7 +1125,7 @@
       "WeaponsRules": "Выберите из списка, перетащите оружие сюда из боковой панели или компендиума или придумайте своё по образцу похожего. Всего не больше {max} единиц оружия. Придуманное оружие потом нельзя модифицировать.",
       "InventoryCount": "Предметов: {n} из {max}",
       "InventoryRules": "Предметы инвентаря — это подсказки без правил; патроны и прочие мелочи не нужны.",
-      "HardwareBudget": "Hardware Points: {n}",
+      "HardwareBudget": "Очки техники (Hardware Points): {n}",
       "NoUnits": "Подходящих машин пока нет. ГМ создаёт меха, технику или истребитель и даёт вам права владельца.",
       "TooExpensive": "дорого",
       "MissingSkills": "нет навыков",
@@ -1274,8 +1279,8 @@
       "Standby": "Ждёт, пока в машине сидит пилот.",
       "experience": "Уровень",
       "LevelHint": "Выбор уровня подставляет Gunnery, Piloting и инициативу; потом их можно поправить.",
-      "gunnery": "Gunnery",
-      "piloting": "Piloting",
+      "gunnery": "Gunnery (стрельба)",
+      "piloting": "Piloting (пилотирование)",
       "initiative": "Иниц.",
       "BonusHint": "Полный бонус, RFL уже включён.",
       "StrHint": "Задаёт трек Physical монитора состояния экипажа.",
@@ -1304,7 +1309,7 @@
       "CaseLimb": "CASE отводит взрыв боеприпасов: {location} уничтожена.",
       "NoExplosiveAmmo": "На борту только боеприпасы Гаусса: взрываться нечему.",
       "APod": {
-        "Title": "A-Pod",
+        "Title": "A-Pod (противопехотная мина)",
         "Fire": "Подорвать A-Pod против выбранных персонажей",
         "Hit": "1D6 = {roll}: {n} урона личного масштаба каждому персонажу рядом.",
         "Miss": "1D6 = {roll}: урона нет.",
@@ -1327,9 +1332,9 @@
         "swarmingOn": "Карабкается по {mech}: атаки по нему попадают автоматически"
       },
       "Move": {
-        "pointblankShort": "Pointblank ↔ Short",
-        "shortMedium": "Short ↔ Medium",
-        "mediumLong": "Medium ↔ Long",
+        "pointblankShort": "Вплотную ↔ Ближняя",
+        "shortMedium": "Ближняя ↔ Средняя",
+        "mediumLong": "Средняя ↔ Дальняя",
         "leg": "Атака по ногам",
         "swarm": "Атака роем",
         "mount": "Сесть на OmniMech или слезть"
@@ -1387,6 +1392,16 @@
         "NoPhysical": "Боевая броня не проводит физических атак; используйте атаку по ногам или роем.",
         "NoPiloting": "Боевая броня никогда не проходит тесты Piloting (с. 218)."
       }
+    },
+    "Eject": {
+      "Button": "Катапультироваться",
+      "Abandon": "Покинуть машину",
+      "Hint": "Катапультирование (с. 47): пилот в сознании покидает обречённую машину. Стоит всех ваших Plot Points (минимум 1); если их нет — тест Piloting средней сложности.",
+      "Title": "{name}: катапультирование",
+      "ConfirmPlotPoints": "{name} покидает {unit} без последствий, потратив все свои Plot Points ({n}); они уходят в пул ведущего.",
+      "ConfirmTest": "У {name} нет Plot Points: тест Piloting средней сложности. При провале катапультирование не удаётся, и последствия решает ведущий.",
+      "Spent": "{name} катапультируется из {unit}, потратив Plot Points: {n}.",
+      "Apply": "Покинуть машину"
     }
   }
 }

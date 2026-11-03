@@ -42,6 +42,7 @@
       {{#if isMech}}<button type="button" class="mwd-button" data-action="fall"><i class="fa-solid fa-person-falling-burst"></i> {{localize "MWD.Mech.Fall.Resolve"}}</button>{{/if}}
       {{#if swarmingSuits}}<button type="button" class="mwd-button" data-action="dislodge"><i class="fa-solid fa-hands-bubbles"></i> {{localize "MWD.BattleArmor.Dislodge"}}</button>{{/if}}
       {{#unless isMech}}<button type="button" class="mwd-button" data-action="crash"><i class="fa-solid fa-car-burst"></i> {{localize "MWD.Vehicle.Crash.Resolve"}}</button>{{/unless}}
+      <button type="button" class="mwd-button" data-action="eject" data-tooltip="MWD.Eject.Hint"><i class="fa-solid fa-parachute-box"></i> {{localize ejectLabel}}</button>
       {{/if}}
       <button type="button" class="mwd-button mwd-roll-test" data-action="endNarration" data-tooltip="MWD.Mech.EndNarration.Hint"><i class="fa-solid fa-hourglass-end"></i> {{localize "MWD.Mech.EndNarration.Button"}}</button>
     </div>

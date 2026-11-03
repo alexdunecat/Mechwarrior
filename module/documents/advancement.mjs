@@ -1,5 +1,5 @@
 import {
-  ADVANCEMENT, ATTRIBUTES, BOOK_TRAITS, PERSONAL_RANGES, SKILLS, SPECIALTIES, SYSTEM_ID, WEIGHT_CLASSES
+  ADVANCEMENT, ATTRIBUTES, BOOK_TRAITS, CSS_CLASS, PERSONAL_RANGES, SKILLS, SPECIALTIES, SYSTEM_ID, WEIGHT_CLASSES
 } from "../config.mjs";
 import {
   attributeXpCost, canCustomize, dispossessedCost, hardwareXpCost, improveRange, repairUpdate, repairXpCost, skillXpCost,
@@ -31,7 +31,7 @@ async function formDialog({ title, template, context, icon = "fa-solid fa-arrow-
   const content = await foundry.applications.handlebars.renderTemplate(`${TEMPLATES}/${template}`, context);
   const result = await foundry.applications.api.DialogV2.wait({
     window: { title, icon },
-    classes: [SYSTEM_ID, "mwd-dialog"],
+    classes: [CSS_CLASS, "mwd-dialog"],
     position: { width: 440 },
     content,
     buttons: [{
@@ -237,7 +237,7 @@ export async function customizeWeapon(actor, weapon, mod) {
     });
     value = await foundry.applications.api.DialogV2.wait({
       window: { title: "MWD.Advance.RangeTitle" },
-      classes: [SYSTEM_ID, "mwd-dialog"],
+      classes: [CSS_CLASS, "mwd-dialog"],
       content: `<p>${t("MWD.Advance.RangeHint")}</p>`,
       buttons: brackets.map(([key, label]) => ({
         action: key,

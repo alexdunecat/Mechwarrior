@@ -1,5 +1,5 @@
 import { MECH_LOCATIONS, PILOT_HIT_DAMAGE, SYSTEM_ID } from "../config.mjs";
-import { damageLocation, forcedCritChecks, hitLocation, resolveCrit } from "../rules/mech.mjs";
+import { damageLocation, forcedCritChecks, hitLocation, rerollsLegs, resolveCrit } from "../rules/mech.mjs";
 import { shieldTorso } from "./battle-armor.mjs";
 import { executeAsGM } from "../socket.mjs";
 import {
@@ -50,9 +50,15 @@ export async function applyMechHit(mech, damage) {
     let location = damage.location;
     let critChance = false;
     if ( !location ) {
-      const r = await roll(damage.table === "kick" ? "1d6" : "2d6");
+      let r = await roll(damage.table === "kick" ? "1d6" : "2d6");
       rolls.push(r.roll);
-      const hit = hitLocation(r.total, damage.table);
+      let hit = hitLocation(r.total, damage.table);
+      while ( rerollsLegs(damage.table, hit.location) ) {
+        lines.push(t("MWD.Mech.Damage.LegRerolled", { roll: r.total, location: locLabel(hit.location) }));
+        r = await roll("2d6");
+        rolls.push(r.roll);
+        hit = hitLocation(r.total, damage.table);
+      }
       location = hit.location;
       critChance = hit.critChance;
       if ( damage.ignoreLegs && MECH_LOCATIONS[location].leg ) {

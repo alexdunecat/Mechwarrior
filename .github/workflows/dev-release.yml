@@ -3,6 +3,8 @@ name: Dev build
 # Every push to a work branch republishes the "dev" pre-release, so a branch can be installed
 # in Foundry before it is merged:
 #   https://github.com/<owner>/<repo>/releases/download/dev/system.json
+# The dev build is a separate system, "mechwarrior-destiny-dev" titled "MechWarrior: Destiny (dev)",
+# so it installs next to the stable release: test worlds use it, game worlds stay on the release.
 on:
   push:
     branches-ignore: [main]
@@ -25,6 +27,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+
+      - name: Make the dev system
+        run: |
+          DEV_ID=mechwarrior-destiny-dev
+          sed -i "s/^export const SYSTEM_ID = \"mechwarrior-destiny\";/export const SYSTEM_ID = \"$DEV_ID\";/" module/config.mjs
+          grep -q "SYSTEM_ID = \"$DEV_ID\"" module/config.mjs
+          grep -rl "systems/mechwarrior-destiny/" templates module | xargs sed -i "s#systems/mechwarrior-destiny/#systems/$DEV_ID/#g"
+          jq --arg id "$DEV_ID" \
+             '.id = $id | .title = "MechWarrior: Destiny (dev)" | .packs |= map(.system = $id)' system.json > system.dev.json
+          mv system.dev.json system.json
+
       - run: npm run build:packs
 
       - name: Build package

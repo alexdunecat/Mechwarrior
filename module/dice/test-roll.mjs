@@ -23,7 +23,7 @@ const CARD_TEMPLATE = `systems/${SYSTEM_ID}/templates/chat/test-card.hbs`;
  *   'Mech-scale {kind: "mech", ...}, a 'Mech-Scale weapon against a person {kind: "mixed"} and its
  *   hit type roll {kind: "hitType"}, or a Piloting consequence {kind: "fall"|"crash"|"control"|
  *   "regainControl", mechUuid}, a battle armor swarm attack {kind: "swarm", suitUuid, mechUuid} or a
- *   'Mech dislodging swarming suits {kind: "dislodge", mechUuid}. `applyOn: "failure"` offers it when the Test fails instead of when
+ *   'Mech dislodging swarming suits {kind: "dislodge", mechUuid}, or a pilot ejecting {kind: "eject", mechUuid}. `applyOn: "failure"` offers it when the Test fails instead of when
  *   it succeeds, `applyOn: "always"` either way.
  * @property {boolean} [untrained=false]
  * @property {string} [kind="test"]           "test", "attack", "kia" or "con".
@@ -160,7 +160,7 @@ function appliesOn(damage, success) {
 
 /** Damage line on a card: "3 B F" for personal weapons, "4+M (Max 6)" for 'Mech weapons. */
 function damageLabel(damage) {
-  if ( !damage || ["fall", "crash", "control", "regainControl", "hitType", "swarm", "dislodge"].includes(damage.kind) ) return null;
+  if ( !damage || ["fall", "crash", "control", "regainControl", "hitType", "swarm", "dislodge", "eject"].includes(damage.kind) ) return null;
   if ( ["mech", "mixed"].includes(damage.kind) ) {
     if ( damage.heatInstead ) return `${damage.base} H`;
     let label = String(damage.base);
@@ -180,6 +180,7 @@ function applyLabel(state, success) {
     case "crash": return localize("MWD.Vehicle.Crash.Resolve");
     case "control": return localize("MWD.Fighter.LoseControl");
     case "regainControl": return localize("MWD.Fighter.RegainControl");
+    case "eject": return localize("MWD.Eject.Apply");
     case "mixed": return localize("MWD.Mixed.RollHitType");
     case "swarm": return localize("MWD.BattleArmor.SwarmApply");
     case "dislodge": return localize(resolveState(state).success ? "MWD.BattleArmor.DislodgeSuccess"
@@ -353,7 +354,7 @@ export async function updateCard(message, state) {
 function damageRecipient(state) {
   const damage = state.damage;
   if ( !damage ) return null;
-  if ( ["fall", "crash", "control", "regainControl"].includes(damage.kind) ) return fromUuidSync(damage.mechUuid);
+  if ( ["fall", "crash", "control", "regainControl", "eject"].includes(damage.kind) ) return fromUuidSync(damage.mechUuid);
   if ( damage.kind === "mixed" ) return fromUuidSync(state.actorUuid);
   if ( damage.kind === "swarm" ) return fromUuidSync(damage.suitUuid);
   if ( damage.kind === "dislodge" ) return fromUuidSync(damage.mechUuid);
@@ -380,6 +381,8 @@ export async function applyCardDamage(message) {
       return recipient.pilotingFailure(damage.kind);
     case "regainControl":
       return recipient.update({ "system.status.outOfControl": false });
+    case "eject":
+      return recipient.update({ "system.pilot": "" });
     case "mixed":
       return rollHitType(state);
     case "hitType":

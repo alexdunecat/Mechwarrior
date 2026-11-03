@@ -120,7 +120,7 @@ test("a 'Mech derives remaining Armor, Movement and physical damage", async () =
   // Heat 2 carried over: –1 Movement; a destroyed leg caps it at 1.
   assert.equal(system.maxMovement, 1);
   assert.equal(system.heatEffects.ranged, -1);
-  assert.deepEqual(system.physical, { punch: 2, kick: 4 });
+  assert.deepEqual(system.physical, { punch: 2, kick: 4, hatchet: 0 });
   assert.deepEqual(system.armorTotal, { value: 3 + 5 + 5 + 5 + 0 + 5, max: 30 });
 });
 
