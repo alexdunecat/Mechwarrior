@@ -33,7 +33,8 @@ export class MechData extends UnitData {
       ...super.defineDetails(),
       jumpJets: new fields.BooleanField({ initial: false }),
       heatDissipation: counter(2),
-      punch: new fields.BooleanField({ initial: true })
+      punch: new fields.BooleanField({ initial: true }),
+      hatchet: new fields.BooleanField({ initial: false })
     };
   }
 
@@ -60,7 +61,8 @@ export class MechData extends UnitData {
     });
     this.physical = {
       punch: this.details.punch ? Math.ceil(this.details.tonnage / 30) : 0,
-      kick: Math.ceil(this.details.tonnage / 15)
+      kick: Math.ceil(this.details.tonnage / 15),
+      hatchet: this.details.hatchet ? Math.ceil(this.details.tonnage / 15) : 0
     };
   }
 }

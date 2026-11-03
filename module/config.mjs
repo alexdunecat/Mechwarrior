@@ -5,6 +5,12 @@
 
 export const SYSTEM_ID = "mechwarrior-destiny";
 
+/**
+ * CSS class on the system's windows. It stays the same in the dev build, whose SYSTEM_ID differs,
+ * so the stylesheet works for both.
+ */
+export const CSS_CLASS = "mechwarrior-destiny";
+
 /** Attributes in sheet order. */
 export const ATTRIBUTES = {
   str: { label: "MWD.Attribute.str.long", abbr: "MWD.Attribute.str.abbr" },
@@ -249,6 +255,7 @@ export const HEAT_LEVELS = [
 export const PHYSICAL_ATTACKS = {
   punch: { label: "MWD.Mech.Physical.punch", table: "punch" },
   kick: { label: "MWD.Mech.Physical.kick", table: "kick" },
+  hatchet: { label: "MWD.Mech.Physical.hatchet", table: "hatchet" },
   push: { label: "MWD.Mech.Physical.push", table: null },
   charge: { label: "MWD.Mech.Physical.charge", table: "standard", movement: true },
   dfa: { label: "MWD.Mech.Physical.dfa", table: "punch", movement: true },

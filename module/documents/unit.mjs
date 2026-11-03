@@ -1,14 +1,17 @@
 import {
-  ATTRIBUTES, CLAN_EQUIPMENT, CREW_HIT_DAMAGE, DIFFICULTIES, DISENGAGED_TARGET, MECH_RANGES, MECH_TARGET_NUMBER,
-  MECH_TERRAIN, MIXED_SMALL_TARGET, PHYSICAL_ATTACKS, SKILLS, SYSTEM_ID, UNIT_LOCATIONS, UNIT_TYPES
+  ATTRIBUTES, CLAN_EQUIPMENT, CREW_HIT_DAMAGE, CSS_CLASS, DIFFICULTIES, DISENGAGED_TARGET, MECH_RANGES,
+  MECH_TARGET_NUMBER, MECH_TERRAIN, MIXED_SMALL_TARGET, PHYSICAL_ATTACKS, SKILLS, SYSTEM_ID, UNIT_LOCATIONS,
+  UNIT_TYPES
 } from "../config.mjs";
 import {
-  clusters, coolDown, heatEffects, lbxGroups, missileDamage, physicalDamage, reduceGroups, restartCheck, speedModifier
+  clusters, coolDown, ejectionCost, heatEffects, lbxGroups, missileDamage, physicalDamage, reduceGroups, restartCheck,
+  speedModifier
 } from "../rules/mech.mjs";
 import { crashDamage } from "../rules/vehicle.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, resolveState, rollTest } from "../dice/test-roll.mjs";
 import { attachedSuits, swarmFire, wornSuit } from "./battle-armor.mjs";
+import { executeAsGM } from "../socket.mjs";
 
 /**
  * 'Mech-Scale Combat shared by 'Mechs, combat vehicles and aerospace fighters (p. 38–51): crews,
@@ -216,7 +219,7 @@ export async function dialog({ title, icon, template, context, label }) {
   const content = await foundry.applications.handlebars.renderTemplate(`${TEMPLATES}/dialog/${template}`, context);
   const data = await foundry.applications.api.DialogV2.wait({
     window: { title, icon },
-    classes: [SYSTEM_ID, "mwd-dialog"],
+    classes: [CSS_CLASS, "mwd-dialog"],
     position: { width: 460 },
     content,
     buttons: [{
@@ -422,6 +425,7 @@ export async function rollPhysicalAttack(unit) {
   }
   const mech = unit.type === "mech";
   const available = mech ? ["punch", "kick", "push", "charge", "dfa"] : ["ram"];
+  if ( mech && unit.system.details.hatchet ) available.splice(2, 0, "hatchet");
   const { units } = targetsOf(unit);
   const context = {
     types: available.map(value => ({
@@ -703,6 +707,55 @@ export async function rollPilotingTest(unit, { consequence = true, pilotDamageOn
     label, parts, difficulty: data.difficulty, untrained: !piloting.skill, speaker: unit,
     damage: successEffect ?? failDamage
   });
+}
+
+/* -------------------------------------------- */
+/*  Pilot ejection                              */
+/* -------------------------------------------- */
+
+/**
+ * Pilot Ejection (p. 47): a conscious pilot abandons a doomed 'Mech, fighter or vehicle. A player
+ * spends all of their Plot Points (at least 1, they go to the GM's pool) and escapes without
+ * penalty; with none, an Average Piloting Test decides it, and a failure's consequences are the
+ * GM's call. NPCs have no Plot Points, so they always roll.
+ * @param {Actor} unit
+ * @returns {Promise<ChatMessage|null>}
+ */
+export async function eject(unit) {
+  if ( unit.type === "battleArmor" ) return null;
+  const pilot = getPilot(unit);
+  if ( !pilot || pilotUnconscious(pilot) ) {
+    warn(pilot ? "MWD.Mech.Warn.Unconscious" : "MWD.Mech.Warn.NoPilot");
+    return null;
+  }
+  const cost = ejectionCost(pilot.type === "character" ? pilot.system.plotPoints.value : 0);
+  const label = t("MWD.Eject.Title", { name: pilot.name });
+  const confirmed = await foundry.applications.api.DialogV2.confirm({
+    window: { title: label, icon: "fa-solid fa-parachute-box" },
+    classes: [CSS_CLASS, "mwd-dialog"],
+    content: `<p>${t(cost.plotPoints ? "MWD.Eject.ConfirmPlotPoints" : "MWD.Eject.ConfirmTest",
+      { name: pilot.name, unit: unit.name, n: cost.plotPoints })}</p>`
+  });
+  if ( !confirmed ) return null;
+
+  if ( cost.test ) {
+    const piloting = unitParts(unit, "piloting");
+    const parts = [...piloting.parts];
+    const penalty = pilotingPenalty(unit);
+    if ( penalty ) parts.push({ label: t(penalty.label), value: penalty.value });
+    return rollTest(pilot, {
+      label, parts, difficulty: cost.test, untrained: !piloting.skill, speaker: unit,
+      damage: { kind: "eject", mechUuid: unit.uuid, applyOn: "success" }
+    });
+  }
+  await pilot.update({ "system.plotPoints.value": 0 });
+  await executeAsGM("adjustGmPool", { delta: cost.plotPoints });
+  await unit.update({ "system.pilot": "" });
+  return ChatMessage.create(applyDefaultMode({
+    speaker: ChatMessage.getSpeaker({ actor: pilot }),
+    content: `<div class="mwd-card mwd-pp-card"><i class="fa-solid fa-parachute-box"></i> `
+      + `${t("MWD.Eject.Spent", { name: pilot.name, unit: unit.name, n: cost.plotPoints })}</div>`
+  }));
 }
 
 /** Penalty to Piloting Tests from damage or a stunned crew. */

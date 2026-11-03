@@ -1,5 +1,5 @@
 import {
-  ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, SYSTEM_ID,
+  ATTRIBUTES, CSS_CLASS, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, RANGE_CODES, SKILLS, SPECIALTIES,
   TRAIT_EFFECTS, TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
@@ -12,7 +12,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
  */
 export class MWDItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: [SYSTEM_ID, "mwd-sheet", "item"],
+    classes: [CSS_CLASS, "mwd-sheet", "item"],
     position: { width: 480, height: "auto" },
     window: { resizable: true },
     form: { submitOnChange: true }

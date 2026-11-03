@@ -10,8 +10,9 @@ import { HEAT_LEVELS, MECH_HIT_TABLE, MECH_LOCATIONS } from "../config.mjs";
 /**
  * Where a hit lands (p. 44–45).
  * @param {number} roll        2D6 (or 1D6 for kicks) result.
- * @param {"standard"|"punch"|"kick"} [table="standard"]  Punches and death from above turn leg hits
- *   into the matching arm; kicks roll 1D6 for a leg (p. 43).
+ * @param {"standard"|"punch"|"kick"|"hatchet"} [table="standard"]  Punches and death from above turn
+ *   leg hits into the matching arm; kicks roll 1D6 for a leg (p. 43). Hatchets reroll leg hits, see
+ *   {@link rerollsLegs}.
  * @returns {{location: string, critChance: boolean, headHit: boolean}}
  */
 export function hitLocation(roll, table = "standard") {
@@ -19,6 +20,16 @@ export function hitLocation(roll, table = "standard") {
   let location = MECH_HIT_TABLE[roll] ?? "torso";
   if ( table === "punch" ) location = { rightLeg: "rightArm", leftLeg: "leftArm" }[location] ?? location;
   return { location, critChance: roll === 2, headHit: location === "head" };
+}
+
+/**
+ * Whether a hit location table rerolls leg hits (a hatchet, p. 43).
+ * @param {string} table
+ * @param {string} location
+ * @returns {boolean}
+ */
+export function rerollsLegs(table, location) {
+  return (table === "hatchet") && !!MECH_LOCATIONS[location]?.leg;
 }
 
 /**
@@ -302,7 +313,7 @@ export function speedModifier(mine, theirs) {
 
 /**
  * Damage of a physical attack (p. 43), rounded up.
- * @param {"punch"|"kick"|"push"|"charge"|"dfa"|"ram"} type
+ * @param {"punch"|"kick"|"hatchet"|"push"|"charge"|"dfa"|"ram"} type
  * @param {object} data
  * @param {number} data.tonnage        Attacker's tonnage.
  * @param {number} [data.targetTonnage=0]
@@ -314,10 +325,26 @@ export function physicalDamage(type, { tonnage, targetTonnage = 0, movement = 0 
   const move = Math.max(1, movement);
   switch ( type ) {
     case "punch": return { damage: Math.ceil(tonnage / 30), self: 0, selfTable: null };
-    case "kick": return { damage: Math.ceil(tonnage / 15), self: 0, selfTable: null };
+    case "kick":
+    case "hatchet": return { damage: Math.ceil(tonnage / 15), self: 0, selfTable: null };
     case "charge": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(targetTonnage / 30), selfTable: "standard" };
     case "ram": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(targetTonnage / 30), selfTable: "kick" };
     case "dfa": return { damage: Math.ceil((tonnage / 30) * move), self: Math.ceil(tonnage / 30), selfTable: "kick" };
     default: return { damage: 0, self: 0, selfTable: null };
   }
+}
+
+/* -------------------------------------------- */
+/*  Pilot ejection                              */
+/* -------------------------------------------- */
+
+/**
+ * What abandoning a doomed unit costs (p. 47): all of the player's Plot Points, at least 1. With
+ * none to spend, an Average Piloting Test.
+ * @param {number} plotPoints  The pilot's Plot Points (0 for NPCs).
+ * @returns {{plotPoints: number, test: string|null}}
+ */
+export function ejectionCost(plotPoints) {
+  const n = Math.max(0, Math.floor(Number(plotPoints) || 0));
+  return n ? { plotPoints: n, test: null } : { plotPoints: 0, test: "average" };
 }

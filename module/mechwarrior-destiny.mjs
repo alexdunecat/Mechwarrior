@@ -9,6 +9,7 @@ import {
   ArmorData, GearData, MechEquipmentData, MechWeaponData, SkillData, TraitData, WeaponData
 } from "./data/items.mjs";
 import { MWDActor } from "./documents/actor.mjs";
+import { MWDItem } from "./documents/item.mjs";
 import { CharacterSheet } from "./sheets/character-sheet.mjs";
 import { NpcSheet } from "./sheets/npc-sheet.mjs";
 import { UnitSheet } from "./sheets/unit-sheet.mjs";
@@ -44,6 +45,7 @@ Hooks.once("init", () => {
   });
 
   CONFIG.Actor.documentClass = MWDActor;
+  CONFIG.Item.documentClass = MWDItem;
   CONFIG.Combat.documentClass = MWDCombat;
   CONFIG.Combat.initiative = { formula: INITIATIVE_FORMULA, decimals: 0 };
   Object.assign(CONFIG.Actor.dataModels, {
@@ -153,7 +155,7 @@ function refreshWearer(uuid) {
   const person = uuid ? fromUuidSync(uuid) : null;
   if ( !person?.isPerson ) return;
   person.reset();
-  person.sheet?.rendered && person.sheet.render();
+  if ( person.sheet?.rendered ) person.sheet.render();
 }
 
 function registerHandlebarsHelpers() {

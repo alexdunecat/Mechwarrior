@@ -1,12 +1,21 @@
 import {
   ATTRIBUTES, DAMAGE_TYPES, MECH_EQUIPMENT_KINDS, MECH_RANGES, PERSONAL_RANGES, RANGE_CODES, SKILLS, SPECIALTIES, TRAIT_EFFECTS,
-  TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
+  SYSTEM_ID, TRAIT_POLARITIES, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
 import { improveRange } from "../rules/advancement.mjs";
 import { meleeStrBonus } from "../rules/tests.mjs";
 import { counter } from "./actor-base.mjs";
 
 const { fields } = foundry.data;
+
+/**
+ * An item's name as printed in the book, kept in a flag when the name was translated.
+ * @param {Item|null} item
+ * @returns {string}
+ */
+function bookName(item) {
+  return item?.flags?.[SYSTEM_ID]?.sourceName ?? item?.name ?? "";
+}
 
 const labels = obj => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v.label ?? v]));
 
@@ -279,18 +288,27 @@ export class MechEquipmentData extends foundry.abstract.TypeDataModel {
     return this.shots.max > 0;
   }
 
-  /** What the ammo feeds: "SRM" for "Ammo: SRM". */
+  /**
+   * What the ammo feeds: ["SRM"] for "Ammo: SRM", ["Machine Gun", "SRM"] for "Ammo: Machine Gun/SRM".
+   * Uses the book name of an item whose name was translated.
+   * @type {string[]}
+   */
   get ammoFor() {
-    return this.parent?.name?.replace(/^Ammo:\s*/i, "").trim() ?? "";
+    return bookName(this.parent).replace(/^Ammo:\s*/i, "").split("/").map(s => s.trim()).filter(Boolean);
   }
 
   /**
-   * Whether this ammo feeds a weapon: the ammo name appears in the weapon's name.
+   * Whether this ammo feeds a weapon: one of the names it lists appears in the weapon's book name.
+   * "Autocannon" also feeds AC, LB-X AC and Ultra AC weapons.
    * @param {Item} weapon
    * @returns {boolean}
    */
   feeds(weapon) {
-    const what = this.ammoFor.toLowerCase();
-    return !!what && weapon.name.toLowerCase().includes(what);
+    const name = bookName(weapon).toLowerCase();
+    return this.ammoFor.some(what => {
+      const kind = what.toLowerCase();
+      if ( name.includes(kind) ) return true;
+      return (kind === "autocannon") && /\bac\b|ac\//.test(name);
+    });
   }
 }

@@ -1,12 +1,11 @@
-import {
-  ATTRIBUTES, DIFFICULTIES, DISENGAGED_TARGET, MIXED_LARGE_TARGET, PLOT_POINTS, SKILLS, SYSTEM_ID
-} from "../config.mjs";
+import { ATTRIBUTES, CSS_CLASS, DIFFICULTIES, DISENGAGED_TARGET, MIXED_LARGE_TARGET, PLOT_POINTS, SKILLS, SYSTEM_ID } from "../config.mjs";
 import { kiaDice } from "../rules/condition.mjs";
 import { resolvePersonalDamage } from "../rules/damage.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
 import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
 import * as BattleArmor from "./battle-armor.mjs";
 import * as Fighter from "./fighter.mjs";
+import { translateCompendiumDocument } from "./compendium.mjs";
 import { skillItemData } from "./item-data.mjs";
 import * as Mech from "./mech.mjs";
 import * as Mixed from "./mixed.mjs";
@@ -20,6 +19,12 @@ const ATTACK_TEMPLATE = `systems/${SYSTEM_ID}/templates/dialog/attack-dialog.hbs
  * Actor document for MechWarrior: Destiny.
  */
 export class MWDActor extends Actor {
+
+  /** Actors in the system's compendiums show in the client's language. @override */
+  prepareBaseData() {
+    super.prepareBaseData();
+    translateCompendiumDocument(this);
+  }
 
   /** @override */
   async _preUpdate(changes, options, user) {
@@ -95,7 +100,7 @@ export class MWDActor extends Actor {
     const content = await foundry.applications.handlebars.renderTemplate(DIALOG_TEMPLATE, context);
     const data = await foundry.applications.api.DialogV2.wait({
       window: { title: game.i18n.format("MWD.Test.Title", { name: this.name }), icon: "fa-solid fa-dice" },
-      classes: [SYSTEM_ID, "mwd-dialog"],
+      classes: [CSS_CLASS, "mwd-dialog"],
       position: { width: 420 },
       content,
       buttons: [{
@@ -321,7 +326,7 @@ export class MWDActor extends Actor {
     const content = await foundry.applications.handlebars.renderTemplate(ATTACK_TEMPLATE, context);
     const data = await foundry.applications.api.DialogV2.wait({
       window: { title: game.i18n.format("MWD.Attack.Title", { weapon: weapon.name }), icon: "fa-solid fa-crosshairs" },
-      classes: [SYSTEM_ID, "mwd-dialog"],
+      classes: [CSS_CLASS, "mwd-dialog"],
       position: { width: 420 },
       content,
       buttons: [{
@@ -583,6 +588,11 @@ export class MWDActor extends Actor {
   /** @see Mixed.applySmallArms */
   async applySmallArms(damage) {
     return this.isUnit ? Mixed.applySmallArms(this, damage) : null;
+  }
+
+  /** @see Unit.eject */
+  async eject() {
+    return this.isUnit ? Unit.eject(this) : null;
   }
 
   /** @see Unit.rollPilotingTest */

@@ -1,6 +1,7 @@
 import {
-  ATTRIBUTES, BOOK_TRAITS, CLAN_CREATION, CREATION, EXPERIENCE_LEVELS, FACTION_GROUPS, FACTIONS, FREE_WEAPONS, HARDWARE_CONVERSION, LIFE_MODULES,
-  LIFE_MODULE_SLOTS, OPTIONAL_LIFE_MODULES, SKILLS, SPECIALTIES, STARTING_ARMOR, SYSTEM_ID, UNIT_TYPES, WEIGHT_CLASSES
+  ATTRIBUTES, BOOK_TRAITS, CLAN_CREATION, CREATION, CSS_CLASS, EXPERIENCE_LEVELS, FACTIONS, FACTION_GROUPS,
+  FREE_WEAPONS, HARDWARE_CONVERSION, LIFE_MODULES, LIFE_MODULE_SLOTS, OPTIONAL_LIFE_MODULES, SKILLS, SPECIALTIES,
+  STARTING_ARMOR, SYSTEM_ID, UNIT_TYPES, WEIGHT_CLASSES
 } from "../config.mjs";
 import {
   attributePointsSpent, creationBudget, finalSkills, hasHardwareSkills, isClanFaction, itemLimits, lifeModuleAllowed,
@@ -54,7 +55,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   static DEFAULT_OPTIONS = {
-    classes: [SYSTEM_ID, "mwd-sheet", "mwd-creator"],
+    classes: [CSS_CLASS, "mwd-sheet", "mwd-creator"],
     window: { icon: "fa-solid fa-wand-magic-sparkles", resizable: true },
     position: { width: 800, height: 740 },
     actions: {

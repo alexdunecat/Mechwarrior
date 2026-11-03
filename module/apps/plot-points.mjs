@@ -1,4 +1,4 @@
-import { PLOT_POINTS, PLOT_POINT_USES, SYSTEM_ID } from "../config.mjs";
+import { CSS_CLASS, PLOT_POINTS, PLOT_POINT_USES, SYSTEM_ID } from "../config.mjs";
 import { applyDefaultMode } from "../dice/test-roll.mjs";
 import { executeAsGM } from "../socket.mjs";
 
@@ -63,7 +63,7 @@ export async function startNewSession() {
 export class PlotPointsPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "mwd-plot-points",
-    classes: [SYSTEM_ID, "mwd-panel"],
+    classes: [CSS_CLASS, "mwd-panel"],
     window: { title: "MWD.PlotPoints.label", icon: "fa-solid fa-star", resizable: false, minimizable: true },
     position: { width: 300, height: "auto", top: 80, left: 120 },
     actions: {

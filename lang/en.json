@@ -559,7 +559,7 @@
         "push": "Push",
         "charge": "Charge",
         "dfa": "Death from Above",
-        "Hint": "Pointblank only. Punch: no arm weapons fired this Narration. Death from Above: needs a jump.",
+        "Hint": "Pointblank only. Punch and hatchet: no arm weapons fired this Narration. Death from Above: needs a jump.",
         "Movement": "Movement spent",
         "MovementHint": "Charge and Death from Above deal (tonnage / 30) × Movement.",
         "Note": {
@@ -568,9 +568,11 @@
           "push": "The target must make a Piloting Test to stay standing.",
           "charge": "Both 'Mechs must make a Piloting Test to stay standing.",
           "dfa": "Both 'Mechs must make a Piloting Test to stay standing.",
-          "ram": "The rammer takes the target's Tonnage/30 in 2-point clusters."
+          "ram": "The rammer takes the target's Tonnage/30 in 2-point clusters.",
+          "hatchet": ""
         },
-        "ram": "Ram"
+        "ram": "Ram",
+        "hatchet": "Hatchet"
       },
       "Damage": {
         "Self": "{n} to attacker",
@@ -585,7 +587,8 @@
         "Falls": "The 'Mech falls.",
         "PilotingTest": "Piloting Test to stay standing.",
         "BuyHead": "Plot Point: full head damage (+{n})",
-        "FullHead": "{source}: full head hit"
+        "FullHead": "{source}: full head hit",
+        "LegRerolled": "Location {roll}: {location}, rerolled (hatchet)"
       },
       "Crit": {
         "label": "Critical Hits",
@@ -649,7 +652,9 @@
         "WeaponDestroyed": "That weapon is destroyed.",
         "NoJumpJets": "This 'Mech has no Jump Jets.",
         "NoAmmo": "This weapon is out of ammunition."
-      }
+      },
+      "HasHatchet": "Has a hatchet",
+      "HatchetHint": "Hatchet attack (p. 43): Tonnage/15 damage; no arm Weapon Groups fired this Narration; leg hits are rerolled."
     },
     "Unit": {
       "Status": {
@@ -1387,6 +1392,16 @@
         "NoPhysical": "Battle armor makes no physical attacks; use a leg or swarm attack.",
         "NoPiloting": "Battle armor never makes Piloting Tests (p. 218)."
       }
+    },
+    "Eject": {
+      "Button": "Eject",
+      "Abandon": "Abandon",
+      "Hint": "Pilot Ejection (p. 47): escape a doomed unit while conscious. Costs all of your Plot Points (at least 1); with none, an Average Piloting Test.",
+      "Title": "{name}: ejection",
+      "ConfirmPlotPoints": "{name} escapes from {unit} without penalty by spending all {n} of their Plot Points; they go to the GM's pool.",
+      "ConfirmTest": "{name} has no Plot Points: an Average Piloting Test. If it fails, the ejection fails and the GM decides what happens.",
+      "Spent": "{name} ejects from {unit}, spending {n} Plot Points.",
+      "Apply": "Leave the unit"
     }
   }
 }
