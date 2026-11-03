@@ -1,4 +1,4 @@
-import { MECH_LOCATION_KEYS, MECH_LOCATIONS } from "../config.mjs";
+import { CLAN_EQUIPMENT, MECH_LOCATION_KEYS, MECH_LOCATIONS } from "../config.mjs";
 import { heatEffects, maxMovement } from "../rules/mech.mjs";
 import { counter } from "./actor-base.mjs";
 import { UnitData, locationField } from "./actor-unit.mjs";
@@ -47,8 +47,11 @@ export class MechData extends UnitData {
 
     // Heat penalties use the tokens left after the last cool down (p. 48).
     this.heatEffects = heatEffects(this.heat.level);
+    // MASC adds Movement while it works (p. 216).
+    const equipment = this.parent?.itemTypes?.mechEquipment ?? [];
+    this.masc = equipment.some(e => (e.system.kind === "masc") && !e.system.destroyed);
     this.maxMovement = maxMovement({
-      base: this.details.movement,
+      base: this.details.movement + (this.masc ? CLAN_EQUIPMENT.mascMovement : 0),
       heat: this.heat.level,
       legHits: this.crits.legs,
       legDestroyed: this.legDestroyed,

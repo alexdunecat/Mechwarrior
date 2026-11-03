@@ -13,6 +13,9 @@ import { CHARACTERS } from "../packs-src/characters.mjs";
 import { NPC_GROUPS } from "../packs-src/npcs.mjs";
 import { ARMOR, INVENTORY, WEAPON_GROUPS } from "../packs-src/personal.mjs";
 import { FIGHTERS, MECHS, VEHICLES } from "../packs-src/units.mjs";
+import {
+  BATTLE_ARMOR, CLAN_FIGHTERS, CLAN_MECH_WEAPONS, CLAN_MECHS, CLAN_VEHICLES
+} from "../packs-src/clan.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EN = JSON.parse(readFileSync(join(ROOT, "lang/en.json"), "utf8")).MWD;
@@ -28,6 +31,8 @@ export const PACKS = [
   { name: "mechs", label: "BattleMechs", type: "Actor" },
   { name: "vehicles", label: "Combat Vehicles", type: "Actor" },
   { name: "fighters", label: "Aerospace Fighters", type: "Actor" },
+  { name: "battleArmor", label: "Battle Armor", type: "Actor" },
+  { name: "mechWeapons", label: "'Mech Weapons", type: "Item" },
   { name: "npcs", label: "NPCs", type: "Actor" },
   { name: "characters", label: "Sample Characters", type: "Actor" }
 ];
@@ -238,7 +243,7 @@ export function traitData({ key = "", name, polarity, text = "" }) {
 const LOCATION_CODES = {
   H: "head", T: "torso", RA: "rightArm", LA: "leftArm", RL: "rightLeg", LL: "leftLeg",
   Front: "front", Rear: "rear", Turret: "turret", Rotor: "rotor",
-  N: "nose", RW: "rightWing", LW: "leftWing", A: "aft"
+  N: "nose", RW: "rightWing", LW: "leftWing", A: "aft", Torso: "torso", Body: "body"
 };
 
 const EQUIPMENT_LOCATIONS = { Torso: "torso", Head: "head", "Left Arm": "leftArm", "Right Arm": "rightArm",
@@ -258,12 +263,13 @@ export function mechWeaponData(row, unitType) {
   let name = label.replace(/^Primary:\s*/, "");
   const bomb = name === "Bomb";
 
-  const m = /^(\d+)(?:\+(M+))?(?: \(Max (\d+)\))?( \(or H\))?$/.exec(code);
+  // "4 (C4)": LB-X cluster value (p. 216).
+  const m = /^(\d+)(?: \(C(\d+)\))?(?:\+(M+))?(?: \(Max (\d+)\))?( \(or H\))?$/.exec(code);
   if ( !m ) throw new Error(`Unknown damage code "${code}" for ${name}`);
 
   const mounts = Object.fromEntries(UNIT_TYPES[unitType].locations.map(k => [k, false]));
   let rear = false;
-  if ( !bomb ) {
+  if ( !bomb && (loc !== "—") ) {
     for ( const part of loc.split(",").map(p => p.trim()) ) {
       const rm = /^(\w+)\s*\(Rear\)$/.exec(part);
       if ( rm ) rear = true;
@@ -285,9 +291,11 @@ export function mechWeaponData(row, unitType) {
     system: {
       primary,
       damage: Number(m[1]),
-      missiles: m[2]?.length ?? 0,
-      maxDamage: Number(m[3] ?? 0),
-      heatAlternative: !!m[4],
+      cluster: Number(m[2] ?? 0),
+      missiles: m[3]?.length ?? 0,
+      maxDamage: Number(m[4] ?? 0),
+      heatAlternative: !!m[5],
+      streak: /Streak/.test(name),
       types: types === "—" ? "" : types,
       heat: heat === "—" ? 0 : heat.length,
       count,
@@ -298,17 +306,35 @@ export function mechWeaponData(row, unitType) {
   };
 }
 
+const EQUIPMENT_KINDS = [
+  [/^Ammo:/, "ammo"], [/^Jump Jets$/, "jumpJets"], [/^Anti-Missile System$/, "ams"], [/^MASC$/, "masc"], [/^A-Pods?$/, "apod"]
+];
+
 /**
- * Equipment row: "Ammo: SRM (Torso)", "Jump Jets", or anything else.
+ * Equipment row: "Ammo: SRM (Torso)", "Ammo: SRM (Torso, CASE)", "A-Pods [4]" (tracked shots),
+ * "Jump Jets", or anything else. Ammo listed for several locations becomes one bin in each.
+ * Gauss rifle ammo does not explode (p. 216).
  * @param {string} row
- * @returns {object}
+ * @returns {object[]}
  */
-export function mechEquipmentData(row) {
-  const m = /^(.*?)\s*\(([^)]+)\)$/.exec(row);
-  const location = m && EQUIPMENT_LOCATIONS[m[2]] ? EQUIPMENT_LOCATIONS[m[2]] : "";
-  const name = location ? m[1] : row;
-  const kind = name.startsWith("Ammo:") ? "ammo" : (name === "Jump Jets") ? "jumpJets" : "other";
-  return { name, type: "mechEquipment", img: "icons/svg/item-bag.svg", system: { kind, location } };
+export function mechEquipmentItems(row) {
+  let text = row;
+  let shots = 0;
+  const sm = /^(.*?)\s*\[(\d+)\]$/.exec(text);
+  if ( sm ) [text, shots] = [sm[1], Number(sm[2])];
+  const m = /^(.*?)\s*\(([^)]+)\)$/.exec(text);
+  const parts = m ? m[2].split(",").map(p => p.trim()) : [];
+  const locations = parts.filter(p => p in EQUIPMENT_LOCATIONS).map(p => EQUIPMENT_LOCATIONS[p]);
+  const isCase = parts.includes("CASE");
+  const name = (locations.length || isCase) ? m[1] : text;
+  const kind = EQUIPMENT_KINDS.find(([re]) => re.test(name))?.[1] ?? "other";
+  const system = { kind, location: "" };
+  if ( isCase ) system.case = true;
+  if ( (kind === "ammo") && /Gauss/.test(name) ) system.explosive = false;
+  if ( shots ) system.shots = { spent: 0, max: shots };
+  return (locations.length ? locations : [""]).map(location => ({
+    name, type: "mechEquipment", img: "icons/svg/item-bag.svg", system: { ...system, location }
+  }));
 }
 
 /** Armor Diagram of a 'Mech: head, torso, arms and legs as [Armor, Structure]. */
@@ -324,7 +350,7 @@ function mechLocations({ head, torso, arms, legs }) {
  * @param {"mech"|"vehicle"|"fighter"} type
  * @returns {object}
  */
-export function unitData(unit, type) {
+export function unitData(unit, type, { clan = false, omni = false } = {}) {
   const details = {
     model: unit.model ?? "",
     weightClass: unit.weight,
@@ -332,6 +358,8 @@ export function unitData(unit, type) {
     movement: unit.movement,
     tags: unit.tags
   };
+  if ( clan ) details.clan = true;
+  if ( omni ) details.omni = true;
   // Compendium units come with a regular crew, so the GM can field them as opponents right away.
   const system = { details, builtInCrew: { active: true, experience: "regular", gunnery: 5, piloting: 5, initiative: 0 } };
   if ( type === "mech" ) {
@@ -344,12 +372,17 @@ export function unitData(unit, type) {
     system.locations = {
       front: loc(front), rightSide: loc(sides), leftSide: loc(sides), rear: loc(rear), turret: loc(turret), rotor: loc(rotor)
     };
+  } else if ( type === "battleArmor" ) {
+    Object.assign(details, { tonnage: unit.mass, jumpJets: !!unit.jump, legAttack: unit.leg !== false,
+      swarmAttack: unit.swarm !== false });
+    system.armor = { pips: unit.pips, segments: 0 };
   } else {
     details.heatDissipation = unit.heat;
     const { nose, wings, aft } = unit.armor;
     system.locations = { nose: { armor: nose }, rightWing: { armor: wings }, leftWing: { armor: wings }, aft: { armor: aft } };
     system.structure = { max: unit.structure };
   }
+  if ( unit.designation ) system.notes = html(`Inner Sphere designation: ${unit.designation}.`);
   const name = unit.model ? `${unit.name} ${unit.model}` : unit.name;
   return {
     name,
@@ -357,8 +390,9 @@ export function unitData(unit, type) {
     system,
     prototypeToken: { name: unit.name, actorLink: false },
     items: [
+      ...(unit.personal ?? []).map(carriedWeapon),
       ...unit.weapons.map(row => mechWeaponData(row, type)),
-      ...unit.equipment.map(mechEquipmentData)
+      ...unit.equipment.flatMap(mechEquipmentItems)
     ]
   };
 }
@@ -391,10 +425,16 @@ export function npcData(npc) {
 }
 
 /** Unit entries by catalog name, for linking a sample character's Hardware. */
+const CLAN = { clan: true };
+const OMNI = { clan: true, omni: true };
 const UNIT_INDEX = new Map([
   ...MECHS.map(u => [u.name, ["mechs", u, "mech"]]),
   ...VEHICLES.map(u => [u.name, ["vehicles", u, "vehicle"]]),
-  ...FIGHTERS.map(u => [u.name, ["fighters", u, "fighter"]])
+  ...FIGHTERS.map(u => [u.name, ["fighters", u, "fighter"]]),
+  ...CLAN_MECHS.map(u => [u.name, ["mechs", u, "mech", OMNI]]),
+  ...CLAN_VEHICLES.map(u => [u.name, ["vehicles", u, "vehicle", CLAN]]),
+  ...CLAN_FIGHTERS.map(u => [u.name, ["fighters", u, "fighter", OMNI]]),
+  ...BATTLE_ARMOR.map(u => [u.name, ["battleArmor", u, "battleArmor", CLAN]])
 ]);
 
 /**
@@ -409,8 +449,8 @@ export function characterData(pc) {
   const flags = {};
   let notes = "";
   if ( unit ) {
-    const [pack, entry, type] = unit;
-    flags.sampleHardware = `Compendium.${SYSTEM_ID}.${pack}.Actor.${stableId(pack, unitData(entry, type).name)}`;
+    const [pack, entry, type, tech] = unit;
+    flags.sampleHardware = `Compendium.${SYSTEM_ID}.${pack}.Actor.${stableId(pack, unitData(entry, type, tech).name)}`;
   } else if ( pc.hardware ) notes = html(`Hardware: ${pc.hardware} (personal vehicle, p. 172–174).`);
   return {
     name: pc.name,
@@ -493,11 +533,19 @@ function grouped(pack, groups) {
 
 const WEIGHT_FOLDERS = { light: "Light", medium: "Medium", heavy: "Heavy", assault: "Assault" };
 
-/** Units grouped into weight-class folders. */
-function unitPack(pack, units, type) {
-  return grouped(pack, Object.entries(WEIGHT_FOLDERS)
-    .map(([key, label]) => [label, units.filter(u => u.weight === key).map(u => unitData(u, type))])
-    .filter(([, docs]) => docs.length));
+/**
+ * Units grouped into weight-class folders, then the Clan Invasion units in folders of their own.
+ * @param {string} pack
+ * @param {object[]} units
+ * @param {string} type
+ * @param {Array<[string, object[], object]>} [extra]  [folder, units, tech flags]
+ */
+function unitPack(pack, units, type, extra = []) {
+  return grouped(pack, [
+    ...Object.entries(WEIGHT_FOLDERS)
+      .map(([key, label]) => [label, units.filter(u => u.weight === key).map(u => unitData(u, type))]),
+    ...extra.map(([label, list, tech]) => [label, list.map(u => unitData(u, type, tech))])
+  ].filter(([, docs]) => docs.length));
 }
 
 /**
@@ -518,9 +566,11 @@ export function buildPacks() {
       ["Positive Traits", traits.filter(t => t.system.polarity === "positive")],
       ["Negative Traits", traits.filter(t => t.system.polarity === "negative")]
     ]),
-    mechs: unitPack("mechs", MECHS, "mech"),
-    vehicles: unitPack("vehicles", VEHICLES, "vehicle"),
-    fighters: unitPack("fighters", FIGHTERS, "fighter"),
+    mechs: unitPack("mechs", MECHS, "mech", [["Clan OmniMechs (3050)", CLAN_MECHS, OMNI]]),
+    vehicles: unitPack("vehicles", VEHICLES, "vehicle", [["Clan (3050)", CLAN_VEHICLES, CLAN]]),
+    fighters: unitPack("fighters", FIGHTERS, "fighter", [["Clan OmniFighters (3050)", CLAN_FIGHTERS, OMNI]]),
+    battleArmor: BATTLE_ARMOR.map((u, i) => finalize("battleArmor", unitData(u, "battleArmor", CLAN), { sort: (i + 1) * 100 })),
+    mechWeapons: grouped("mechWeapons", [["Clan (3050)", CLAN_MECH_WEAPONS.map(row => mechWeaponData(row, "mech"))]]),
     npcs: grouped("npcs", NPC_GROUPS.map(g => [g.folder, g.npcs.map(npcData)])),
     characters: CHARACTERS.map((pc, i) => finalize("characters", characterData(pc), { sort: (i + 1) * 100 }))
   };

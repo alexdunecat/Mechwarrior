@@ -5,7 +5,8 @@
       "npc": "NPC",
       "mech": "Мех",
       "vehicle": "Боевая техника",
-      "fighter": "Аэрокосмический истребитель"
+      "fighter": "Аэрокосмический истребитель",
+      "battleArmor": "Боевая броня"
     },
     "Item": {
       "skill": "Навык",
@@ -398,6 +399,10 @@
       "showPlotPoints": {
         "name": "Показывать панель Plot Points при входе",
         "hint": "Её всегда можно открыть по Shift+P или кнопкой со звездой в инструментах токенов."
+      },
+      "era": {
+        "name": "Эпоха кампании",
+        "hint": "3050 добавляет кланы и фракции эпохи вторжения в создание персонажа (с. 198)."
       }
     },
     "Initiative": {
@@ -522,7 +527,13 @@
         "jumpJets": "Прыжковые двигатели",
         "other": "Другое",
         "Location": "Расположение",
-        "LocationHint": "Боеприпасы могут взорваться при критическом попадании в эту часть (с. 45)."
+        "LocationHint": "Боеприпасы могут взорваться при критическом попадании в эту часть (с. 45).",
+        "ams": "Противоракетная система (AMS)",
+        "apod": "A-Pod (противопехотный заряд)",
+        "masc": "MASC",
+        "Inert": "не взрывается",
+        "Shot": "Выстрел: щёлкните, чтобы отметить",
+        "ShotsLeft": "выстрелов: {n}"
       },
       "Attack": {
         "Gunnery": "Gunnery",
@@ -636,7 +647,8 @@
         "Shutdown": "Двигатель отключён.",
         "Unconscious": "Пилот без сознания.",
         "WeaponDestroyed": "Это оружие уничтожено.",
-        "NoJumpJets": "У этого меха нет прыжковых двигателей."
+        "NoJumpJets": "У этого меха нет прыжковых двигателей.",
+        "NoAmmo": "У этого оружия кончились боеприпасы."
       }
     },
     "Unit": {
@@ -777,7 +789,9 @@
       "Group": {
         "successor": "Государства-наследники",
         "periphery": "Периферия",
-        "other": "Другие"
+        "other": "Другие",
+        "clan": "Кланы",
+        "minor": "Малые государства"
       },
       "capellan": "Капелланская Конфедерация (Дом Ляо)",
       "draconis": "Синдикат Дракона (Дом Курита)",
@@ -791,7 +805,18 @@
       "comstar": "Комстар",
       "mercenary": "Наёмники",
       "pirate": "Пираты (независимые)",
-      "unaffiliated": "Без принадлежности"
+      "unaffiliated": "Без принадлежности",
+      "ghostBear": "Клан Призрачного Медведя",
+      "jadeFalcon": "Клан Нефритового Сокола",
+      "smokeJaguar": "Клан Дымчатого Ягуара",
+      "wolf": "Клан Волка",
+      "diamondShark": "Клан Алмазной Акулы",
+      "novaCat": "Клан Новой Кошки",
+      "steelViper": "Клан Стальной Гадюки",
+      "fedcomDavion": "Федеративное Содружество (Дэвион)",
+      "fedcomSteiner": "Федеративное Содружество (Штайнер)",
+      "rasalhague": "Свободная Республика Расалхаг",
+      "stIves": "Сент-Ив Компакт"
     },
     "LifeModules": {
       "childhood": {
@@ -805,7 +830,10 @@
         "spacerFamily": "Spacer Family (семья космолётчиков)",
         "street": "Street (улица)",
         "warOrphan": "War Orphan (сирота войны)",
-        "whiteCollar": "White Collar (семья служащих)"
+        "whiteCollar": "White Collar (семья служащих)",
+        "clanApprenticeship": "Clan Apprenticeship (ученичество в клане)",
+        "freebornSibko": "Freeborn Sibko (сибко вольнорождённых)",
+        "truebornSibko": "Trueborn Sibko (сибко истиннорождённых)"
       },
       "education": {
         "technicalCollege": "Technical College (технический колледж)",
@@ -817,7 +845,11 @@
         "militaryAcademy": "Military Academy (военная академия)",
         "militaryEnlistment": "Military Enlistment (призыв на службу)",
         "familyTraining": "Family Training (семейное обучение)",
-        "officerCandidate": "Officer Candidate School (офицерские курсы)"
+        "officerCandidate": "Officer Candidate School (офицерские курсы)",
+        "mechwarriorTrainingClan": "MechWarrior Training (Clan) (подготовка мехвоина)",
+        "elementalTrainingClan": "Elemental Training (Clan) (подготовка элементала)",
+        "aerospaceTrainingClan": "Aerospace Pilot Training (Clan) (подготовка аэропилота)",
+        "infantryTrainingClan": "Infantry Training (Clan) (пехотная подготовка)"
       },
       "realLife": {
         "agitator": "Agitator (агитатор)",
@@ -836,7 +868,15 @@
         "thinkTank": "Think Tank (аналитический центр)",
         "tourOfDuty": "Tour of Duty (срок службы)",
         "toServeAndProtect": "To Serve and Protect (служить и защищать)",
-        "travel": "Travel (путешествия)"
+        "travel": "Travel (путешествия)",
+        "darkCaste": "Dark Caste (тёмная каста)",
+        "laborerCaste": "Laborer Caste Service (каста рабочих)",
+        "merchantCaste": "Merchant Caste Service (каста торговцев)",
+        "scientistCaste": "Scientist Caste Service (каста учёных)",
+        "technicianCaste": "Technician Caste Service (каста техников)",
+        "clanWatch": "Warrior Caste: Clan Watch Operative (агент Стражи)",
+        "tourOfDutyClan": "Warrior Caste: Tour of Duty (Clan) (срок службы)",
+        "warriorWashout": "Warrior Caste Washout (отчисленный воин)"
       }
     },
     "BookTrait": {
@@ -1087,7 +1127,8 @@
       "HardwareSkills": {
         "mech": "Gunnery и Piloting (BattleMech)",
         "vehicle": "Gunnery или Piloting (Combat Vehicle)",
-        "fighter": "Gunnery и Piloting (Aerospace Fighter)"
+        "fighter": "Gunnery и Piloting (Aerospace Fighter)",
+        "battleArmor": "Support Weapons (боевая броня)"
       },
       "Dispossessed": "Dispossessed: начать без меха",
       "DispossessedHint": "Все Hardware Points сохраняются на потом; первый мех за них стоит на 1 дешевле (с. 76).",
@@ -1127,8 +1168,15 @@
         "inventoryOver": "Предметов {n}, можно только {max}.",
         "hardwareOver": "Машина стоит {cost} Hardware Points, у вас {budget}.",
         "hardwareSkills": "Для этой машины ({type}) нужны подходящие Gunnery и Piloting.",
-        "conversion": "Неистраченных Hardware Points: {unspent}, превращено: {converted}. Превратите все."
-      }
+        "conversion": "Неистраченных Hardware Points: {unspent}, превращено: {converted}. Превратите все.",
+        "clanExperience": "Персонажи кланов начинают с уровнем опыта Veteran.",
+        "lifeModuleClan": "{module} доступен только персонажам кланов.",
+        "clanDispossessed": "Персонаж клана не может быть Dispossessed.",
+        "hardwareClan": "Начинать с клановой техникой могут только персонажи кланов."
+      },
+      "ClanRules": "Персонажи кланов начинают ветеранами, получают +1 Hardware Point и не могут быть Dispossessed; им доступны только клановые Life Modules (с. 198–199).",
+      "ClanOnly": "Техника кланов",
+      "ClanHardware": "Клановые мехи и истребители стоят +1 Hardware Point, OmniMech и OmniFighter +2 (с. 199). Начинать с ними могут только персонажи кланов."
     },
     "Advance": {
       "label": "Развитие персонажа",
@@ -1216,7 +1264,9 @@
       "vehicles": "Боевая техника",
       "fighters": "Аэрокосмические истребители",
       "npcs": "НПС",
-      "characters": "Готовые персонажи"
+      "characters": "Готовые персонажи",
+      "battleArmor": "Боевая броня",
+      "mechWeapons": "Оружие мехов"
     },
     "Crew": {
       "label": "Встроенный экипаж",
@@ -1231,6 +1281,112 @@
       "StrHint": "Задаёт трек Physical монитора состояния экипажа.",
       "WilHint": "Задаёт трек Fatigue монитора состояния экипажа.",
       "NameOf": "Экипаж: {name}"
+    },
+    "Era": {
+      "3025": "3025: Войны за наследство",
+      "3050": "3050: Вторжение кланов"
+    },
+    "Clan": {
+      "Tech": "Клановая",
+      "TechHint": "Клановая техника: +1 Hardware Point для мехов и истребителей (с. 199).",
+      "Omni": "Omni",
+      "OmniHint": "OmniMech или OmniFighter: +2 Hardware Points вместо +1, ремонт за XP вдвое дороже для владельцев из Внутренней Сферы; OmniMech может нести боевую броню (с. 199, 218).",
+      "MascActive": "MASC +1",
+      "FireCluster": "Кассетные снаряды (C{n})",
+      "ClusterHint": "LB-X: значение кассеты разбивается на попадания по 1 очку, каждое со своей локацией (с. 216).",
+      "ClusterRounds": "Кассетные снаряды: {n} попаданий по 1 очку.",
+      "StreakHint": "Streak: при промахе группа не стреляет и не даёт Heat.",
+      "AmsStopped": "Противоракетная система ({roll}): урон снижен на {roll}.",
+      "AmsMissed": "Противоракетная система ({roll}): без эффекта.",
+      "GaussAmmo": "{ammo} не взрывается, но подача разбита: {weapons} больше не стреляет.",
+      "CaseEngine": "CASE отводит взрыв боеприпасов: критический удар по двигателю, +2 Heat в конце каждого повествования.",
+      "CaseEngineDestroyed": "CASE отводит взрыв боеприпасов, но второй удар по двигателю уничтожает меха.",
+      "CaseLimb": "CASE отводит взрыв боеприпасов: {location} уничтожена.",
+      "NoExplosiveAmmo": "На борту только боеприпасы Гаусса: взрываться нечему.",
+      "APod": {
+        "Title": "A-Pod",
+        "Fire": "Подорвать A-Pod против выбранных персонажей",
+        "Hit": "1D6 = {roll}: {n} урона личного масштаба каждому персонажу рядом.",
+        "Miss": "1D6 = {roll}: урона нет.",
+        "NoTargets": "Целей нет: нанесите урон вручную.",
+        "Applied": "нанесено",
+        "Empty": "Этот A-Pod уже подорван.",
+        "Destroyed": "Этот A-Pod уничтожен."
+      }
+    },
+    "BattleArmor": {
+      "Location": {
+        "body": "Корпус",
+        "bodyAbbr": "К"
+      },
+      "Attached": {
+        "none": "—",
+        "mounted": "Едет на мехе",
+        "swarming": "Атакует роем",
+        "mountedOn": "Едет на {mech}",
+        "swarmingOn": "Карабкается по {mech}: атаки по нему попадают автоматически"
+      },
+      "Move": {
+        "pointblankShort": "Pointblank ↔ Short",
+        "shortMedium": "Short ↔ Medium",
+        "mediumLong": "Medium ↔ Long",
+        "leg": "Атака по ногам",
+        "swarm": "Атака роем",
+        "mount": "Сесть на OmniMech или слезть"
+      },
+      "Mass": "Масса (кг)",
+      "DiagramHint": "В каждом пипсе брони шесть сегментов: урон личного масштаба заполняет сегмент за очко, урон масштаба мехов — целый пипс. Пипс структуры — это сам носитель: любой урон по нему заполняет его трек Physical.",
+      "PipHint": "Заполнить или очистить весь пипс",
+      "StructureHint": "Носитель брони",
+      "Segments": "Заполнено сегментов",
+      "PersonalWeapons": "Оружие личного масштаба",
+      "PersonalHint": "Из него стреляет носитель в личном бою; в бою масштаба мехов оно не используется (с. 218).",
+      "FirePersonal": "Атаковать этим оружием (бросает носитель)",
+      "Wearing": "В броне {name}: обычная броня снята, штрафы за ранения не действуют (с. 218).",
+      "WornHint": "Оружие боевой брони, которую носит персонаж",
+      "LegAttack": "Атака по ногам",
+      "SwarmAttack": "Атака роем",
+      "legHint": "На дистанции Pointblank, 1 Movement: тест Support Weapons. Попадание наносит 1 урон в ногу (таблица пинка) и всегда проверяет критический удар, дважды при уроне структуре (с. 218).",
+      "swarmHint": "На дистанции Pointblank, 1 Movement: тест Support Weapons. Успех — броня на мехе; со следующего повествования её атаки одиночным оружием попадают автоматически по таблице удара кулаком и всегда проверяют критический удар (с. 218–219).",
+      "SwarmApply": "Забраться на меха",
+      "Swarmed": "{name} забирается на {mech}.",
+      "SwarmFire": "{weapon} ({name}, атака роем)",
+      "SwarmedBy": "На мехе карабкаются: {names}",
+      "Dislodge": "Сбросить боевую броню",
+      "DislodgeSuccess": "Сбросить броню",
+      "DislodgeFailure": "Мех бьёт сам себя",
+      "Dislodged": "{name} сбрасывает боевую броню: она снова на дистанции Pointblank.",
+      "DislodgeFailed": "Неудачная попытка сбросить броню",
+      "Mount": "Сесть на OmniMech",
+      "MountHint": "Выберите целью OmniMech: 1 Movement, до пяти комплектов брони на меха (с. 218).",
+      "Release": "Слезть",
+      "Carrying": "Везёт: {names}",
+      "CarryingHint": "Группы с оружием в торсе не стреляют; попадание в торс на 1D6 5–6 приходится в броню (с. 218).",
+      "SmallTarget": "Одиночная цель",
+      "Damage": {
+        "Segments": "Заполнено сегментов брони: {n}.",
+        "Pips": "{n} урона масштаба мехов: по пипсу брони за очко.",
+        "NoHeat": "Боевая броня не учитывает Heat: без эффекта.",
+        "Destroyed": "Броня уничтожена.",
+        "WearerKilled": "Попадание в пипс структуры: трек Physical носителя заполнен.",
+        "WearerKia": "{name} погибает в {suit}, если игрок не воспользуется вариантом из Character Death (с. 37).",
+        "BackToCarrier": "{n} урона уходит в торс OmniMech.",
+        "CarrierHit": "Попадание в торс, 1D6 = {roll}: урон получает OmniMech.",
+        "SuitShields": "Попадание в торс, 1D6 = {roll}: едущая там {name} получает {n} урона."
+      },
+      "Warn": {
+        "TargetOneMech": "Выберите целью ровно одного меха.",
+        "NotOmni": "Боевая броня может ехать только на OmniMech.",
+        "Full": "Этот OmniMech уже везёт пять комплектов брони.",
+        "Attached": "Сначала слезьте с меха.",
+        "CannotAttack": "Эта броня не может так атаковать.",
+        "NoSwarm": "На этом мехе нет боевой брони.",
+        "SingleWeapon": "Во время атаки роем стреляет только одиночное оружие.",
+        "SwarmLost": "Меха больше нет; броня снова на земле.",
+        "TorsoBlocked": "Этот OmniMech везёт боевую броню: группы с оружием в торсе не стреляют.",
+        "NoPhysical": "Боевая броня не проводит физических атак; используйте атаку по ногам или роем.",
+        "NoPiloting": "Боевая броня никогда не проходит тесты Piloting (с. 218)."
+      }
     }
   }
 }

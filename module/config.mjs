@@ -99,6 +99,7 @@ export const PERSONAL_RANGES = {
  */
 export const RANGE_CODES = {
   2: "+2",
+  1: "+1",
   0: "OK",
   "-1": "–1",
   "-2": "–2",
@@ -258,7 +259,21 @@ export const PHYSICAL_ATTACKS = {
 export const MECH_EQUIPMENT_KINDS = {
   ammo: "MWD.Mech.Equipment.ammo",
   jumpJets: "MWD.Mech.Equipment.jumpJets",
+  ams: "MWD.Mech.Equipment.ams",
+  apod: "MWD.Mech.Equipment.apod",
+  masc: "MWD.Mech.Equipment.masc",
   other: "MWD.Mech.Equipment.other"
+};
+
+/**
+ * Clan equipment (p. 216): an Anti-Missile System stops 1–3 points of a Missile hit on 1–3, an
+ * A-Pod deals (D6 × 5) personal damage on 1–3, MASC gives +1 Movement.
+ */
+export const CLAN_EQUIPMENT = {
+  amsMax: 3,
+  apodMax: 3,
+  apodMultiplier: 5,
+  mascMovement: 1
 };
 
 /** Physical damage to a MechWarrior from a head hit or an ammo explosion (p. 47). */
@@ -312,12 +327,40 @@ export const FIGHTER_HIT_TABLE = {
   8: "leftWing", 9: "leftWing", 10: "leftWing", 11: "aft", 12: "nose"
 };
 
+/** Battle armor has no hit locations: one block of Armor and the Structure pip of its wearer (p. 219). */
+export const BATTLE_ARMOR_LOCATIONS = {
+  body: { label: "MWD.BattleArmor.Location.body", abbr: "MWD.BattleArmor.Location.bodyAbbr", rolls: "—" }
+};
+
 /** Every 'Mech-Scale location, keyed for weapon mounts and equipment of any unit type. */
-export const UNIT_LOCATIONS = { ...MECH_LOCATIONS, ...VEHICLE_LOCATIONS, ...FIGHTER_LOCATIONS };
+export const UNIT_LOCATIONS = { ...MECH_LOCATIONS, ...VEHICLE_LOCATIONS, ...FIGHTER_LOCATIONS, ...BATTLE_ARMOR_LOCATIONS };
+
+/**
+ * Battle armor (p. 217–220). Each Armor pip has six segments that take Personal Combat damage;
+ * a point of 'Mech-Scale damage fills six. A carrying OmniMech's torso hits strike a mounted suit
+ * on 5–6. Anti-'Mech attacks use the kick (leg attack) and punch (swarm) location tables.
+ */
+export const BATTLE_ARMOR = {
+  segments: 6,
+  maxMovement: { standard: 1, jump: 2 },
+  jumpPenalty: -2,
+  mountedHit: 5,
+  pointSize: 5,
+  legDamage: 1,
+  movementCosts: [
+    ["MWD.BattleArmor.Move.pointblankShort", 1],
+    ["MWD.BattleArmor.Move.shortMedium", 2],
+    ["MWD.BattleArmor.Move.mediumLong", 3],
+    ["MWD.BattleArmor.Move.leg", 1],
+    ["MWD.BattleArmor.Move.swarm", 1],
+    ["MWD.BattleArmor.Move.mount", 1]
+  ]
+};
 
 /**
  * 'Mech-Scale unit types: the locations on their Armor Diagram, their sheet statuses, the Gunnery
- * and Piloting specialty their crew uses and whether they track Heat.
+ * and Piloting specialty their crew uses and whether they track Heat. Battle armor attacks with
+ * Support Weapons instead (p. 218).
  */
 export const UNIT_TYPES = {
   mech: {
@@ -340,6 +383,13 @@ export const UNIT_TYPES = {
     specialty: "aero",
     heat: true,
     defaultMount: "nose"
+  },
+  battleArmor: {
+    locations: Object.keys(BATTLE_ARMOR_LOCATIONS),
+    statuses: ["jumped", "disengaged", "destroyed"],
+    specialty: null,
+    heat: false,
+    defaultMount: "body"
   }
 };
 
@@ -369,7 +419,16 @@ export const MIXED_DAMAGE_THRESHOLD = 20;
 /*  Character creation and advancement (p. 68–78) */
 /* -------------------------------------------- */
 
-/** Factions for 3025 player characters (p. 69), grouped as in the book. */
+/** Eras of play: the default 3025 and the Clan Invasion of 3050 (p. 195). */
+export const ERAS = {
+  3025: "MWD.Era.3025",
+  3050: "MWD.Era.3050"
+};
+
+/**
+ * Factions for player characters (p. 69, 198), grouped as in the book. `era` marks the ones added
+ * by the Clan Invasion appendix; `clan` the Invading and Reserve Clans.
+ */
 export const FACTIONS = {
   capellan: { group: "successor" },
   draconis: { group: "successor" },
@@ -383,7 +442,30 @@ export const FACTIONS = {
   comstar: { group: "other" },
   mercenary: { group: "other" },
   pirate: { group: "other" },
-  unaffiliated: { group: "other" }
+  unaffiliated: { group: "other" },
+  ghostBear: { group: "clan", era: "3050", clan: true },
+  jadeFalcon: { group: "clan", era: "3050", clan: true },
+  smokeJaguar: { group: "clan", era: "3050", clan: true },
+  wolf: { group: "clan", era: "3050", clan: true },
+  diamondShark: { group: "clan", era: "3050", clan: true },
+  novaCat: { group: "clan", era: "3050", clan: true },
+  steelViper: { group: "clan", era: "3050", clan: true },
+  fedcomDavion: { group: "successor", era: "3050" },
+  fedcomSteiner: { group: "successor", era: "3050" },
+  rasalhague: { group: "minor", era: "3050" },
+  stIves: { group: "minor", era: "3050" }
+};
+
+/** Faction groups in the order the creation wizard lists them. */
+export const FACTION_GROUPS = ["clan", "successor", "minor", "periphery", "other"];
+
+/**
+ * Clan characters (p. 198): they start at Veteran with one more Hardware Point and cannot be
+ * Dispossessed.
+ */
+export const CLAN_CREATION = {
+  experience: "veteran",
+  hardwareBonus: 1
 };
 
 /** Limits that apply while creating a character (p. 70–75). */
@@ -417,7 +499,19 @@ export const HARDWARE_CONVERSION = {
 export const HARDWARE_COSTS = {
   mech: { light: 1, medium: 2, heavy: 3, assault: 4 },
   vehicle: { light: 1, medium: 2, heavy: 3, assault: 4 },
-  fighter: { light: 2, medium: 3, heavy: 4, assault: 4 }
+  fighter: { light: 2, medium: 3, heavy: 4, assault: 4 },
+  battleArmor: { light: 1, medium: 1, heavy: 2, assault: 2 }
+};
+
+/**
+ * Extra Hardware Points for Clan technology (p. 199): a Clan BattleMech costs 1 more than an Inner
+ * Sphere one, an OmniMech or OmniFighter 2 more. The book lists no Clan conventional fighters or
+ * vehicles; Clan fighters are read as costing 1 more like Clan BattleMechs.
+ */
+export const CLAN_HARDWARE = {
+  types: ["mech", "fighter"],
+  clan: 1,
+  omni: 2
 };
 
 /**
@@ -427,7 +521,8 @@ export const HARDWARE_COSTS = {
 export const HARDWARE_SKILLS = {
   mech: { all: ["gunnery", "piloting"] },
   vehicle: { any: ["gunnery", "piloting"] },
-  fighter: { all: ["gunnery", "piloting"] }
+  fighter: { all: ["gunnery", "piloting"] },
+  battleArmor: { all: ["supportWeapons"] }
 };
 
 /** The armor choices at character creation (p. 75). */
@@ -498,8 +593,14 @@ export const BOOK_TRAITS = {
 /** Life Module slots after Faction (p. 73). */
 export const LIFE_MODULE_SLOTS = ["childhood", "education", "realLife"];
 
+/** Clan Childhood modules that Clan Higher Education needs (p. 199). */
+const CLAN_SIBKO = ["freebornSibko", "truebornSibko"];
+
+/** Clan Higher Education that the warrior caste Real Life modules need (p. 199). */
+const CLAN_TRAINING = ["mechwarriorTrainingClan", "elementalTrainingClan", "aerospaceTrainingClan", "infantryTrainingClan"];
+
 /**
- * Life Modules (p. 74–75): each gives +1 to one of `skills` ("knowledge" is a Knowledge Skill of
+ * Life Modules (p. 74–75, Clan-only ones p. 199): each gives +1 to one of `skills` ("knowledge" is a Knowledge Skill of
  * the player's choice; "any" is any Skill except those in `exclude`). `specialty` fixes the
  * Gunnery/Piloting specialty; `requires` lists modules one of which must be taken first.
  * `optional` slots may stay empty.
@@ -516,7 +617,10 @@ export const LIFE_MODULES = {
     spacerFamily: { skills: ["zeroG"] },
     street: { skills: ["streetwise"] },
     warOrphan: { skills: ["survival"] },
-    whiteCollar: { skills: ["protocol"] }
+    whiteCollar: { skills: ["protocol"] },
+    clanApprenticeship: { skills: ["art", "technician"], clan: true },
+    freebornSibko: { skills: ["meleeCombat", "smallArms"], clan: true },
+    truebornSibko: { skills: ["intimidation", "leadership"], clan: true }
   },
   education: {
     technicalCollege: { skills: ["technician", "communications"] },
@@ -528,7 +632,11 @@ export const LIFE_MODULES = {
     militaryAcademy: { skills: ["tactics", "leadership"] },
     militaryEnlistment: { skills: ["supportWeapons", "artillery"] },
     familyTraining: { skills: ["leadership", "protocol"], requires: ["nobility"] },
-    officerCandidate: { skills: ["tactics", "leadership"] }
+    officerCandidate: { skills: ["tactics", "leadership"] },
+    mechwarriorTrainingClan: { skills: ["gunnery", "piloting"], specialty: "mech", clan: true, requires: CLAN_SIBKO },
+    elementalTrainingClan: { skills: ["supportWeapons"], clan: true, requires: CLAN_SIBKO },
+    aerospaceTrainingClan: { skills: ["gunnery", "piloting"], specialty: "aero", clan: true, requires: CLAN_SIBKO },
+    infantryTrainingClan: { skills: ["smallArms", "tactics"], clan: true, requires: CLAN_SIBKO }
   },
   realLife: {
     agitator: { skills: ["meleeCombat"] },
@@ -550,7 +658,15 @@ export const LIFE_MODULES = {
       requires: ["militaryEnlistment", "militaryAcademy", "familyTraining", "officerCandidate"]
     },
     toServeAndProtect: { skills: ["smallArms", "intimidation"], requires: ["policeAcademy"] },
-    travel: { skills: "any", exclude: ["artillery", "gunnery", "piloting", "supportWeapons"] }
+    travel: { skills: "any", exclude: ["artillery", "gunnery", "piloting", "supportWeapons"] },
+    darkCaste: { skills: ["streetwise", "survival"], clan: true },
+    laborerCaste: { skills: ["knowledge"], clan: true },
+    merchantCaste: { skills: ["acting", "negotiation"], clan: true },
+    scientistCaste: { skills: ["medtech", "science"], clan: true },
+    technicianCaste: { skills: ["technician", "communications"], clan: true },
+    clanWatch: { skills: ["investigation", "tracking"], clan: true, requires: CLAN_TRAINING },
+    tourOfDutyClan: { skills: ["gunnery", "piloting", "supportWeapons"], clan: true, requires: CLAN_TRAINING },
+    warriorWashout: { skills: ["perception"], clan: true, requires: CLAN_TRAINING }
   }
 };
 
@@ -568,7 +684,8 @@ export const ADVANCEMENT = {
   rebuild: 2,
   mechPurchase: 2,
   salvageDiscount: 1,
-  dispossessedDiscount: 1
+  dispossessedDiscount: 1,
+  omniOutsiderMultiplier: 2
 };
 
 /** Weapon customizations bought with XP (p. 78); each once per weapon. */

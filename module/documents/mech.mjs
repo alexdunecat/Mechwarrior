@@ -1,5 +1,6 @@
 import { MECH_LOCATIONS, PILOT_HIT_DAMAGE, SYSTEM_ID } from "../config.mjs";
-import { damageLocation, hitLocation, resolveCrit } from "../rules/mech.mjs";
+import { damageLocation, forcedCritChecks, hitLocation, resolveCrit } from "../rules/mech.mjs";
+import { shieldTorso } from "./battle-armor.mjs";
 import { executeAsGM } from "../socket.mjs";
 import {
   canAct, critCheck, critDice, crewConChecks, damageGroups, destroyLocationItems, getPilot, heatUpkeep, hurtCrew,
@@ -33,7 +34,7 @@ export async function applyMechHit(mech, damage) {
     return postDamageCard(mech, { damage, lines, rolls, notes });
   }
 
-  const groups = await damageGroups(damage, lines, rolls);
+  const groups = await damageGroups(damage, lines, rolls, mech);
   const state = {
     locations: foundry.utils.deepClone(system._source.locations),
     crits: { ...system._source.crits },
@@ -69,7 +70,11 @@ export async function applyMechHit(mech, damage) {
         lines.push(t("MWD.Mech.Damage.Glancing"));
       }
     }
-    await applyToLocation(mech, state, location, points, critChance, lines, rolls);
+    if ( location === "torso" ) {
+      points = await shieldTorso(mech, points, damage, roll, lines, rolls);
+      if ( !points ) continue;
+    }
+    await applyToLocation(mech, state, location, points, critChance, lines, rolls, damage.forceCrit);
     if ( state.destroyed ) break;
   }
   return finishDamage(mech, state, { damage, lines, rolls, notes, pendingHead });
@@ -78,7 +83,7 @@ export async function applyMechHit(mech, damage) {
 /**
  * Damage one location and roll any critical hits it causes.
  */
-async function applyToLocation(mech, state, location, points, critChance, lines, rolls) {
+async function applyToLocation(mech, state, location, points, critChance, lines, rolls, forceCrit = false) {
   const result = damageLocation(state.locations, location, points);
   state.locations = result.locations;
   for ( const step of result.steps ) {
@@ -90,7 +95,7 @@ async function applyToLocation(mech, state, location, points, critChance, lines,
   if ( result.mechDestroyed ) state.destroyed = true;
   if ( result.destroyed.some(l => MECH_LOCATIONS[l].leg) ) state.fall = true;
 
-  const critLocations = [...result.structureHit];
+  const critLocations = forceCrit ? forcedCritChecks(location, result.steps) : [...result.structureHit];
   if ( critChance && !critLocations.includes(location) ) critLocations.push(location);
   for ( const loc of critLocations ) {
     if ( state.destroyed ) break;
@@ -127,23 +132,9 @@ async function applyCrit(mech, state, location, checkRoll, lines, rolls) {
       lines.push(`${prefix} ${t("MWD.Mech.Crit.Weapon", { weapon: weapon.name })}`);
       break;
     }
-    case "ammo": {
-      for ( const bin of ammo(crit.location) ) state.destroyedItems.add(bin.id);
-      state.pilotHits += 1;
-      if ( crit.location === "torso" ) {
-        state.destroyed = true;
-        lines.push(`${prefix} ${t("MWD.Mech.Crit.AmmoTorso")}`);
-      }
-      else {
-        const loc = state.locations[crit.location];
-        loc.armorDamage = loc.armor;
-        loc.structureDamage = loc.structure;
-        destroyLocationItems(mech, state.destroyedItems, crit.location);
-        if ( MECH_LOCATIONS[crit.location].leg ) state.fall = true;
-        lines.push(`${prefix} ${t("MWD.Mech.Crit.AmmoLimb", { location: where })}`);
-      }
+    case "ammo":
+      ammoCrit(mech, state, crit.location, ammo(crit.location), prefix, lines);
       break;
-    }
     case "gyro":
       state.crits.gyro += 1;
       if ( state.crits.gyro >= 2 ) state.fall = true;
@@ -161,6 +152,50 @@ async function applyCrit(mech, state, location, checkRoll, lines, rolls) {
       lines.push(`${prefix} ${t("MWD.Mech.Crit.Leg")}`);
       break;
   }
+}
+
+/**
+ * An ammo explosion in a location (p. 45), with Clan technology (p. 216): Gauss rifle ammo does not
+ * explode but its weapons can no longer fire, and CASE replaces the explosion's effect (the pilot
+ * is not hurt): an engine critical hit in the torso, or the limb is destroyed.
+ * @param {Actor} mech
+ * @param {object} state     Damage state being built (locations, crits, destroyedItems, ...).
+ * @param {string} location
+ * @param {Item[]} bins      Intact ammo in the location.
+ * @param {string} prefix    Line prefix ("Critical hit in ...").
+ * @param {string[]} lines
+ */
+function ammoCrit(mech, state, location, bins, prefix, lines) {
+  const where = locLabel(location);
+  const say = text => lines.push(prefix ? `${prefix} ${text}` : text);
+  for ( const bin of bins.filter(b => !b.system.explosive) ) {
+    state.destroyedItems.add(bin.id);
+    const fed = mech.itemTypes.mechWeapon.filter(w => bin.system.feeds(w) && !w.system.destroyed);
+    for ( const weapon of fed ) state.destroyedItems.add(weapon.id);
+    say(t("MWD.Clan.GaussAmmo", { ammo: bin.name, weapons: fed.map(w => w.name).join(", ") || "—" }));
+  }
+  const explosive = bins.filter(b => b.system.explosive);
+  if ( !explosive.length ) return;
+  for ( const bin of explosive ) state.destroyedItems.add(bin.id);
+  const withCase = explosive.every(b => b.system.case);
+  if ( withCase && (location === "torso") ) {
+    state.crits.engine += 1;
+    if ( state.crits.engine >= 2 ) state.destroyed = true;
+    say(t(state.crits.engine >= 2 ? "MWD.Clan.CaseEngineDestroyed" : "MWD.Clan.CaseEngine"));
+    return;
+  }
+  if ( !withCase ) state.pilotHits += 1;
+  if ( (location === "torso") || !MECH_LOCATIONS[location]?.limb ) {
+    state.destroyed = true;
+    say(t("MWD.Mech.Crit.AmmoTorso"));
+    return;
+  }
+  const loc = state.locations[location];
+  loc.armorDamage = loc.armor;
+  loc.structureDamage = loc.structure;
+  destroyLocationItems(mech, state.destroyedItems, location);
+  if ( MECH_LOCATIONS[location].leg ) state.fall = true;
+  say(t(withCase ? "MWD.Clan.CaseLimb" : "MWD.Mech.Crit.AmmoLimb", { location: where }));
 }
 
 /** Save the results of a hit, hurt the pilot and post the card. */
@@ -267,20 +302,36 @@ export async function endNarration(mech) {
   return message;
 }
 
-/** Ammo explosion from heat (p. 48): the same effect as an ammo critical hit in that location. */
+/**
+ * Ammo explosion from heat (p. 48): the same effect as an ammo critical hit in that location.
+ * Gauss rifle ammo does not explode (p. 216), so a 'Mech carrying only Gauss ammo is unharmed.
+ * @returns {Promise<{pilotHit: boolean}>}
+ */
 async function explodeAmmo(mech, lines) {
-  const ammo = mech.itemTypes.mechEquipment.find(e => (e.system.kind === "ammo") && !e.system.destroyed);
-  if ( !ammo ) return;
-  const location = ammo.system.location || "torso";
-  const updates = { [`system.locations.${location}.armorDamage`]: mech.system.locations[location].armor,
-    [`system.locations.${location}.structureDamage`]: mech.system.locations[location].structure };
-  if ( !MECH_LOCATIONS[location]?.limb ) updates["system.status.destroyed"] = true;
-  if ( MECH_LOCATIONS[location]?.leg ) lines.push(t("MWD.Mech.Damage.Falls"));
-  lines.push(t(MECH_LOCATIONS[location]?.limb ? "MWD.Mech.Crit.AmmoLimb" : "MWD.Mech.Crit.AmmoTorso", { location: locLabel(location) }));
-  await mech.update(updates);
-  const lost = new Set();
-  destroyLocationItems(mech, lost, location);
-  if ( lost.size ) await mech.updateEmbeddedDocuments("Item", [...lost].map(_id => ({ _id, "system.destroyed": true })));
+  const { ammo } = intactItems(mech, new Set());
+  const bin = ammo().find(e => e.system.explosive);
+  if ( !bin ) {
+    lines.push(t("MWD.Clan.NoExplosiveAmmo"));
+    return { pilotHit: false };
+  }
+  const location = bin.system.location || "torso";
+  const state = {
+    locations: foundry.utils.deepClone(mech.system._source.locations),
+    crits: { ...mech.system._source.crits },
+    destroyedItems: new Set(),
+    destroyed: mech.system.status.destroyed,
+    pilotHits: 0,
+    fall: false
+  };
+  ammoCrit(mech, state, location, ammo(location).filter(e => e.system.explosive), "", lines);
+  if ( state.fall && !state.destroyed ) lines.push(t("MWD.Mech.Damage.Falls"));
+  await mech.update({
+    "system.locations": state.locations, "system.crits": state.crits, "system.status.destroyed": state.destroyed
+  });
+  if ( state.destroyedItems.size ) {
+    await mech.updateEmbeddedDocuments("Item", [...state.destroyedItems].map(_id => ({ _id, "system.destroyed": true })));
+  }
+  return { pilotHit: state.pilotHits > 0 };
 }
 
 /* -------------------------------------------- */

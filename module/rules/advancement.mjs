@@ -35,10 +35,11 @@ export function skillXpCost(newRank) {
  * @param {"buy"|"salvage"} how
  * @param {string} type
  * @param {string} weightClass
+ * @param {{clan?: boolean, omni?: boolean}} [tech]  Clan technology costs more (p. 199).
  * @returns {number}
  */
-export function hardwareXpCost(how, type, weightClass) {
-  const base = hardwareCost(type, weightClass);
+export function hardwareXpCost(how, type, weightClass, tech = {}) {
+  const base = hardwareCost(type, weightClass, tech);
   if ( how === "salvage" ) return Math.max(0, base - ADVANCEMENT.salvageDiscount);
   return base + ((type === "mech") ? ADVANCEMENT.mechPurchase : 0);
 }
@@ -54,11 +55,16 @@ export function dispossessedCost(weightClass) {
 
 /**
  * XP to fix a unit (p. 78): 1 to repair functional Hardware, 2 to rebuild destroyed Hardware.
+ * Inner Sphere characters pay double for a Clan OmniMech or OmniFighter (p. 199).
  * @param {boolean} destroyed
+ * @param {object} [options]
+ * @param {boolean} [options.omni=false]       The unit is an OmniMech or OmniFighter.
+ * @param {boolean} [options.clanOwner=false]  The character paying is from a Clan.
  * @returns {number}
  */
-export function repairXpCost(destroyed) {
-  return destroyed ? ADVANCEMENT.rebuild : ADVANCEMENT.repair;
+export function repairXpCost(destroyed, { omni = false, clanOwner = false } = {}) {
+  const cost = destroyed ? ADVANCEMENT.rebuild : ADVANCEMENT.repair;
+  return (omni && !clanOwner) ? cost * ADVANCEMENT.omniOutsiderMultiplier : cost;
 }
 
 /**
@@ -101,7 +107,8 @@ export function unitCondition(type, system) {
   const destroyed = !!system.status?.destroyed;
   const locations = Object.values(system.locations ?? {});
   let damaged = locations.some(l => (l.armorDamage > 0) || (l.structureDamage > 0));
-  if ( type === "fighter" ) damaged ||= (system.structure?.damage ?? 0) > 0;
+  if ( ["fighter", "battleArmor"].includes(type) ) damaged ||= (system.structure?.damage ?? 0) > 0;
+  if ( type === "battleArmor" ) damaged ||= (system.armor?.segments ?? 0) > 0;
   damaged ||= Object.entries(system.crits ?? {}).some(([k, v]) => (k !== "engineFresh") && (Number(v) > 0));
   damaged ||= (system.smallArms ?? 0) > 0;
   return { damaged: damaged || destroyed, destroyed };
@@ -120,7 +127,8 @@ export function repairUpdate(type, system) {
     update[`system.locations.${key}.armorDamage`] = 0;
     if ( type !== "fighter" ) update[`system.locations.${key}.structureDamage`] = 0;
   }
-  if ( type === "fighter" ) update["system.structure.damage"] = 0;
+  if ( ["fighter", "battleArmor"].includes(type) ) update["system.structure.damage"] = 0;
+  if ( type === "battleArmor" ) update["system.armor.segments"] = 0;
   for ( const [key, value] of Object.entries(system.crits ?? {}) ) {
     update[`system.crits.${key}`] = (typeof value === "boolean") ? false : 0;
   }

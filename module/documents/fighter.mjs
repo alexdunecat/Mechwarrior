@@ -46,7 +46,7 @@ export async function applyFighterHit(fighter, damage) {
   const critLocations = new Set();
   let damaged = false;
 
-  const groups = await damageGroups(damage, lines, rolls);
+  const groups = await damageGroups(damage, lines, rolls, fighter);
   for ( const amount of groups ) {
     const r = await roll("2d6");
     rolls.push(r.roll);

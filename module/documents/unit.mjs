@@ -1,13 +1,14 @@
 import {
-  ATTRIBUTES, CREW_HIT_DAMAGE, DIFFICULTIES, DISENGAGED_TARGET, MECH_RANGES, MECH_TARGET_NUMBER, MECH_TERRAIN,
-  MIXED_SMALL_TARGET, PHYSICAL_ATTACKS, SYSTEM_ID, UNIT_LOCATIONS, UNIT_TYPES
+  ATTRIBUTES, CLAN_EQUIPMENT, CREW_HIT_DAMAGE, DIFFICULTIES, DISENGAGED_TARGET, MECH_RANGES, MECH_TARGET_NUMBER,
+  MECH_TERRAIN, MIXED_SMALL_TARGET, PHYSICAL_ATTACKS, SKILLS, SYSTEM_ID, UNIT_LOCATIONS, UNIT_TYPES
 } from "../config.mjs";
 import {
-  clusters, coolDown, heatEffects, missileDamage, physicalDamage, restartCheck, speedModifier
+  clusters, coolDown, heatEffects, lbxGroups, missileDamage, physicalDamage, reduceGroups, restartCheck, speedModifier
 } from "../rules/mech.mjs";
 import { crashDamage } from "../rules/vehicle.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
-import { applyDefaultMode, rollTest } from "../dice/test-roll.mjs";
+import { applyDefaultMode, resolveState, rollTest } from "../dice/test-roll.mjs";
+import { attachedSuits, swarmFire, wornSuit } from "./battle-armor.mjs";
 
 /**
  * 'Mech-Scale Combat shared by 'Mechs, combat vehicles and aerospace fighters (p. 38–51): crews,
@@ -111,12 +112,43 @@ export function pilotParts(pilot, key, specialty = "mech") {
 
 /** Gunnery or Piloting parts for a unit's own pilot. */
 export function unitParts(unit, key) {
-  return pilotParts(getPilot(unit), key, UNIT_TYPES[unit.type].specialty);
+  const pilot = getPilot(unit);
+  if ( (unit.type === "battleArmor") && pilot?.isPerson ) return suitParts(pilot, key);
+  return pilotParts(pilot, key, UNIT_TYPES[unit.type].specialty);
 }
 
-/** Situational modifiers from the attacker's and the target's state (p. 41). */
-function targetParts(attacker, target) {
+/**
+ * Battle armor attacks with its wearer's Support Weapons and makes no Piloting Tests (p. 218).
+ * Against 'Mech-Scale attacks it defends like a person, with RFL + RFL.
+ * @param {Actor} person  The wearer.
+ * @param {"gunnery"|"piloting"} key
+ * @returns {{skill: Item|null, parts: {label: string, value: number}[]}}
+ */
+function suitParts(person, key) {
+  if ( key !== "gunnery" ) return { skill: null, parts: person.getDefenseParts() };
+  const skill = person.findSkill("supportWeapons");
+  if ( skill ) {
+    return { skill, parts: [
+      { label: skill.name, value: skill.system.rank },
+      { label: abbr(skill.system.attribute), value: skill.system.attributeValue }
+    ] };
+  }
+  const attribute = SKILLS.supportWeapons.attribute;
+  return { skill: null, parts: [{ label: abbr(attribute), value: person.system.attributes[attribute].total }] };
+}
+
+/**
+ * Situational modifiers from the attacker's and the target's state (p. 41). A single suit of
+ * battle armor is a small target for 'Mech-Scale attacks (p. 218).
+ * @param {Actor} attacker
+ * @param {Actor} target
+ * @returns {{label: string, value: number}[]}
+ */
+export function targetParts(attacker, target) {
   const parts = [];
+  if ( target.type === "battleArmor" ) {
+    parts.push({ label: t("MWD.BattleArmor.SmallTarget"), value: MIXED_SMALL_TARGET });
+  }
   const speed = speedModifier(attacker.system.maxMovement, target.system.maxMovement);
   if ( speed ) parts.push({ label: t("MWD.Mech.Attack.Speed"), value: speed });
   if ( target.system.status.jumped ) parts.push({ label: t("MWD.Mech.Attack.TargetJumped"), value: -1 });
@@ -138,7 +170,7 @@ function selfParts(unit) {
  */
 export function canAct(unit, pilot) {
   const status = unit.system.status;
-  if ( status.destroyed ) return warn("MWD.Mech.Warn.Destroyed");
+  if ( status.destroyed || unit.system.suitDestroyed ) return warn("MWD.Mech.Warn.Destroyed");
   if ( !pilot ) return warn("MWD.Mech.Warn.NoPilot");
   if ( status.shutdown ) return warn("MWD.Mech.Warn.Shutdown");
   if ( status.outOfControl ) return warn("MWD.Fighter.Warn.OutOfControl");
@@ -146,10 +178,34 @@ export function canAct(unit, pilot) {
   return true;
 }
 
-/** Targeted units and people, other than the attacker. */
+/**
+ * Targeted units and people, other than the attacker. A person in battle armor is attacked as
+ * their suit (p. 218).
+ */
 function targetsOf(self) {
   const actors = Array.from(game.user.targets).map(token => token.actor).filter(a => a && (a !== self));
-  return { units: actors.filter(isUnit), people: actors.filter(a => a.isPerson) };
+  const units = new Set(actors.filter(isUnit));
+  const people = [];
+  for ( const person of actors.filter(a => a.isPerson) ) {
+    const suit = wornSuit(person);
+    if ( suit ) units.add(suit);
+    else people.push(person);
+  }
+  units.delete(self);
+  return { units: [...units], people };
+}
+
+/**
+ * Ammunition that counts its shots and feeds a weapon (battle armor, p. 218).
+ * @param {Actor} unit
+ * @param {Item} weapon
+ * @returns {{bins: Item[], next: Item|null}|null}  Null when the weapon's ammo is not counted.
+ */
+export function trackedAmmo(unit, weapon) {
+  const bins = unit.itemTypes.mechEquipment.filter(e => (e.system.kind === "ammo") && e.system.tracksShots
+    && !e.system.destroyed && e.system.feeds(weapon));
+  if ( !bins.length ) return null;
+  return { bins, next: bins.find(b => b.system.shots.spent < b.system.shots.max) ?? null };
 }
 
 /**
@@ -197,6 +253,21 @@ export async function rollUnitAttack(unit, weapon) {
     warn("MWD.Mech.Warn.WeaponDestroyed");
     return [];
   }
+  // An OmniMech carrying battle armor cannot fire torso weapons (p. 218).
+  if ( weapon.system.mounts.torso && (unit.type === "mech") && attachedSuits(unit, "mounted").length ) {
+    warn("MWD.BattleArmor.Warn.TorsoBlocked");
+    return [];
+  }
+  const ammo = trackedAmmo(unit, weapon);
+  if ( ammo && !ammo.next ) {
+    warn("MWD.Mech.Warn.NoAmmo");
+    return [];
+  }
+  if ( unit.system.swarming ) {
+    if ( ammo ) await spendShot(ammo.next);
+    const message = await swarmFire(unit, weapon);
+    return message ? [message] : [];
+  }
 
   const { units, people } = targetsOf(unit);
   const ranges = Object.fromEntries(Object.keys(MECH_RANGES).map(r => [r, rangeModifier(weapon.system.ranges[r])]));
@@ -224,7 +295,9 @@ export async function rollUnitAttack(unit, weapon) {
     range: Object.entries(ranges).find(([, mod]) => mod !== null)?.[0] ?? "short",
     terrains: terrainChoices(),
     jumped: !!unit.system.status.jumped,
-    heatRanged
+    heatRanged,
+    cluster: weapon.system.cluster,
+    streak: weapon.system.streak
   };
   const data = await dialog({
     title: t("MWD.Attack.Title", { weapon: weapon.name }), icon: "fa-solid fa-crosshairs",
@@ -237,9 +310,11 @@ export async function rollUnitAttack(unit, weapon) {
     warn("MWD.Attack.OutOfRange");
     return [];
   }
-  if ( unit.system.usesHeat && weapon.system.heat ) {
-    await unit.update({ "system.heat.value": unit.system.heat.value + weapon.system.heat });
-  }
+  // A Streak group that misses does not fire, so its Heat waits for the result (p. 216).
+  const addHeat = () => unit.update({ "system.heat.value": unit.system.heat.value + weapon.system.heat });
+  const heats = unit.system.usesHeat && (weapon.system.heat > 0);
+  if ( heats && !weapon.system.streak ) await addHeat();
+  if ( ammo ) await spendShot(ammo.next);
 
   const gunnery = unitParts(unit, "gunnery");
   const terrain = MECH_TERRAIN[data.terrain] ?? MECH_TERRAIN.clear;
@@ -255,6 +330,8 @@ export async function rollUnitAttack(unit, weapon) {
     base: weapon.system.damage,
     missiles: data.heatInstead ? 0 : weapon.system.missiles,
     max: weapon.system.maxDamage || null,
+    lbx: (data.clusterRounds && !data.heatInstead) ? weapon.system.cluster : 0,
+    types: weapon.system.types,
     heatInstead: !!data.heatInstead,
     primary: weapon.system.primary,
     ignoreLegs: !!terrain.ignoreLegs,
@@ -268,14 +345,14 @@ export async function rollUnitAttack(unit, weapon) {
   const jumpPart = id => (unit.system.status.jumped
     ? [{ label: t("MWD.Mech.Attack.JumpPosition"), value: data.jumpTarget === id ? 1 : -1 }] : []);
 
+  const messages = [];
   if ( !units.length && !people.length ) {
-    return [await rollTest(pilot, {
+    messages.push(await rollTest(pilot, {
       ...common, parts: base,
       opposingLabel: t("MWD.Attack.Defense"),
       opposingParts: [{ label: t("MWD.Mech.Attack.ManualDefense"), value: (Number(data.manualDefense) || 0) + defenseMod }]
-    })];
+    }));
   }
-  const messages = [];
   for ( const target of units ) {
     const parts = [...base, ...targetParts(unit, target), ...jumpPart(target.id)];
     messages.push(await rollUnitOpposed(pilot, target, { ...common, parts }, defenseMod));
@@ -292,7 +369,15 @@ export async function rollUnitAttack(unit, weapon) {
       opposingParts: person.getDefenseParts(defenseMod)
     }));
   }
+  if ( heats && weapon.system.streak && messages.some(m => resolveState(m.getFlag(SYSTEM_ID, "test")).success) ) {
+    await addHeat();
+  }
   return messages;
+}
+
+/** Mark off one shot of counted ammunition, hit or miss (p. 218). */
+async function spendShot(bin) {
+  return bin.update({ "system.shots.spent": bin.system.shots.spent + 1 });
 }
 
 /**
@@ -329,6 +414,10 @@ export async function rollPhysicalAttack(unit) {
   if ( !canAct(unit, pilot) ) return [];
   if ( unit.type === "fighter" ) {
     warn("MWD.Fighter.Warn.NoPhysical");
+    return [];
+  }
+  if ( unit.type === "battleArmor" ) {
+    warn("MWD.BattleArmor.Warn.NoPhysical");
     return [];
   }
   const mech = unit.type === "mech";
@@ -492,19 +581,37 @@ export function intactItems(unit, destroyedItems) {
 
 /**
  * Damage groups of a hit: the base damage (or its clusters) and one group per scoring Missile die.
+ * LB-X cluster rounds split off 1-point groups, and an Anti-Missile System on the target may stop
+ * part of a Missile hit (p. 216).
  * @param {MechDamage} damage
  * @param {string[]} lines
  * @param {Roll[]} rolls
+ * @param {Actor} [target]  The unit hit, for its Anti-Missile System.
  * @returns {Promise<number[]>}
  */
-export async function damageGroups(damage, lines, rolls) {
-  const groups = damage.cluster ? clusters(damage.base, damage.cluster) : [damage.base];
+export async function damageGroups(damage, lines, rolls, target = null) {
+  let groups;
+  if ( damage.lbx ) {
+    groups = lbxGroups(damage.base, damage.lbx);
+    lines.push(t("MWD.Clan.ClusterRounds", { n: damage.lbx }));
+  }
+  else groups = damage.cluster ? clusters(damage.base, damage.cluster) : [damage.base];
   if ( damage.missiles ) {
     const missiles = await roll(`${damage.missiles}d6`);
     rolls.push(missiles.roll);
     const extra = missileDamage({ base: damage.base, max: damage.max }, missiles.dice);
     lines.push(t("MWD.Mech.Damage.Missiles", { dice: missiles.dice.join(", "), extra: extra.join(", ") || "0" }));
     groups.push(...extra);
+  }
+  const ams = target?.itemTypes?.mechEquipment.find(e => (e.system.kind === "ams") && !e.system.destroyed);
+  if ( ams && /M/.test(damage.types ?? "") ) {
+    const r = await roll("1d6");
+    rolls.push(r.roll);
+    if ( r.total <= CLAN_EQUIPMENT.amsMax ) {
+      groups = reduceGroups(groups, r.total);
+      lines.push(t("MWD.Clan.AmsStopped", { roll: r.total }));
+    }
+    else lines.push(t("MWD.Clan.AmsMissed", { roll: r.total }));
   }
   return groups;
 }
@@ -548,6 +655,10 @@ export async function critCheck(rolls) {
  * @returns {Promise<ChatMessage|null>}
  */
 export async function rollPilotingTest(unit, { consequence = true, pilotDamageOnFailure = false, successEffect = null, label } = {}) {
+  if ( unit.type === "battleArmor" ) {
+    warn("MWD.BattleArmor.Warn.NoPiloting");
+    return null;
+  }
   const pilot = getPilot(unit);
   if ( !pilot ) {
     warn("MWD.Mech.Warn.NoPilot");
@@ -632,7 +743,8 @@ export async function resolveCrash(unit) {
  * @param {Actor} unit
  * @param {object} options
  * @param {number} options.engineHeat  Heat added by a damaged engine before cooling down.
- * @param {(lines: string[]) => Promise<void>} options.explode  Resolve an ammo explosion.
+ * @param {(lines: string[]) => Promise<{pilotHit?: boolean}|void>} options.explode  Resolve an ammo
+ *   explosion; it may say the pilot is not hurt (Gauss ammo, CASE).
  * @returns {Promise<{updates: object, lines: string[], rolls: Roll[], pilotHits: number}>}
  */
 export async function heatUpkeep(unit, { engineHeat, explode }) {
@@ -665,9 +777,9 @@ export async function heatUpkeep(unit, { engineHeat, explode }) {
     rolls.push(r.roll);
     if ( r.total >= MECH_TARGET_NUMBER ) lines.push(t("MWD.Mech.Heat.AmmoAvoided", { roll: r.total }));
     else {
-      pilotHits += 1;
       lines.push(t("MWD.Mech.Heat.AmmoExploded", { roll: r.total }));
-      await explode(lines);
+      const result = await explode(lines);
+      if ( result?.pilotHit !== false ) pilotHits += 1;
     }
   }
 

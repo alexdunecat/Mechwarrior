@@ -1,9 +1,14 @@
 import {
   EXPERIENCE_LEVELS, HEAT_LEVELS, MECH_RANGES, SYSTEM_ID, UNIT_LOCATIONS, VEHICLE_MOTIVE, WEIGHT_CLASSES
 } from "../config.mjs";
+import { suitPips } from "../rules/battle-armor.mjs";
 import { toggleDamagePip } from "../rules/condition.mjs";
 import { rangeModifier } from "../rules/tests.mjs";
-import { getCrew, getPilot, pilotParts, pilotUnconscious, usesBuiltInCrew } from "../documents/unit.mjs";
+import {
+  getCrew, getPilot, pilotParts, pilotUnconscious, trackedAmmo, unitParts, usesBuiltInCrew
+} from "../documents/unit.mjs";
+import * as BattleArmor from "../documents/battle-armor.mjs";
+import { fireAPod } from "../documents/apod.mjs";
 import { TEMPLATES } from "./person-sheet.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -13,19 +18,21 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const DIAGRAMS = {
   mech: ["rightArm", "head", "leftArm", "rightLeg", "torso", "leftLeg"],
   vehicle: ["rightSide", "front", "leftSide", "turret", "rotor", "rear"],
-  fighter: ["rightWing", "nose", "leftWing", "aft"]
+  fighter: ["rightWing", "nose", "leftWing", "aft"],
+  battleArmor: []
 };
 
 /** Critical hit tracks shown as pips: [crit key, label key, max]. */
 const CRIT_PIPS = {
   mech: [["gyro", "MWD.Mech.Crit.GyroShort", 2], ["engine", "MWD.Mech.Crit.EngineShort", 2]],
   vehicle: [],
-  fighter: [["avionics", "MWD.Fighter.Crit.AvionicsShort", 1], ["engine", "MWD.Mech.Crit.EngineShort", 2]]
+  fighter: [["avionics", "MWD.Fighter.Crit.AvionicsShort", 1], ["engine", "MWD.Mech.Crit.EngineShort", 2]],
+  battleArmor: []
 };
 
 /**
- * Sheet for 'Mech-Scale units ('Mechs, combat vehicles and aerospace fighters): Hardware stats,
- * Armor Diagram, Heat, critical hits, weapons, pilot and crew.
+ * Sheet for 'Mech-Scale units ('Mechs, combat vehicles, aerospace fighters and battle armor):
+ * Hardware stats, Armor Diagram, Heat, critical hits, weapons, pilot and crew.
  */
 export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
@@ -53,7 +60,16 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       openPilot: UnitSheet.#onOpenPilot,
       leavePilot: UnitSheet.#onLeavePilot,
       removeCrew: UnitSheet.#onRemoveCrew,
-      conCheck: UnitSheet.#onConCheck
+      conCheck: UnitSheet.#onConCheck,
+      legAttack: UnitSheet.#onLegAttack,
+      swarmAttack: UnitSheet.#onSwarmAttack,
+      mountSuit: UnitSheet.#onMountSuit,
+      releaseSuit: UnitSheet.#onReleaseSuit,
+      dislodge: UnitSheet.#onDislodge,
+      suitPip: UnitSheet.#onSuitPip,
+      firePersonal: UnitSheet.#onFirePersonal,
+      fireAPod: UnitSheet.#onFireAPod,
+      shotPip: UnitSheet.#onShotPip
     }
   };
 
@@ -82,9 +98,15 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       isMech: type === "mech",
       isVehicle: type === "vehicle",
       isFighter: type === "fighter",
+      isBattleArmor: type === "battleArmor",
+      hasCrew: ["vehicle", "fighter"].includes(type),
+      hasCrits: type !== "battleArmor",
       usesHeat: system.usesHeat,
       physicalLabel: (type === "mech") ? "MWD.Mech.Physical.Button" : "MWD.Mech.Physical.ram",
-      diagramHint: { mech: "MWD.Mech.DiagramHint", vehicle: "MWD.Vehicle.DiagramHint", fighter: "MWD.Fighter.DiagramHint" }[type],
+      diagramHint: {
+        mech: "MWD.Mech.DiagramHint", vehicle: "MWD.Vehicle.DiagramHint", fighter: "MWD.Fighter.DiagramHint",
+        battleArmor: "MWD.BattleArmor.DiagramHint"
+      }[type],
       weightClasses: Object.fromEntries(Object.entries(WEIGHT_CLASSES).map(([k, v]) => [k, localize(v.label)])),
       motives: Object.fromEntries(Object.entries(VEHICLE_MOTIVE).map(([k, v]) => [k, localize(v)])),
       pilot: pilot ? this.#personContext(pilot, specialty) : null,
@@ -119,20 +141,65 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
           const mod = rangeModifier(item.system.ranges[r]);
           return mod === null ? "—" : (mod === 0 ? "OK" : `${mod > 0 ? "+" : "–"}${Math.abs(mod)}`);
         }),
-        destroyed: item.system.destroyed
+        destroyed: item.system.destroyed,
+        ammo: this.#ammoLabel(item)
       })).sort((a, b) => Number(b.primary) - Number(a.primary)),
       rangeLabels: Object.values(MECH_RANGES).map(localize),
       equipment: actor.itemTypes.mechEquipment.map(item => ({
         id: item.id,
         name: item.name,
         location: item.system.location ? localize(UNIT_LOCATIONS[item.system.location].label) : "",
-        destroyed: item.system.destroyed
+        destroyed: item.system.destroyed,
+        apod: item.system.kind === "apod",
+        flags: [item.system.case ? "CASE" : null, (item.system.kind === "ammo") && !item.system.explosive
+          ? localize("MWD.Mech.Equipment.Inert") : null].filter(Boolean).join(", "),
+        shots: item.system.tracksShots ? Array.from({ length: item.system.shots.max }, (_v, i) => ({
+          index: i, filled: i < item.system.shots.spent
+        })) : []
       })),
+      ...this.#clanContext(),
       notesHTML: await foundry.applications.ux.TextEditor.implementation.enrichHTML(system.notes ?? "", {
         secrets: actor.isOwner, relativeTo: actor
       })
     });
     return context;
+  }
+
+  /** Shots left for a weapon fed by ammo that counts its shots (battle armor SRMs, p. 218). */
+  #ammoLabel(weapon) {
+    const { bins } = trackedAmmo(this.document, weapon);
+    if ( !bins.length ) return "";
+    const left = bins.reduce((n, b) => n + Math.max(0, b.system.shots.max - b.system.shots.spent), 0);
+    return game.i18n.format("MWD.Mech.Equipment.ShotsLeft", { n: left });
+  }
+
+  /** Battle armor, riders and swarmers (Clan Invasion appendix, p. 217–219). */
+  #clanContext() {
+    const actor = this.document;
+    const name = uuid => (uuid ? fromUuidSync(uuid)?.name ?? "?" : "");
+    if ( actor.type === "battleArmor" ) {
+      const system = actor.system;
+      const pilot = getPilot(actor);
+      return {
+        suitPips: suitPips(system.armor).map(p => ({
+          ...p, segments: Array.from({ length: system.segmentsPerPip }, (_v, i) => ({ filled: i < p.filled }))
+        })),
+        attachedLabel: system.attached.mode ? game.i18n.format(`MWD.BattleArmor.Attached.${system.attached.mode}On`, {
+          mech: name(system.attached.target)
+        }) : "",
+        personalWeapons: actor.itemTypes.weapon.map(item => ({
+          id: item.id, name: item.name, damage: `${item.system.totalDamage ?? item.system.damage}`,
+          skill: game.i18n.localize(`MWD.Skill.${item.system.skill}`), canFire: !!pilot
+        }))
+      };
+    }
+    if ( actor.type === "mech" ) {
+      return {
+        mountedSuits: BattleArmor.attachedSuits(actor, "mounted").map(a => a.name).join(", "),
+        swarmingSuits: BattleArmor.attachedSuits(actor, "swarming").map(a => a.name).join(", ")
+      };
+    }
+    return {};
   }
 
   /** Locations in Armor Diagram order with their pips. */
@@ -157,7 +224,10 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   #personContext(person, specialty) {
-    const bonus = key => pilotParts(person, key, specialty).parts.reduce((n, p) => n + p.value, 0);
+    // A suit's wearer attacks with Support Weapons and defends as in Personal Combat (p. 218).
+    const suit = this.document.type === "battleArmor";
+    const bonus = key => (suit ? unitParts(this.document, key) : pilotParts(person, key, specialty))
+      .parts.reduce((n, p) => n + p.value, 0);
     const physical = person.system.condition.physical;
     return {
       uuid: person.uuid,
@@ -334,6 +404,53 @@ export class UnitSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static async #onRemoveCrew(_event, target) {
     const uuid = target.closest("[data-uuid]")?.dataset.uuid;
     if ( uuid ) return this.document.removeCrew(uuid);
+  }
+
+  static async #onLegAttack() {
+    return BattleArmor.antiMechAttack(this.document, "leg");
+  }
+
+  static async #onSwarmAttack() {
+    return BattleArmor.antiMechAttack(this.document, "swarm");
+  }
+
+  static async #onMountSuit() {
+    return BattleArmor.mount(this.document);
+  }
+
+  static async #onReleaseSuit() {
+    return BattleArmor.release(this.document);
+  }
+
+  static async #onDislodge() {
+    return BattleArmor.dislodge(this.document);
+  }
+
+  /** Fill or clear a whole Armor pip of a suit. */
+  static async #onSuitPip(_event, target) {
+    const per = this.document.system.segmentsPerPip;
+    const index = Number(target.dataset.index);
+    const segments = this.document.system.armor.segments;
+    const next = (segments >= (index + 1) * per) ? index * per : (index + 1) * per;
+    return this.document.update({ "system.armor.segments": next });
+  }
+
+  /** A suit's Personal Combat weapon, fired by its wearer (p. 217). */
+  static async #onFirePersonal(_event, target) {
+    const weapon = this.#item(target);
+    const pilot = getPilot(this.document);
+    if ( weapon && pilot ) return pilot.rollAttack(weapon);
+  }
+
+  static async #onFireAPod(_event, target) {
+    const pod = this.#item(target);
+    if ( pod ) return fireAPod(this.document, pod);
+  }
+
+  static async #onShotPip(_event, target) {
+    const item = this.#item(target);
+    if ( !item ) return;
+    return item.update({ "system.shots.spent": toggleDamagePip(item.system.shots.spent, Number(target.dataset.index)) });
   }
 
   static async #onConCheck(_event, target) {

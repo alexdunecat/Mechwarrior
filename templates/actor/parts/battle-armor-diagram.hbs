@@ -1,0 +1,22 @@
+{{!-- Battle armor Armor pips with six segments each and the Structure pip, the wearer (p. 217–219). --}}
+<div class="mwd-location mwd-suit">
+  <div class="mwd-location-head">
+    <strong>{{localize "MWD.BattleArmor.Location.body"}}</strong>
+    <span class="mwd-muted">{{system.armorTotal.value}}/{{system.armorTotal.max}}</span>
+  </div>
+  <div class="mwd-suit-pips">
+    {{#each suitPips}}
+    <a class="mwd-suit-pip {{#if full}}filled{{/if}}" data-action="suitPip" data-index="{{index}}" data-tooltip="MWD.BattleArmor.PipHint">
+      {{#each segments}}<span class="mwd-segment {{#if filled}}filled{{/if}}"></span>{{/each}}
+    </a>
+    {{/each}}
+    <a class="mwd-pip structure {{#if system.structure.damage}}filled{{/if}}" data-action="structurePip" data-index="0" data-tooltip="MWD.BattleArmor.StructureHint"></a>
+  </div>
+  {{#if editable}}
+  <div class="mwd-location-max">
+    <input type="number" name="system.armor.pips" value="{{system.armor.pips}}" min="0" data-tooltip="MWD.Mech.Armor">
+    <input type="number" name="system.armor.segments" value="{{system.armor.segments}}" min="0" data-tooltip="MWD.BattleArmor.Segments">
+  </div>
+  {{/if}}
+  {{#if system.suitDestroyed}}<p class="mwd-wounds">{{localize "MWD.BattleArmor.Damage.Destroyed"}}</p>{{/if}}
+</div>

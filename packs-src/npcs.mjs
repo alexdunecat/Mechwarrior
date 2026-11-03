@@ -1,5 +1,5 @@
 /*
- * Sample NPCs (p. 128–137), as printed. Attributes are [STR, RFL, INT, WIL, CHA]; creatures have no
+ * Sample NPCs (p. 128–137) and the Clan Invasion–era NPCs (p. 220–222), as printed. Attributes are [STR, RFL, INT, WIL, CHA]; creatures have no
  * CHA. Skills are [key, rating, Hardware specialty or Knowledge subject], or ["custom", rating,
  * attribute, name] for a Skill outside the Skills List. Weapons work as for the sample characters.
  */
@@ -273,6 +273,61 @@ export const NPC_GROUPS = [
         weapons: [["Bite", "1", "OK", "—", "—"]],
         armor: "",
         inventory: []
+      },
+      {
+        // Clan Invasion appendix (p. 222). Its Natural Armor reduces damage from melee weapons.
+        name: "Ghost Bear (Ursus lamina strana mechtis)", attributes: [12, 4, 6, 6, 1],
+        tags: "Hidden Arctic Predator, Interminable Patience, Strana Mechty (Clan Homeworld), Clawing Ritual Target, Bad Vision",
+        skills: [["meleeCombat", 4], ["perception", 5], ["stealth", 2], ["tracking", 1]],
+        weapons: [["Claws, Bite", "8", "OK", "—", "—"]],
+        armor: { name: "Natural Armor", reduceB: 1 },
+        inventory: ["Clawtake (Clawing Trophy)", "White Fur Pelt", "Broken Spearheads from Failed Clawing Rituals"]
+      }
+    ]
+  },
+  {
+    // Clan Invasion–era NPCs (p. 220–222).
+    folder: "Clan Castes",
+    npcs: [
+      {
+        name: "Scientist Caste", attributes: [1, 2, 4, 2, 1],
+        tags: "Technology, Eugenics, Medicine, Calculating, Influential",
+        skills: [["medtech", 3], ["science", 5], ["knowledge", 4, "Clan Genetics"]],
+        weapons: ["Unarmed", ["Noteputer Stylus", "1", "–2", "—", "—"]],
+        armor: "",
+        inventory: ["Noteputer", "Data Crystal", "Lab Coat"]
+      },
+      {
+        name: "Merchant Caste", attributes: [1, 1, 2, 3, 3],
+        tags: "Amiable, Cagey, Ruthless, Hard Sell, Barterer",
+        skills: [["acting", 3], ["negotiation", 5], ["protocol", 4]],
+        weapons: ["Unarmed"],
+        armor: "",
+        inventory: ["Noteputer", "Lavish Outfit"]
+      },
+      {
+        name: "Technician Caste", attributes: [2, 2, 3, 2, 1],
+        tags: "Technical, Stodgy, Gruff, Deferent, Dedicated",
+        skills: [["perception", 3], ["technician", 5], ["knowledge", 4, "Clan ’Mechs"]],
+        weapons: ["Unarmed", ["Welder", "4", "OK", "—", "—"]],
+        armor: "",
+        inventory: ["Toolkit", "Hardhat", "Diagnostic Unit"]
+      },
+      {
+        name: "Laborer Caste", attributes: [3, 1, 1, 2, 1],
+        tags: "Drone, Rote Tasks, Fearful, Ennui, Subsisting",
+        skills: [["art", 3], ["knowledge", 5, "Trade Skill"]],
+        weapons: ["Unarmed"],
+        armor: "",
+        inventory: ["Tools", "Utilitarian Clothing"]
+      },
+      {
+        name: "Dark Caste", attributes: [2, 3, 2, 3, 2],
+        tags: "Distrustful, Survivor, Iconoclast, Prevaricator, Bitter",
+        skills: [["escapeArtist", 2], ["meleeCombat", 3], ["smallArms", 3], ["stealth", 3], ["streetwise", 2], ["survival", 3]],
+        weapons: ["Martial Arts", "Laser Pistol (E)"],
+        armor: "Concealed Flak Armor",
+        inventory: ["Wilderness Survival Kit", "Clan Mementos", "Lock Pick Set"]
       }
     ]
   }

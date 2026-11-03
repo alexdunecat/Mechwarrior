@@ -8,12 +8,13 @@
  * - `traits`: [{key, name, polarity, modifier}], `key` empty for a custom Trait.
  * - `lifeModules`: {childhood, education, realLife}, each {key, skill: {key, specialty, subject}} or null.
  * - `armor`: key of STARTING_ARMOR; `weapons`: [{name, ...}] not counting the free melee option.
- * - `inventory`: [string]; `hardware`: {type, weightClass} of the chosen unit or null.
+ * - `faction`: key of FACTIONS.
+ * - `inventory`: [string]; `hardware`: {type, weightClass, cost, clan} of the chosen unit or null.
  * - `dispossessed`, `hardwarePool`: the optional Hardware rules (p. 76).
  * - `conversion`: {xp, skills, edge}, how many unspent Hardware Points become each (p. 76).
  */
 import {
-  CREATION, EXPERIENCE_LEVELS, HARDWARE_CONVERSION, HARDWARE_COSTS, HARDWARE_SKILLS, LIFE_MODULES, LIFE_MODULE_SLOTS,
+  CLAN_CREATION, CLAN_HARDWARE, CREATION, EXPERIENCE_LEVELS, FACTIONS, HARDWARE_CONVERSION, HARDWARE_COSTS, HARDWARE_SKILLS, LIFE_MODULES, LIFE_MODULE_SLOTS,
   OPTIONAL_LIFE_MODULES, SKILLS, STARTING_ARMOR, UNIT_TYPES, BOOK_TRAITS
 } from "../config.mjs";
 
@@ -30,13 +31,33 @@ export function attributePointsSpent(attributes) {
 }
 
 /**
- * Hardware Point cost of a unit (p. 76).
- * @param {string} type          "mech", "vehicle" or "fighter".
+ * Hardware Point cost of a unit (p. 76, Clan technology p. 199).
+ * @param {string} type          "mech", "vehicle", "fighter" or "battleArmor".
  * @param {string} weightClass
+ * @param {object} [tech]
+ * @param {boolean} [tech.clan=false]  Clan technology.
+ * @param {boolean} [tech.omni=false]  An OmniMech or OmniFighter.
  * @returns {number}
  */
-export function hardwareCost(type, weightClass) {
-  return HARDWARE_COSTS[type]?.[weightClass] ?? 0;
+export function hardwareCost(type, weightClass, { clan = false, omni = false } = {}) {
+  const base = HARDWARE_COSTS[type]?.[weightClass] ?? 0;
+  if ( !base || !CLAN_HARDWARE.types.includes(type) ) return base;
+  if ( omni ) return base + CLAN_HARDWARE.omni;
+  return base + (clan ? CLAN_HARDWARE.clan : 0);
+}
+
+/**
+ * Whether a faction is one of the Clans (p. 198).
+ * @param {string} faction  Key of FACTIONS.
+ * @returns {boolean}
+ */
+export function isClanFaction(faction) {
+  return !!FACTIONS[faction]?.clan;
+}
+
+/** Hardware Point cost of the draft's unit. */
+function draftHardwareCost(hardware) {
+  return hardware.cost ?? hardwareCost(hardware.type, hardware.weightClass);
 }
 
 /** Book Trait keys in the draft. */
@@ -55,7 +76,8 @@ export function creationBudget(draft) {
   const level = EXPERIENCE_LEVELS[draft.experience] ?? EXPERIENCE_LEVELS.regular;
   const traits = traitKeys(draft);
   const poor = traits.has("poor");
-  let hardware = poor ? Math.max(1, Math.floor(level.hardware / 2)) : level.hardware;
+  const base = level.hardware + (isClanFaction(draft.faction) ? CLAN_CREATION.hardwareBonus : 0);
+  let hardware = poor ? Math.max(1, Math.floor(base / 2)) : base;
   if ( traits.has("wealthy") ) hardware += CREATION.wealthyHardware;
   return {
     attributes: level.attributes,
@@ -91,7 +113,7 @@ export function itemLimits(draft) {
 export function unspentHardware(draft) {
   const { hardware } = creationBudget(draft);
   if ( draft.dispossessed || !draft.hardware ) return hardware;
-  return Math.max(0, hardware - hardwareCost(draft.hardware.type, draft.hardware.weightClass));
+  return Math.max(0, hardware - draftHardwareCost(draft.hardware));
 }
 
 /* -------------------------------------------- */
@@ -196,6 +218,10 @@ export function validateCreation(draft) {
   const add = (step, code, data = {}) => issues.push({ step, code, data });
   const budget = creationBudget(draft);
   const attributes = draft.attributes ?? {};
+  const clan = isClanFaction(draft.faction);
+
+  // Step 3: Clan characters start at Veteran (p. 198).
+  if ( clan && (draft.experience !== CLAN_CREATION.experience) ) add("experience", "clanExperience");
 
   // Step 4: Attributes.
   const spent = attributePointsSpent(attributes);
@@ -247,6 +273,7 @@ export function validateCreation(draft) {
       continue;
     }
     if ( !lifeModuleAllowed(slot, choice.key, draft.lifeModules) ) add("lifeModules", "lifeModuleRequires", { slot, module: choice.key });
+    if ( LIFE_MODULES[slot][choice.key]?.clan && !clan ) add("lifeModules", "lifeModuleClan", { slot, module: choice.key });
     const options = lifeModuleSkills(slot, choice.key);
     const skill = choice.skill;
     if ( !skill?.key || !options.includes(skill.key) ) add("lifeModules", "lifeModuleSkill", { slot });
@@ -266,8 +293,10 @@ export function validateCreation(draft) {
   if ( inventory > limits.inventory ) add("inventory", "inventoryOver", { n: inventory, max: limits.inventory });
 
   // Step 11: Hardware.
+  if ( clan && draft.dispossessed ) add("hardware", "clanDispossessed");
   if ( draft.hardware && !draft.dispossessed ) {
-    const cost = hardwareCost(draft.hardware.type, draft.hardware.weightClass);
+    const cost = draftHardwareCost(draft.hardware);
+    if ( draft.hardware.clan && !clan ) add("hardware", "hardwareClan");
     if ( (cost > budget.hardware) && !draft.hardwarePool ) add("hardware", "hardwareOver", { cost, budget: budget.hardware });
     if ( !hasHardwareSkills(draft.hardware.type, finalSkills(draft)) ) add("hardware", "hardwareSkills", { type: draft.hardware.type });
   }

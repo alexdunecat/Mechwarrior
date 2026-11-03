@@ -16,9 +16,9 @@ const HANDLERS = {
     const flags = message?.flags[SYSTEM_ID];
     if ( !flags ) return;
     const allowed = {};
-    if ( ("content" in update) && flags.test ) allowed.content = update.content;
+    if ( ("content" in update) && (flags.test || flags.apod) ) allowed.content = update.content;
     for ( const [key, value] of Object.entries(update) ) {
-      const [, flag] = key.match(new RegExp(`^flags\\.${SYSTEM_ID}\\.(test|mechDamage)\\b`)) ?? [];
+      const [, flag] = key.match(new RegExp(`^flags\\.${SYSTEM_ID}\\.(test|mechDamage|apod)\\b`)) ?? [];
       if ( flag && (flag in flags) ) allowed[key] = value;
     }
     if ( !foundry.utils.isEmpty(allowed) ) await message.update(allowed);

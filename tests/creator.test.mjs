@@ -40,8 +40,10 @@ class ApplicationV2 {
 
 const unit = {
   uuid: "Actor.vedette", name: "Vedette", type: "vehicle", isUnit: true, isOwner: true,
-  system: { details: { weightClass: "medium" }, pilot: "" }
+  system: { details: { weightClass: "medium" }, pilot: "", hardwarePoints: 2, tech: { clan: false, omni: false } }
 };
+
+const worldSettings = { era: "3025" };
 
 Object.assign(globalThis, {
   game: {
@@ -49,7 +51,8 @@ Object.assign(globalThis, {
     user: { isGM: true },
     actors: [unit],
     items: [],
-    packs: []
+    packs: [],
+    settings: { get: (_scope, key) => worldSettings[key] }
   },
   ui: { notifications: { warn: () => {}, info: () => {} } },
   fromUuidSync: uuid => (uuid === unit.uuid ? unit : null),

@@ -1,0 +1,24 @@
+{{!-- Personal Combat weapons on a suit of battle armor, fired by its wearer (p. 217). --}}
+<section class="mwd-block">
+  <header class="mwd-block-header">
+    <h3>{{localize "MWD.BattleArmor.PersonalWeapons"}}</h3>
+    {{#if editable}}<a class="mwd-icon-button" data-action="createItem" data-type="weapon" data-tooltip="MWD.Weapon.Add"><i class="fa-solid fa-plus"></i></a>{{/if}}
+  </header>
+  <ol class="mwd-list">
+    {{#each personalWeapons}}
+    <li class="mwd-list-row" data-item-id="{{id}}">
+      <span class="mwd-col-name">
+        {{#if canFire}}<a class="mwd-rollable" data-action="firePersonal" data-tooltip="MWD.BattleArmor.FirePersonal"><i class="fa-solid fa-crosshairs"></i> {{name}}</a>{{else}}{{name}}{{/if}}
+        <span class="mwd-muted">({{damage}} · {{skill}})</span>
+      </span>
+      <span class="mwd-col-controls">
+        <a data-action="editItem" data-tooltip="MWD.Edit"><i class="fa-solid fa-pen"></i></a>
+        {{#if @root.editable}}<a data-action="deleteItem" data-tooltip="MWD.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+      </span>
+    </li>
+    {{else}}
+    <li class="mwd-empty">{{localize "MWD.Weapon.None"}}</li>
+    {{/each}}
+  </ol>
+  <p class="mwd-small mwd-muted">{{localize "MWD.BattleArmor.PersonalHint"}}</p>
+</section>
